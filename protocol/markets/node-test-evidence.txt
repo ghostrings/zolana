@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: constant-product exact input rounds output down
+ok 1 - constant-product exact input rounds output down
+  ---
+  duration_ms: 3.077166
+  type: 'test'
+  ...
+# Subtest: fee rounds up and is retained in input reserve
+ok 2 - fee rounds up and is retained in input reserve
+  ---
+  duration_ms: 0.338431
+  type: 'test'
+  ...
+# Subtest: slippage bound enforced
+ok 3 - slippage bound enforced
+  ---
+  duration_ms: 0.48394
+  type: 'test'
+  ...
+# Subtest: zero input and wrong units rejected
+ok 4 - zero input and wrong units rejected
+  ---
+  duration_ms: 0.254725
+  type: 'test'
+  ...
+# Subtest: fee bound enforced
+ok 5 - fee bound enforced
+  ---
+  duration_ms: 0.222176
+  type: 'test'
+  ...
+# Subtest: dust fee cannot consume input
+ok 6 - dust fee cannot consume input
+  ---
+  duration_ms: 0.258
+  type: 'test'
+  ...
+# Subtest: dust quote cannot output zero
+ok 7 - dust quote cannot output zero
+  ---
+  duration_ms: 0.229496
+  type: 'test'
+  ...
+# Subtest: effective reserve overflow rejected
+ok 8 - effective reserve overflow rejected
+  ---
+  duration_ms: 0.173522
+  type: 'test'
+  ...
+# Subtest: post-fee input reserve overflow rejected
+ok 9 - post-fee input reserve overflow rejected
+  ---
+  duration_ms: 0.5828
+  type: 'test'
+  ...
+# Subtest: virtual inventory is never spendable
+ok 10 - virtual inventory is never spendable
+  ---
+  duration_ms: 0.683552
+  type: 'test'
+  ...
+# Subtest: virtual launch reserve can start at zero real quote reserve
+ok 11 - virtual launch reserve can start at zero real quote reserve
+  ---
+  duration_ms: 0.283197
+  type: 'test'
+  ...
+# Subtest: no effective input liquidity rejected
+ok 12 - no effective input liquidity rejected
+  ---
+  duration_ms: 0.175405
+  type: 'test'
+  ...
+# Subtest: 10,000 deterministic public quote property checks
+ok 13 - 10,000 deterministic public quote property checks
+  ---
+  duration_ms: 18.325541
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 115.517603

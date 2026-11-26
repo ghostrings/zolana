@@ -1,0 +1,30 @@
+name: GHOST Markets reference checks
+on:
+  push:
+    paths:
+      - 'protocol/markets/**'
+      - '.github/workflows/markets-reference.yml'
+  pull_request:
+    paths:
+      - 'protocol/markets/**'
+      - '.github/workflows/markets-reference.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Node quote tests
+        run: node --test protocol/markets/tests/quote.test.mjs
+      - name: Rust toolchain
+        run: rustup toolchain install 1.85.1 --profile minimal
+      - name: Rust quote tests
+        run: cargo +1.85.1 test --locked --manifest-path protocol/markets/rust/Cargo.toml

@@ -1,0 +1,10 @@
+[package]
+name = "ghost-market-math"
+version = "0.1.0"
+edition = "2021"
+publish = false
+rust-version = "1.85"
+description = "Public constant-product quote arithmetic; not an on-chain program"
+
+[lib]
+path = "src/lib.rs"

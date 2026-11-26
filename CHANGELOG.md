@@ -1,5 +1,13 @@
 # Changelog
 
+## v26 combined engineering candidate — 2026-11-26
+
+- Added the complete V25 pricing RFC and V26 GHOST Markets Anchor workspace, including their reference tests, Rust math, instruction source, validation notes and independent CI workflows. No new execution route or private settlement is enabled.
+- Corrected the application workflow concurrency policy (`cancel-in-progress: false`), expanded the timeout to 30 minutes, split verification stages, and added build entry-point checks. All prior tests and production builds remain required.
+- Documented the owner-provided cancelled GitHub run: 943 Vitest tests, 17 standalone checks, 229 baseline matches and type-checking passed; Vite was interrupted. The cancellation cause is consistent with a newer push but not independently proven.
+- Production build and remote CI for this merged candidate, plus Rust/SBF compilation, validator tests, independent review and deployment, remain outstanding.
+- Existing execution source, dependency lockfile, research settings and production configuration are unchanged.
+
 ## v24 GitHub publication package — 2026-11-26
 
 Documentation and repository packaging revision only. Added GHOSTRINGS branding, locally hosted diagrams and evidence graphics, community files, publication instructions and repository metadata. The Custom Ring configuration and application execution code remain unchanged; no new integration or remote CI result is claimed.

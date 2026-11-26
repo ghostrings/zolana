@@ -7,7 +7,7 @@ No milestone is represented as complete merely because a UI or simulation exists
 | Milestone | Status | Exit evidence |
 | --- | --- | --- |
 | M0. Source provenance and research foundation | Standalone verified | v23 baseline checks, deterministic synthetic tests/demo, documented target and trust boundaries |
-| M1. Reproducible application checkout | Pending | Clean locked dependency install, all existing and new HTTP tests, complete TypeScript/Vite build, browser smoke results, dependency review, GitHub Actions green |
+| M1. Reproducible application checkout | Partial — prior GitHub tests/type-check passed; build cancelled | Clean locked dependency install, all existing and new HTTP tests, complete TypeScript/Vite build, browser smoke results, dependency review, GitHub Actions green |
 | M2. Upstream engineering alignment | Proposed | Maintainer feedback on supported SDK/program versions, governance activation, ring-specific policy semantics and CI conventions |
 | M3. Supported confidential devnet integration | Not started | Official devnet ring artifacts and identity, test-only assets; validated enrollment, permitted operations and explicit failure cases; no production credentials |
 | M4. Settlement and reporting review | Not started | Supported two-party settlement conformance with atomic failure, authorization and conservation; scoped finalized test reports with independent provenance review; no raw private user data in public analytics |
@@ -34,3 +34,5 @@ No milestone is represented as complete merely because a UI or simulation exists
 ## Release policy
 
 The JSON target remains unchanged, including anonymous/open/all-assets as requested research parameters. Real membership, asset admission, operational powers and mode availability need separate review before live deployment. Keep the mainnet v23 application running until the independently reviewed M1 gates pass and a separate application rollout is approved. Do not equate a successful GitHub CI run with a deployed ring or a security audit.
+
+Program B is tracked independently in [its validation gates](../../protocol/ghost-markets/docs/VALIDATION.md). A green application workflow is not evidence that the Anchor market program compiles or settles on-chain.

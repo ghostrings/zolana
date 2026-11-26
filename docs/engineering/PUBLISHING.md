@@ -2,7 +2,7 @@
 
 **Owner namespace:** [ghostrings](https://github.com/ghostrings) · **Application repository:** [ghostrings/zolana](https://github.com/ghostrings/zolana) · **Default branch:** `main`.
 
-The destination was confirmed to exist with default branch `main` and public visibility at packaging time. No remote changes have been made. The archive contains the repository root directly. The owner must review source publication rights and credentials before uploading; switch to private visibility for initial review if needed.
+The destination exists with default branch `main` and public visibility. The owner manually uploaded the previous source package; this combined candidate makes no remote changes. The archive contains the repository root directly. The owner must review source publication rights and credentials before uploading; switch to private visibility for initial review if needed.
 
 ## 1. Before upload
 
@@ -36,10 +36,10 @@ The avatar and social preview are already included in `docs/assets/`; no separat
 ## 5. Verify and protect
 
 - Run `npm ci`, `npm run verify` and reproduce the committed demo on a clean checkout. The original 229 protected hashes must match. Use the exact Node version in `.node-version`; see [validation](VALIDATION.md).
-- In GitHub Actions, check the actual **Engineering verification** run for the final upload. The workflow never deploys, signs transactions or requires a secret. If initial partial uploads triggered failed builds, review the final complete run rather than asserting CI passed.
+- In GitHub Actions, check the actual **Engineering verification** run for the final upload. The workflow never deploys, signs transactions or requires a secret. If partial uploads triggered failed or cancelled builds, review the final complete run rather than asserting CI passed. Prefer a single commit of the full package on an update branch; see [CI recovery](CI_RECOVERY.md). The new market workflows are independent of the application build.
 - Require the observed CI check and independent reviewer approval on `main`; disable force pushes. Enable private vulnerability reporting. Review action version references and pin verified SHAs if required by your policy. No production secrets belong in PR workflows.
 - Review dependency advisories, full typecheck/build, HTTP and browser checks, and licensing. No live Custom Ring is included. CI success alone is not security approval.
-- Use the included PR template for changes; if sharing a candidate release, mark it as a pre-release (suggested tag `v24.0.0-rc.1`) and attach the actual validation report. Never claim it is audited or deployed.
+- Use the included PR template for changes; if sharing a candidate release, mark it as a pre-release (suggested tag `v26.0.0-rc.1`) and attach the actual validation report. Never claim it is audited or deployed.
 
 ## 6. Engage Helius
 

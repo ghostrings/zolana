@@ -23,7 +23,7 @@ Exact immutable research configuration and hard-disabled network status; synthet
 
 The hash manifest was computed by comparing the supplied v23 archive with the imported v24 source, excluding documented changed paths and intentional repository packaging changes. It is a release-specific regression guard, not an authenticity signature, a behavior test, or a substitute for code review. The full original v23 archive contained 244 files; no original file was deleted in the v24 import. See `evidence/v23-baseline.json` for all protected and deliberately excluded paths.
 
-## Blocked or not run
+## Historical local preparation blockers (before the owner’s GitHub run)
 
 | Check | Status / blocker |
 | --- | --- |
@@ -54,3 +54,15 @@ Complete the browser, dependency, publication and independent review gates in [R
 ## GitHub packaging revision — 2026-11-26
 
 Re-executed the standalone suite on Node 22.16.0 and TypeScript 5.8.3: 17/17 passed; [new output](../../evidence/github-packaging-check.txt). The v23 hash check again matched 229/229 files; the demo reproduced byte-for-byte. Repository branding, links and metadata were updated without changing application execution code or the lockfile. Repository upload, full dependency/build/HTTP/browser verification, remote CI and upstream review are still pending.
+
+## Combined v26 candidate — owner-provided GitHub observation
+
+The supplied GitHub Actions log for the preceding application upload reports a successful locked dependency install (the verification step was reached), 229/229 baseline matches, 17/17 standalone checks, 39/39 Vitest files and 943/943 tests, including all 9 Custom Ring HTTP tests. Both TypeScript checks completed before Vite started. The job was cancelled after 53 seconds while Vite was transforming frontend modules. No compiler error is reported; completion of the frontend build, server build and evidence comparison was not observed. This is historical evidence for the prior checkout, not a green result for the merged candidate.
+
+The live workflow read from `ghostrings/zolana` had `cancel-in-progress: true` and the commit history includes a new push during the logged run. This is a plausible cancellation mechanism, not proof of the exact cancellation actor. [CI recovery and reproduction](CI_RECOVERY.md) describes the fix. The merged workflow keeps running jobs alive, and still requires all test, type-check and build stages.
+
+Program B's separate evidence and release gates are in [protocol/ghost-markets/docs/VALIDATION.md](../../protocol/ghost-markets/docs/VALIDATION.md). No on-chain functionality, binary, IDL, live ring or deployment is asserted. The merged candidate requires a fresh remote application and market verification run.
+
+### Merged source checks (executed locally)
+
+The baseline still matches 229/229 files. All 17 standalone GHOST, 13 historical V25 and 31 V26 reference tests passed (V25 pricing tests overlap the V26 suite; not 61 independent coverage claims). The deterministic GHOST demo and 128 CSV lifecycle vectors matched committed fixtures byte-for-byte. Localnet integration JavaScript and shell syntax checks passed; three workflow YAML files parsed. Program B instruction and math source, original app execution source and the original package lock remain byte-identical to their prior archives. See [actual combined check output](../../evidence/combined-v26-checks.txt). These checks are not an actual GitHub run, Rust compilation or Solana validator test.

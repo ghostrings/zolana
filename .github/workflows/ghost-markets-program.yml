@@ -1,0 +1,85 @@
+name: GHOST Markets Program B
+on:
+  push:
+    paths:
+      - 'protocol/ghost-markets/**'
+      - '.github/workflows/ghost-markets-program.yml'
+  pull_request:
+    paths:
+      - 'protocol/ghost-markets/**'
+      - '.github/workflows/ghost-markets-program.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Public pricing and lifecycle reference
+        working-directory: protocol/ghost-markets
+        run: node --test tests/quote.test.mjs tests/lifecycle.test.mjs
+      - name: Reproduce committed lifecycle vectors
+        working-directory: protocol/ghost-markets
+        run: |
+          node reference/generate-vectors.mjs > "$RUNNER_TEMP/ghost-lifecycle-vectors.csv"
+          cmp reference/lifecycle-vectors.csv "$RUNNER_TEMP/ghost-lifecycle-vectors.csv"
+      - name: Independent Rust math and fixture conformance
+        working-directory: protocol/ghost-markets
+        run: |
+          rustup toolchain install 1.85.1 --profile minimal
+          mkdir -p target
+          rustc +1.85.1 --edition=2021 --test crates/market-math/src/lib.rs -o target/market-math-tests
+          target/market-math-tests
+      - name: Check test script syntax
+        working-directory: protocol/ghost-markets
+        run: |
+          node --check tests/localnet.integration.mjs
+          bash -n scripts/test-localnet.sh
+  localnet:
+    # The heavier candidate build is manually dispatched after reference review.
+    if: github.event_name == 'workflow_dispatch'
+    needs: reference
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Install existing locked application dependencies
+        run: npm ci
+      - name: Install pinned Anchor CLI
+        run: cargo install --git https://github.com/solana-foundation/anchor --tag v0.32.1 anchor-cli --locked
+      - name: Install matching Solana CLI
+        run: |
+          sh -c "$(curl --proto '=https' --tlsv1.2 -fsSL https://release.anza.xyz/v2.3.0/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+      - name: Generate candidate lockfile and test Rust workspace
+        working-directory: protocol/ghost-markets
+        run: |
+          cargo generate-lockfile
+          cargo test --workspace --locked
+      - name: Build and test on isolated local validator
+        run: bash protocol/ghost-markets/scripts/test-localnet.sh
+      - name: Record candidate binary hash
+        working-directory: protocol/ghost-markets
+        run: sha256sum target/deploy/ghost_markets.so > target/program-sha256.txt
+      - name: Upload localnet build evidence (no keypairs)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ghost-markets-localnet-candidate
+          path: |
+            protocol/ghost-markets/Cargo.lock
+            protocol/ghost-markets/target/deploy/ghost_markets.so
+            protocol/ghost-markets/target/idl/ghost_markets.json
+            protocol/ghost-markets/target/program-sha256.txt
+          if-no-files-found: error

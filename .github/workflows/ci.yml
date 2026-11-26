@@ -6,13 +6,16 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+# Browser uploads can create multiple commits. Finish the active run rather
+# than interrupting a valid build when a newer commit is pushed to this ref.
+# GitHub may replace a pending (not yet running) run with the newest one.
 concurrency:
   group: verify-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,8 +28,24 @@ jobs:
         run: node --version && npm --version
       - name: Install locked dependencies
         run: npm ci
-      - name: Verify protected baseline, tests and build
-        run: npm run verify
+      - name: Verify protected v23 baseline
+        run: npm run ghost:baseline
+      - name: GHOST research checks
+        run: npm run ghost:check
+      - name: Application regression tests
+        run: npm run test
+      - name: TypeScript type-check
+        run: npm run typecheck
+      - name: Build production frontend
+        run: npm run build:web
+      - name: Build production server
+        run: npm run build:server
+      - name: Verify build entry points
+        run: |
+          test -s web/dist/index.html
+          test -s web/dist/ghost.html
+          test -s web/dist/ghost-intelligence.html
+          test -s build/server/src/index.js
       - name: Reproduce synthetic evidence
         run: |
           npm run --silent ghost:demo > evidence/ghost-policy-demo.json

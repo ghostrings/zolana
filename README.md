@@ -7,7 +7,7 @@
 </div>
 
 > [!IMPORTANT]
-> **Engineering candidate — not a deployed Custom Ring.** The existing platform uses the Default Ring on Solana mainnet. The new GHOST Ring lab uses fictional assets and participants. This checkout has no actual Custom Ring program, proof integration, anonymous relayer or operational auditor. Full build, remote CI and independent review are pending. Do not use this candidate with real funds.
+> **Engineering candidate — not a deployed Custom Ring.** The existing platform uses the Default Ring on Solana mainnet. The new GHOST Ring lab uses fictional assets and participants. This checkout has no actual Custom Ring program, proof integration, anonymous relayer or operational auditor. The earlier GitHub run passed application tests and type-checking, but was cancelled during Vite. The merged candidate needs fresh CI, a complete build and independent review. Do not use this candidate with real funds.
 
 ## What is GHOST?
 
@@ -19,6 +19,7 @@ GHOST is the engineering foundation behind [privacycash.fun](https://privacycash
 | **GHOST Wallet** | Existing browser-based Default Ring wallet; ring readiness notice | Supported ring enrollment and balances |
 | **GHOST Ring** | Local policy model, fictional transfers, atomic settlement and fail-closed readiness API | Actual confidential devnet conformance |
 | **GHOST Intelligence** | Public protocol vault/index observations and separately labelled synthetic reporting | Scoped, independently reviewed auditor reports |
+| **GHOST Markets (Program B)** | Separate Anchor market program source: token factory, curve, graduation, AMM and liquidity; public SPL settlement only | Rust/SBF compilation and local-validator conformance |
 
 Public pool execution remains public. Default Ring transfers conceal token and amount, not counterparties. The existing optional Ghost desk uses two confidential settlement legs and holds inventory; it is not an AMM. Neither the lab nor public vault data establishes anonymity, beneficial ownership, audited private balances or regulatory compliance.
 
@@ -50,7 +51,7 @@ npm run verify
 npm run --silent ghost:demo
 ```
 
-No wallet, API key, devnet SOL or mainnet account is needed for these checks. The [engineering workflow](.github/workflows/ci.yml) runs on pushes to `main`, PRs and manual dispatch with read-only permissions and no deploy step. It verifies the baseline, standalone model, Vitest tests, production build and deterministic fixture. [View GitHub Actions after upload](https://github.com/ghostrings/zolana/actions). Remote CI has not been run for this package; dependency installation, full typecheck/build, HTTP test and browser smoke remain pending. [Validation record](docs/engineering/VALIDATION.md) · [Fixture walkthrough](docs/engineering/DEMO.md).
+No wallet, API key, devnet SOL or mainnet account is needed for these checks. The [engineering workflow](.github/workflows/ci.yml) runs on pushes to `main`, PRs and manual dispatch with read-only permissions and no deploy step. It verifies the baseline, standalone model, Vitest tests, production build and deterministic fixture. [View GitHub Actions](https://github.com/ghostrings/zolana/actions). The owner-provided GitHub log for the preceding application checkout reports 943/943 Vitest tests (39 files, including 9 HTTP tests), 17/17 standalone checks, 229/229 baseline hashes and successful TypeScript type-checking. Vite was interrupted by a cancelled run; neither the frontend nor server build is verified. The workflow now keeps active runs alive when new commits arrive and reports build stages separately. See [CI incident and recovery](docs/engineering/CI_RECOVERY.md). Fresh CI and browser smoke testing remain pending for this merged checkout. [Validation record](docs/engineering/VALIDATION.md) · [Fixture walkthrough](docs/engineering/DEMO.md).
 
 ### Local browser preview
 
@@ -70,6 +71,33 @@ After `npm ci`, run `npm run dev:web` and open `http://localhost:5173/ghost.html
 
 Anonymous mode and unrestricted research parameters are not approved production settings. A real integration must establish supported upstream semantics, security, privacy and lawful operation before any live funds are admitted. Confidential devnet is the initial integration milestone.
 
+## GHOST Markets — Program B (v26)
+
+The new [GHOST Markets workspace](protocol/ghost-markets/README.md) contains an independent Anchor program candidate for market creation, a two-way bonding curve, permissionless graduation, constant-product swaps and proportional SPL liquidity shares. It is deliberately separate from the existing TypeScript application, the current Meteora routes and the Custom Ring research lab.
+
+```mermaid
+flowchart LR
+    A[Token factory] --> B[Bonding curve]
+    B --> C[Graduation]
+    C --> D[AMM pool]
+    D --> E[Swaps and LP operations]
+    B --> F[Public SPL vaults]
+    D --> F
+```
+
+The dependency-free Node reference passed 31 tests, including 10,000 seeded pricing cases, 5,000 lifecycle scenarios and 128 committed vectors. The actual Rust program has not yet been compiled, run against a validator or deployed. Public SPL settlement is the only implemented on-chain path; no private settlement or ring activation is included. The placeholder program ID is not a deployment address.
+
+- [V25 pricing RFC](protocol/markets/README.md) — historical research and pricing reference.
+- [V26 account model](protocol/ghost-markets/docs/ACCOUNT_MODEL.md) — accounts and economic assumptions.
+- [V26 validation gates](protocol/ghost-markets/docs/VALIDATION.md) — outstanding Rust, SBF and localnet requirements.
+- [Program B workflow](.github/workflows/ghost-markets-program.yml) — reference and Rust checks; manually dispatch for the heavier localnet build and conformance suite. No production deployment.
+
+Run the dependency-free V26 reference checks from the repository root:
+
+```sh
+node --test protocol/ghost-markets/tests/quote.test.mjs protocol/ghost-markets/tests/lifecycle.test.mjs
+```
+
 ## Repository map
 
 ```text
@@ -81,6 +109,8 @@ examples/ + tests/        deterministic demo, standalone and regression tests
 evidence/                 immutable reference fixture, baseline and test records
 docs/engineering/         architecture, validation, roadmap, publication guide
 contrib/helius/           draft engineering intake, discussion and additive patch
+protocol/markets/         V25 pricing RFC and reference
+protocol/ghost-markets/   V26 Anchor candidate, math, fixtures and localnet tests
 .github/                  CI, issue forms and pull request template
 ```
 
@@ -88,7 +118,7 @@ contrib/helius/           draft engineering intake, discussion and additive patc
 
 ![Release gates M0 to M6: standalone verification complete, full CI pending, upstream alignment proposed, actual devnet and later milestones outstanding](docs/assets/roadmap.png)
 
-The [roadmap](docs/engineering/ROADMAP.md) specifies exit criteria. We are seeking alignment with maintainers on official SDK/program versions, actual policy conformance, supported settlement and scoped audit reporting. The first proposed upstream contribution is a small documentation checklist; it is not a submitted or accepted PR. [Helius contribution kit](contrib/helius/README.md).
+The [roadmap](docs/engineering/ROADMAP.md) specifies application exit criteria; [Program B release gates](protocol/ghost-markets/docs/VALIDATION.md) track the separate market program. We are seeking alignment with maintainers on official SDK/program versions, actual policy conformance, supported settlement and scoped audit reporting. The first proposed upstream contribution is a small documentation checklist; it is not a submitted or accepted PR. [Helius contribution kit](contrib/helius/README.md).
 
 ## Developer resources
 

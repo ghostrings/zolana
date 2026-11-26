@@ -1,0 +1,23 @@
+[toolchain]
+anchor_version = "0.32.1"
+solana_version = "2.3.0"
+
+[features]
+resolution = false
+skip-lint = false
+
+[programs.localnet]
+ghost_markets = "FQ9qkZv3nBnDubM5oznc4kF2LzzTA7i5xsmBkC6hAWbg"
+
+[provider]
+cluster = "Localnet"
+wallet = "target/localnet-wallet.json"
+
+[workspace]
+members = ["programs/ghost-markets"]
+
+[scripts]
+test = "node --test tests/localnet.integration.mjs"
+
+[test]
+startup_wait = 15000
