@@ -1,0 +1,27 @@
+[package]
+name = "ghost-markets"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "ghost_markets"
+
+[features]
+default = []
+# Loopback conformance only; never publish or deploy the enabled artifact.
+local-market-testing = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+anchor-debug = []
+custom-heap = []
+custom-panic = []
+
+[dependencies]
+anchor-lang = "=0.32.1"
+anchor-spl = { version = "=0.32.1", features = ["token"] }
+ghost-market-math = { path = "../../crates/market-math" }
