@@ -24,7 +24,7 @@ jobs:
           node-version-file: .node-version
       - name: Public pricing and lifecycle reference
         working-directory: protocol/ghost-markets
-        run: node --test tests/quote.test.mjs tests/lifecycle.test.mjs
+        run: node --test tests/quote.test.mjs tests/lifecycle.test.mjs tests/release-verify.test.mjs
       - name: Reproduce committed lifecycle vectors
         working-directory: protocol/ghost-markets
         run: |
@@ -41,13 +41,15 @@ jobs:
         working-directory: protocol/ghost-markets
         run: |
           node --check tests/localnet.integration.mjs
-          bash -n scripts/test-localnet.sh
+          node --check scripts/mainnet-status.mjs
+          for script in scripts/*.sh; do bash -n "$script"; done
+          sha256sum -c evidence/Cargo.lock.sha256
   localnet:
     # The heavier candidate build is manually dispatched after reference review.
     if: github.event_name == 'workflow_dispatch'
     needs: reference
     runs-on: ubuntu-22.04
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
         with:
@@ -63,12 +65,10 @@ jobs:
         run: |
           sh -c "$(curl --proto '=https' --tlsv1.2 -fsSL https://release.anza.xyz/v2.3.0/install)"
           echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
-      - name: Generate candidate lockfile and test Rust workspace
+      - name: Verify supplied compatibility lockfile
         working-directory: protocol/ghost-markets
-        run: |
-          cargo generate-lockfile
-          cargo test --workspace --locked
-      - name: Build and test on isolated local validator
+        run: sha256sum -c evidence/Cargo.lock.sha256
+      - name: Build and test both variants on isolated local validator
         run: bash protocol/ghost-markets/scripts/test-localnet.sh
       - name: Record candidate binary hash
         working-directory: protocol/ghost-markets
@@ -76,10 +76,11 @@ jobs:
       - name: Upload localnet build evidence (no keypairs)
         uses: actions/upload-artifact@v4
         with:
-          name: ghost-markets-localnet-candidate
+          name: ghost-markets-v27-locked-localnet-candidate
           path: |
             protocol/ghost-markets/Cargo.lock
             protocol/ghost-markets/target/deploy/ghost_markets.so
             protocol/ghost-markets/target/idl/ghost_markets.json
             protocol/ghost-markets/target/program-sha256.txt
+            protocol/ghost-markets/target/v27-local-evidence/
           if-no-files-found: error

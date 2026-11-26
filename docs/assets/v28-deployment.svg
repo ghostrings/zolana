@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="350" viewBox="0 0 1200 350" role="img" aria-labelledby="t d">
+<title id="t">GHOST Markets V28 deployment status</title><desc id="d">Owner reported verified locked V27 mainnet program; V28 public observer; Custom Ring not deployed. No audit claimed.</desc>
+<rect width="1200" height="350" rx="16" fill="#111111"/><path d="M0 102H1200M0 287H1200" stroke="#353535"/>
+<g fill="#e8e8e8" font-family="Arial,Helvetica,sans-serif"><text x="32" y="36" font-size="13" letter-spacing="3" fill="#b0b0b0">GHOSTRINGS / ENGINEERING RECORD / 26 NOV 2026</text><text x="30" y="78" font-size="37" font-weight="700">GHOST MARKETS</text><text x="1168" y="72" font-size="17" text-anchor="end" fill="#b9b9b9">V28 / SOLANA MAINNET</text>
+<g fill="#181818" stroke="#555"><rect x="30" y="125" width="360" height="135" rx="9"/><rect x="420" y="125" width="360" height="135" rx="9"/><rect x="810" y="125" width="360" height="135" rx="9"/></g>
+<text x="50" y="152" font-size="13" fill="#b0b0b0">PROGRAM B / OWNER-REPORTED</text><text x="50" y="196" font-size="30" font-weight="700">DEPLOYED</text><text x="50" y="229" font-size="15" fill="#bcbcbc">Locked V27 · 533,632 bytes</text>
+<text x="440" y="152" font-size="13" fill="#b0b0b0">V28 / PUBLIC DATA</text><text x="440" y="196" font-size="30" font-weight="700">OBSERVER</text><text x="440" y="229" font-size="15" fill="#bcbcbc">SDK · RPC verification · snapshot</text>
+<text x="830" y="152" font-size="13" fill="#b0b0b0">PROGRAM A / PRIVACY</text><text x="830" y="196" font-size="30" font-weight="700">PENDING</text><text x="830" y="229" font-size="15" fill="#bcbcbc">Upstream alignment and approval</text>
+<text x="30" y="321" font-size="14" fill="#bdbdbd">Program slot 474,265,505 · Market execution disabled · No private settlement · No audit claimed</text></g></svg>

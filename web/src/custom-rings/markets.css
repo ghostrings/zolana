@@ -1,0 +1,7 @@
+.gm-page .gm-details {margin-top:16px;}
+.gm-page .gm-details dd {overflow-wrap:anywhere;}
+.gm-page .gm-details .row-wrap {margin-top:18px;}
+.gm-page .gm-output {white-space:pre-wrap;overflow-wrap:anywhere;max-height:420px;overflow:auto;border:1px solid var(--line);padding:16px;font:12px/1.6 var(--mono);}
+.gm-page .gm-history-row {display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--line);font-size:13px;}
+.gm-page .gm-history-row:last-child{border-bottom:0;}
+.gm-page .gm-history-row span{color:var(--silver);}

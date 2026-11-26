@@ -20,4 +20,5 @@ members = ["programs/ghost-markets"]
 test = "node --test tests/localnet.integration.mjs"
 
 [test]
+upgradeable = true
 startup_wait = 15000

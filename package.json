@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "privacycash.fun \u2014 a Solana launchpad where balances, transfers and fills run through Solana Privacy Rings, with launches on Meteora DBC.",
+  "description": "privacycash.fun — a Solana launchpad where balances, transfers and fills run through Solana Privacy Rings, with launches on Meteora DBC.",
   "engines": {
     "node": ">=22.13"
   },
@@ -35,7 +35,9 @@
     "ghost:check": "node ops/check-ghost.mjs",
     "ghost:demo": "node ops/check-ghost.mjs --demo",
     "ghost:baseline": "node ops/check-baseline.mjs",
-    "verify": "npm run ghost:baseline && npm run ghost:check && npm run test && npm run build"
+    "verify": "npm run ghost:baseline && npm run ghost:check && npm run markets:check && npm run test && npm run build",
+    "markets:check": "node ops/check-markets-sdk.mjs",
+    "markets:observe": "tsx ops/markets-observe.ts"
   },
   "dependencies": {
     "@coral-xyz/anchor": "0.31.1",

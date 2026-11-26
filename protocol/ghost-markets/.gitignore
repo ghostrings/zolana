@@ -5,3 +5,7 @@
 # Never commit generated deployment or wallet keys.
 *-keypair.json
 *-wallet.json
+# Local backup files generated during dependency troubleshooting
+/Cargo.lock.backup
+/Cargo.lock.before-*
+/Anchor.toml.backup

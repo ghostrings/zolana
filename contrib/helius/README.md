@@ -12,32 +12,14 @@ Proposed narrow change: a documentation checklist for independent applications t
 - [Proposed upstream documentation](upstream/docs/application-readiness-checklist.md)
 - [Add-only Git patch](0001-docs-application-readiness.patch)
 - [Draft PR body](PULL_REQUEST.md)
-- [Private Helius integration intake](HELIUS_INTAKE.md)
+- [Updated Helius engineering intake](HELIUS_INTAKE.md)
+- [V28 upstream proposal](V28_UPSTREAM_PROPOSAL.md)
 
 The patch is an original add-only documentation candidate. Its format and application can be checked locally, but the latest upstream checkout, file placement, maintainers' contribution rules and CI have not been verified against a local clone in this environment. It is not a tested upstream code change. Ask whether this content is wanted and where it belongs before filing a PR. Do not submit multiple duplicate issues, open parallel speculative PRs or ask for review of the entire launchpad.
 
-## Apply after maintainers agree
+## Submit after maintainers agree (GitHub website)
 
-1. Review current `README`, `CONTRIBUTING`, license/CLA/DCO, issue templates, open PRs and repository permissions. Resolve publication and contribution rights first.
-2. Fork the approved repository under your actual account and clone the fork. Add the official upstream remote and fetch the agreed base commit; record its SHA. Create a new branch from that base (replace placeholders with verified values).
-
-```sh
-git remote add upstream https://github.com/helius-labs/custom-privacy-rings.git
-git fetch upstream
-git switch -c docs/application-readiness upstream/main
-# Absolute path to the supplied local patch; check the intended file does not already exist.
-git apply --check /path/to/0001-docs-application-readiness.patch
-git apply /path/to/0001-docs-application-readiness.patch
-git diff --check
-git add docs/application-readiness-checklist.md
-git diff --cached --check
-git diff --cached --stat
-# Run any upstream-required checks and review the content before committing.
-git commit -m "docs: propose application integration readiness checklist"
-git push -u origin docs/application-readiness
-```
-
-3. Open a **draft PR** from your fork into the agreed upstream branch, using [the proposed PR body](PULL_REQUEST.md) and replacing pending verification fields with actual results. Do not claim upstream CI, compatibility, deployment or approval until verified.
+Review current upstream contribution rules, license/CLA/DCO and open proposals. Confirm rights before sharing material. Use the GitHub web interface to fork the agreed repository, create a new branch from the current upstream base, and add only the agreed checklist document. Open a draft pull request, attach the verified base revision and actual test evidence, and ask for review. Do not submit the complete application or claim activation, partnership or security certification. The patch is retained as a review artifact; compatibility against the current upstream base remains unverified.
 
 ## Future contribution backlog (do not submit yet)
 

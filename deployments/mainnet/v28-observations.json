@@ -1,0 +1,42 @@
+{
+  "evidenceSource": "Owner-supplied V28 CLI output, transcribed without credentials; no independent RPC request during public packaging.",
+  "network": "mainnet-beta",
+  "status": {
+    "deployment": {
+      "source": "finalized-rpc",
+      "programId": "5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n",
+      "programData": "J4iCsaLM24bBqjWGXvtB6N3LzUiJNJWwKAqLtXUzTXxt",
+      "binarySha256": "2fba22c284791879f003aec3118c74fbd271f808f91b39e394e2654f9cc80d7d",
+      "deploymentSlot": "474265505",
+      "upgradeAuthority": "J4JRQza7JXnkct6kQC3roPYstoH2xFBoyQ5Wczpt5jPt",
+      "protocol": null,
+      "marketExecution": false,
+      "privateSettlement": false,
+      "observedAt": "2026-11-26T19:44:37.707Z",
+      "slot": 474269830
+    }
+  },
+  "scan": {
+    "deployment": {
+      "source": "finalized-rpc",
+      "programId": "5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n",
+      "programData": "J4iCsaLM24bBqjWGXvtB6N3LzUiJNJWwKAqLtXUzTXxt",
+      "binarySha256": "2fba22c284791879f003aec3118c74fbd271f808f91b39e394e2654f9cc80d7d",
+      "deploymentSlot": "474265505",
+      "upgradeAuthority": "J4JRQza7JXnkct6kQC3roPYstoH2xFBoyQ5Wczpt5jPt",
+      "protocol": null,
+      "marketExecution": false,
+      "privateSettlement": false,
+      "observedAt": "2026-11-26T19:44:49.477Z",
+      "slot": 474269886
+    },
+    "result": {
+      "source": "finalized-rpc-scan",
+      "slot": 474269887,
+      "markets": []
+    }
+  },
+  "ownerReportedApplicationVerification": "All checks passed (reported in conversation; detailed V28 full-suite log not supplied).",
+  "ownerReportedPublicEvidenceExport": "Successful. Exported files remain on owner computer and are not included here.",
+  "independentSecurityReview": "not evidenced"
+}

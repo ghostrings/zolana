@@ -66,3 +66,16 @@ Program B's separate evidence and release gates are in [protocol/ghost-markets/d
 ### Merged source checks (executed locally)
 
 The baseline still matches 229/229 files. All 17 standalone GHOST, 13 historical V25 and 31 V26 reference tests passed (V25 pricing tests overlap the V26 suite; not 61 independent coverage claims). The deterministic GHOST demo and 128 CSV lifecycle vectors matched committed fixtures byte-for-byte. Localnet integration JavaScript and shell syntax checks passed; three workflow YAML files parsed. Program B instruction and math source, original app execution source and the original package lock remain byte-identical to their prior archives. See [actual combined check output](../../evidence/combined-v26-checks.txt). These checks are not an actual GitHub run, Rust compilation or Solana validator test.
+
+
+## V27 packaging — 2026-11-26
+
+The owner subsequently reported V26 Rust tests (12/12) and local-validator tests (6/6) passed and supplied the compatible Cargo.lock. See the [separate V27 program validation record](../../protocol/ghost-markets/docs/VALIDATION.md) for the reported binary fingerprint and exact dependency evidence. The V27 packaging rerun matched 229/229 original files, passed 17/17 GHOST tests and 34/34 market/reference checks, reproduced the deterministic demo and 128 vectors, and checked the supplied lockfile byte-for-byte. The new V27 on-chain controls require fresh Rust/SBF and both local validator runs; no V27 mainnet deployment, live Custom Ring, security audit or new remote CI result is claimed.
+
+## V28 packaging — 2026-11-26
+
+The owner subsequently reported successful V27 Rust/SBF and local-validator conformance and a locked mainnet deployment with RPC byte verification. These results are preserved separately in the [deployment record](../../deployments/mainnet/README.md). V28 is an application SDK and evidence revision, not an upgrade of the program. See the [new SDK verification details](V28_MARKETS_SDK.md).
+
+## V28 public-source revision — 2026-11-26
+
+The owner reported passing V28 application checks and supplied successful finalized `status` and `scan` output, plus the successful local evidence-export log. The [recorded observations](../../deployments/mainnet/v28-observations.json) preserve those point-in-time public fields. The detailed full-application log was not supplied; no independently observed full CI result is claimed. The exported binary and source snapshot remain on the owner's computer. This revision changes publication documentation and exclusion patterns only. See the [publication safety record](PUBLICATION_CHECK.md).

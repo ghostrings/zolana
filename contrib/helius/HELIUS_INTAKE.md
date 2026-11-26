@@ -1,38 +1,35 @@
-# Engineering intake draft — Helius Privacy Rings
+# GHOSTRINGS / privacycash.fun — engineering integration request
 
-**Draft for project owner review.** Suggested destination: official Helius integration support or `sales@helius.xyz` as listed in the [Custom Rings integration documentation](https://www.helius.dev/docs/privacy/integration/custom-ring). This is a request for technical collaboration, not an existing accepted pilot, grant application form or partnership. Do not send until a shareable repository and verified evidence are available.
+**Draft for owner review and submission. Not sent; no affiliation, approval or access claimed.**
 
-**Subject:** privacycash.fun / GHOST — existing Default Ring integration and Custom Ring engineering pilot
+Hello Helius Privacy Engineering Team,
 
-Hello Helius Privacy team,
+We are building GHOSTRINGS, the independent Solana privacy application behind [privacycash.fun](https://privacycash.fun). Our public repository is [ghostrings/zolana](https://github.com/ghostrings/zolana). The existing application uses Solana Privacy Rings for confidential balances/settlement and Meteora for public market execution. We would like to explore supported, auditable programmable privacy for an independent market protocol.
 
-We are developing privacycash.fun, an independent Solana launchpad and self-custodial wallet application built around Solana Privacy Rings and Meteora bonding curves. Our existing application uses the Default Ring for private balances and transfers, and includes an optional inventory-based confidential settlement path and a public Rings explorer. We distinguish public AMM execution from private settlement and do not claim Default Ring anonymity.
+## Engineering milestone
 
-We are preparing GHOST, an application foundation for a future Custom Ring integration:
+On November 26, 2026 our operator reported a successful Solana mainnet deployment of **GHOST Markets V27 (Program B)**, a separate Anchor executable that is intentionally locked. The owner-provided RPC verification reported the deployed bytes match the sealed release. This is not a deployed or activated Custom Ring. It does not execute markets or private settlement. No independent audit is claimed.
 
-- GHOST Launch: the existing token launch and public market execution path.
-- GHOST Wallet: the existing encrypted wallet plus an explicit ring-readiness boundary.
-- GHOST Ring: a strictly synthetic policy and atomic settlement model. No Custom Ring is deployed and no real Custom Ring transaction is supported today.
-- GHOST Intelligence: public vault/index metrics and a separate synthetic reporting prototype, with a future independently reviewed aggregate auditor-report interface.
+- [Program ID](https://explorer.solana.com/address/5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n): `5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n`
+- [Deployment transaction](https://explorer.solana.com/tx/5TMpEwE2XkjWTfY42XShQPks3UoYrVEDWiHFdAzcCXeJcZ1wnu6AXyEaXefQn3cx3geMixMHjKtziSe6vtXaANjT)
+- Deployment slot: `474265505`
+- SHA-256: `2fba22c284791879f003aec3118c74fbd271f808f91b39e394e2654f9cc80d7d`
+- Operator-reported local validator: 9/9 operational variant; 3/3 locked variant; default binary cannot activate.
+- [Public release record](../../deployments/mainnet/ghost-markets-v27.json) · [Program source workspace](../../protocol/ghost-markets/README.md) · [V28 SDK and validation](../../docs/engineering/V28_MARKETS_SDK.md).
 
-Our reproducible local research evidence currently includes 17 passing standalone tests, a seeded 2,000-operation state-machine check, a deterministic demo covering accepted and rejected operations, and 229 unchanged original v23 files verified against SHA-256 baseline hashes. The owner-provided log for the prior GitHub checkout reports 943 passing application tests, including 9 HTTP tests, and completed TypeScript checking; the frontend build was cancelled. Fresh CI for the merged source, a complete production build and live devnet integration remain pending. The separate GHOST Markets candidate contains public SPL settlement source only and is not a deployed ring or a verified on-chain market. The research target is not an upstream deployment manifest or a claim of anonymity. We intend to validate the supported confidential devnet path first, and evaluate additional modes only after upstream support and appropriate operational/security/legal review.
+## Technical alignment request
 
-We would value technical feedback on the following:
+1. Which current program, SDK, circuit/verifier and service releases are supported for an independent Custom Ring integration? Is early-access engineering support available?
+2. Which registry and governance approval steps apply, and what security review and operational requirements must an independent applicant satisfy? We seek the authorized path, not a bypass of activation.
+3. Which program-owned note/escrow and atomic settlement interfaces are supported for a market application? We want to understand how a reviewed adapter can establish a valid settlement without trusting a client-supplied proof flag or unsafe test keys.
+4. Which auditor-access, participation, asset controls and data/reporting interfaces should we use? We plan accurate user disclosures, restricted auditor access, and meaningful market-integrity and insider-allocation reporting.
+5. Would maintainers welcome small reproducible integration tests or documentation improvements? We can share a narrowly scoped fixture and validation checklist after aligning on the supported release.
 
-1. Which released Custom Ring SDK, program artifacts and devnet integration harness should an independent application pin?
-2. What is the expected supported activation, enrollment, policy and transaction-authorization contract, including pause and recovery behavior?
-3. Which atomic settlement approach is supported for two-party exchange, and what negative/conformance tests would be useful to your maintainers?
-4. How should auditor access and scoped, independently verifiable aggregate reporting be integrated without treating public vault totals as private holder balances?
-5. Is a small application-readiness documentation contribution useful, and is there an appropriate channel for a confidential devnet integration pilot or technical review?
+We have kept market execution locked and do not intend to enable real customer funds until the program and relevant privacy settlement are independently reviewed, activation is authorized, and operating requirements are satisfied. We would welcome an engineering discussion on the supported integration and appropriate security requirements.
 
-Our intended approach is to reuse the official SDK and reference implementation, make focused upstream contributions, and avoid introducing new cryptography or unsupported production behavior.
+Thank you,
+GHOSTRINGS / privacycash.fun
 
-Website: https://privacycash.fun
-GitHub namespace: https://github.com/ghostrings
-Repository/revision: https://github.com/ghostrings/zolana — [confirm access and insert actual commit SHA after upload]
-Verification: [insert actual green CI run or clearly labelled pending checks, plus the reproducible demo and validation record]
-Technical contact: [insert authorized project contact]
+**Submit via:** [Helius Privacy Rings announcement/contact resources](https://www.helius.dev/blog/solana-privacy-rings) or [Helius contact](https://www.helius.dev/contact). Verify current submission channel before sending. No email has been sent by this package.
 
-Thank you for your time. We'd be happy to share a minimal reproduction and align on a contribution that is useful to the broader Rings ecosystem.
-
-privacycash.fun / GHOST engineering
+**Additional owner-reported evidence:** [V28 finalized status and public scan](../../deployments/mainnet/v28-observations.json). The operator reported successful V28 application verification and exported the public sealed-release evidence locally. The detailed full CI log and exact release export are not part of this source package; independent review remains outstanding.

@@ -6,7 +6,7 @@ The destination exists with default branch `main` and public visibility. The own
 
 ## 1. Before upload
 
-Keep the full application private for initial review. No source license has been selected; see [NOTICE](../../NOTICE.md). Confirm ownership, asset rights and third-party obligations before public release. Review the files and history with a dedicated secret scanner (for example Gitleaks); rotate exposed credentials. Never upload real `.env`, wallet exports, keys, databases, deployment credentials or production logs. `.env.example` is a template, not a production configuration. The archive inventory and limited pattern review are not a comprehensive audit.
+Keep the full application private for initial review. No source license has been selected; see [NOTICE](../../NOTICE.md). Confirm ownership, asset rights and third-party obligations before public release. Review the files and history with a dedicated secret scanner (for example Gitleaks); rotate exposed credentials. Never upload real `.env`, wallet exports, keys, databases, deployment credentials or production logs. `.env.example` is a template, not a production configuration. Use the extracted public-source archive, not a working directory or parent deployment folder. Browser uploads ignore `.gitignore`. See the [publication safety record](PUBLICATION_CHECK.md); the archive inventory and pattern review are not a comprehensive audit or scan of repository history.
 
 ## 2. Browser upload (no command line required)
 
@@ -39,7 +39,7 @@ The avatar and social preview are already included in `docs/assets/`; no separat
 - In GitHub Actions, check the actual **Engineering verification** run for the final upload. The workflow never deploys, signs transactions or requires a secret. If partial uploads triggered failed or cancelled builds, review the final complete run rather than asserting CI passed. Prefer a single commit of the full package on an update branch; see [CI recovery](CI_RECOVERY.md). The new market workflows are independent of the application build.
 - Require the observed CI check and independent reviewer approval on `main`; disable force pushes. Enable private vulnerability reporting. Review action version references and pin verified SHAs if required by your policy. No production secrets belong in PR workflows.
 - Review dependency advisories, full typecheck/build, HTTP and browser checks, and licensing. No live Custom Ring is included. CI success alone is not security approval.
-- Use the included PR template for changes; if sharing a candidate release, mark it as a pre-release (suggested tag `v26.0.0-rc.1`) and attach the actual validation report. Never claim it is audited or deployed.
+- Use the included PR template for changes; if sharing a candidate release, mark it as a pre-release (suggested tag `v27.0.0-rc.1`) and attach the actual validation report. Never claim the application is audited or that the locked mainnet deployment enables trading or private settlement. The recorded V27 deployment is distinct from V28 source and the pending Custom Ring.
 
 ## 6. Engage Helius
 

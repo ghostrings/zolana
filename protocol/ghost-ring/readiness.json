@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "program": "GHOST Ring (Program A)",
+  "implementation": "upstream-alignment-pending",
+  "programId": null,
+  "registration": null,
+  "activation": "not-requested-or-verified",
+  "supportedRelease": null,
+  "proofArtifacts": null,
+  "ringRpc": null,
+  "independentSecurityReview": null,
+  "productionParticipationPolicy": null,
+  "canTransact": false,
+  "privateMarketSettlement": false
+}

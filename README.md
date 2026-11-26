@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://privacycash.fun"><img src="docs/assets/readme-banner.png" width="100%" alt="GHOST — privacy infrastructure for Solana markets; v24 engineering candidate, Custom Ring research not deployed" /></a>
+  <a href="https://privacycash.fun"><img src="docs/assets/readme-banner.png" width="100%" alt="GHOST — privacy infrastructure for Solana markets; GHOST engineering, Custom Ring research not deployed" /></a>
   <h1>Zolana</h1>
   <p><strong>GHOST engineering · Independent Solana Privacy Rings integration</strong></p>
   <p><a href="https://privacycash.fun">Website</a> · <a href="https://github.com/ghostrings/zolana">Repository</a> · <a href="https://github.com/ghostrings">GHOSTRINGS</a> · <a href="docs/engineering/ARCHITECTURE.md">Architecture</a> · <a href="docs/engineering/VALIDATION.md">Validation</a> · <a href="contrib/helius/README.md">Helius collaboration</a></p>
@@ -7,7 +7,25 @@
 </div>
 
 > [!IMPORTANT]
-> **Engineering candidate — not a deployed Custom Ring.** The existing platform uses the Default Ring on Solana mainnet. The new GHOST Ring lab uses fictional assets and participants. This checkout has no actual Custom Ring program, proof integration, anonymous relayer or operational auditor. The earlier GitHub run passed application tests and type-checking, but was cancelled during Vite. The merged candidate needs fresh CI, a complete build and independent review. Do not use this candidate with real funds.
+> **V28 public-source edition — GHOST Markets V27 deployed (locked); Custom Ring not deployed.** On 26 November 2026 the operator reported successful Solana mainnet deployment and exact byte verification. Market execution is disabled by the compiled default artifact, and the protocol configuration was uninitialized at verification. V28 adds read-only observation and local-only instruction previews, not a program upgrade. Independent security review is not evidenced. Do not use this market program with real funds.
+
+## Mainnet milestone
+
+![GHOST Markets V28 deployment record](docs/assets/v28-deployment.svg)
+
+| Field | Recorded value |
+| :--- | :--- |
+| Network | Solana mainnet-beta |
+| Program B | [`5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n`](https://explorer.solana.com/address/5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n) |
+| Deployment | [Transaction receipt](https://explorer.solana.com/tx/5TMpEwE2XkjWTfY42XShQPks3UoYrVEDWiHFdAzcCXeJcZ1wnu6AXyEaXefQn3cx3geMixMHjKtziSe6vtXaANjT) · slot `474265505` |
+| Binary | 533,632 bytes · `2fba22c284791879f003aec3118c74fbd271f808f91b39e394e2654f9cc80d7d` |
+| V27 test evidence | Owner-reported 15 Rust tests, 9 operational validator tests, 3 locked validator tests |
+| Market execution | Locked at reported deployment; current state requires live verification |
+| Program A / private settlement | Not implemented or registered |
+
+The [public deployment record](deployments/mainnet/ghost-markets-v27.json) transcribes the owner's RPC result. Verify it with `npm run markets:observe -- status`. This package does not contain the exact production binary or generated IDL; the [evidence export runbook](deployments/mainnet/README.md) retrieves those from the owner's sealed release, checks them and copies only public release files. A hash match is not an independent audit. The owner subsequently reported successful finalized status and market-scan commands (zero markets at the observed slot), a successful public evidence export, and passing application checks. See [V28 observations](deployments/mainnet/v28-observations.json) and the [publication safety record](docs/engineering/PUBLICATION_CHECK.md).
+
+**V28 SDK:** `npm run markets:check` for offline fixtures; `npm run markets:observe -- scan` for an explicit finalized public market snapshot; `npm run markets:observe -- history` for up to 10 public program signatures. New application page: `/ghost-markets` (requires a built frontend and configured RPC relay). [SDK documentation](docs/engineering/V28_MARKETS_SDK.md) · [Program A readiness](protocol/ghost-ring/README.md) · [Helius engineering request](contrib/helius/HELIUS_INTAKE.md).
 
 ## What is GHOST?
 
@@ -19,7 +37,7 @@ GHOST is the engineering foundation behind [privacycash.fun](https://privacycash
 | **GHOST Wallet** | Existing browser-based Default Ring wallet; ring readiness notice | Supported ring enrollment and balances |
 | **GHOST Ring** | Local policy model, fictional transfers, atomic settlement and fail-closed readiness API | Actual confidential devnet conformance |
 | **GHOST Intelligence** | Public protocol vault/index observations and separately labelled synthetic reporting | Scoped, independently reviewed auditor reports |
-| **GHOST Markets (Program B)** | Separate Anchor market program source: token factory, curve, graduation, AMM and liquidity; public SPL settlement only | Rust/SBF compilation and local-validator conformance |
+| **GHOST Markets (Program B)** | Owner-reported locked mainnet deployment; V28 read-only SDK, local public-SPL lifecycle | Independently reviewed operational upgrade, separate supported privacy integration |
 
 Public pool execution remains public. Default Ring transfers conceal token and amount, not counterparties. The existing optional Ghost desk uses two confidential settlement legs and holds inventory; it is not an AMM. Neither the lab nor public vault data establishes anonymity, beneficial ownership, audited private balances or regulatory compliance.
 
@@ -51,7 +69,7 @@ npm run verify
 npm run --silent ghost:demo
 ```
 
-No wallet, API key, devnet SOL or mainnet account is needed for these checks. The [engineering workflow](.github/workflows/ci.yml) runs on pushes to `main`, PRs and manual dispatch with read-only permissions and no deploy step. It verifies the baseline, standalone model, Vitest tests, production build and deterministic fixture. [View GitHub Actions](https://github.com/ghostrings/zolana/actions). The owner-provided GitHub log for the preceding application checkout reports 943/943 Vitest tests (39 files, including 9 HTTP tests), 17/17 standalone checks, 229/229 baseline hashes and successful TypeScript type-checking. Vite was interrupted by a cancelled run; neither the frontend nor server build is verified. The workflow now keeps active runs alive when new commits arrive and reports build stages separately. See [CI incident and recovery](docs/engineering/CI_RECOVERY.md). Fresh CI and browser smoke testing remain pending for this merged checkout. [Validation record](docs/engineering/VALIDATION.md) · [Fixture walkthrough](docs/engineering/DEMO.md).
+No wallet, API key, devnet SOL or mainnet account is needed for these checks. The [engineering workflow](.github/workflows/ci.yml) runs on pushes to `main`, PRs and manual dispatch with read-only permissions and no deploy step. It verifies the baseline, standalone model, Vitest tests, production build and deterministic fixture. [View GitHub Actions](https://github.com/ghostrings/zolana/actions). The owner-provided GitHub log for the preceding application checkout reports 943/943 Vitest tests (39 files, including 9 HTTP tests), 17/17 standalone checks, 229/229 baseline hashes and successful TypeScript type-checking. Vite was interrupted by a cancelled run; neither the frontend nor server build is verified. The workflow keeps active runs alive when new commits arrive and reports build stages separately. The owner later reported that V28 application checks passed; a complete V28 test log and fresh remote CI results have not been supplied. See [CI incident and recovery](docs/engineering/CI_RECOVERY.md). Fresh CI and browser smoke testing remain pending for this public upload. [Validation record](docs/engineering/VALIDATION.md) · [Fixture walkthrough](docs/engineering/DEMO.md).
 
 ### Local browser preview
 
@@ -71,32 +89,32 @@ After `npm ci`, run `npm run dev:web` and open `http://localhost:5173/ghost.html
 
 Anonymous mode and unrestricted research parameters are not approved production settings. A real integration must establish supported upstream semantics, security, privacy and lawful operation before any live funds are admitted. Confidential devnet is the initial integration milestone.
 
-## GHOST Markets — Program B (v26)
+## GHOST Markets — Program B (V27 deployed, V28 observer)
 
-The new [GHOST Markets workspace](protocol/ghost-markets/README.md) contains an independent Anchor program candidate for market creation, a two-way bonding curve, permissionless graduation, constant-product swaps and proportional SPL liquidity shares. It is deliberately separate from the existing TypeScript application, the current Meteora routes and the Custom Ring research lab.
+The owner’s V26 build passed 12 Rust tests and all six local-validator tests, including token issuance, curve swaps, graduation, AMM liquidity and atomic rollback. V27 retains its pricing math, incorporates the exact working Cargo.lock and the duplicate-token-account test fix, and adds a singleton on-chain protocol configuration and a compile-time deployment lock. The default executable cannot create markets or trade, even if the administrator attempts activation. Only the explicit local-testing build allows the lifecycle tests; it must never be deployed publicly.
 
 ```mermaid
 flowchart LR
-    A[Token factory] --> B[Bonding curve]
-    B --> C[Graduation]
-    C --> D[AMM pool]
-    D --> E[Swaps and LP operations]
-    B --> F[Public SPL vaults]
-    D --> F
+    A[V27 deployed locked program] --> B[Market execution disabled]
+    C[Separate local-only test build] --> D[Authority-checked activation]
+    D --> E[Token factory / curve / AMM]
+    E --> F[Emergency pause and limited exits]
+    B -. independent review and future upgrade .-> G[Operational market release]
+    G -. separate reviewed integration .-> H[Future private settlement]
 ```
 
-The dependency-free Node reference passed 31 tests, including 10,000 seeded pricing cases, 5,000 lifecycle scenarios and 128 committed vectors. The actual Rust program has not yet been compiled, run against a validator or deployed. Public SPL settlement is the only implemented on-chain path; no private settlement or ring activation is included. The placeholder program ID is not a deployment address.
-
-- [V25 pricing RFC](protocol/markets/README.md) — historical research and pricing reference.
-- [V26 account model](protocol/ghost-markets/docs/ACCOUNT_MODEL.md) — accounts and economic assumptions.
-- [V26 validation gates](protocol/ghost-markets/docs/VALIDATION.md) — outstanding Rust, SBF and localnet requirements.
-- [Program B workflow](.github/workflows/ghost-markets-program.yml) — reference and Rust checks; manually dispatch for the heavier localnet build and conformance suite. No production deployment.
-
-Run the dependency-free V26 reference checks from the repository root:
+- [Program B workspace](protocol/ghost-markets/README.md) — instructions, dependency lock and build commands.
+- [V27 control model](protocol/ghost-markets/docs/CONTROL_MODEL.md) — lock, admin/pauser authority and exit matrix.
+- [V27 mainnet runbook](protocol/ghost-markets/docs/MAINNET_V27.md) — local verification, fresh mainnet identity, locked preparation, read-only preflight and reviewed deployment.
+- [Validation gates](protocol/ghost-markets/docs/VALIDATION.md) — owner-reported V26 and V27 evidence; operational release gates.
 
 ```sh
-node --test protocol/ghost-markets/tests/quote.test.mjs protocol/ghost-markets/tests/lifecycle.test.mjs
+cd protocol/ghost-markets
+sha256sum -c evidence/Cargo.lock.sha256
+bash scripts/test-localnet.sh
 ```
+
+The lockfile is supplied; do not regenerate it. No public devnet deployment is required to prepare the fresh locked candidate. The owner subsequently deployed the locked V27 program; V28 makes no new deployment or upgrade. No actual Custom Ring has been deployed. The test-enabled Program B path uses public SPL settlement only. The local-enabled variant, independent security review, and a future operational upgrade are separate milestones.
 
 ## Repository map
 
@@ -110,13 +128,16 @@ evidence/                 immutable reference fixture, baseline and test records
 docs/engineering/         architecture, validation, roadmap, publication guide
 contrib/helius/           draft engineering intake, discussion and additive patch
 protocol/markets/         V25 pricing RFC and reference
-protocol/ghost-markets/   V26 Anchor candidate, math, fixtures and localnet tests
+protocol/ghost-markets/   V27 locked Anchor source, math, tests and release scripts
+shared/src/ghost-markets/ V28 read-only SDK and local instruction previews
+deployments/mainnet/      Recorded deployment and exact release export guide
+protocol/ghost-ring/      Program A readiness, authorized integration gates
 .github/                  CI, issue forms and pull request template
 ```
 
 ## Engineering roadmap
 
-![Release gates M0 to M6: standalone verification complete, full CI pending, upstream alignment proposed, actual devnet and later milestones outstanding](docs/assets/roadmap.png)
+See the updated [V28 SDK and release gates](docs/engineering/V28_MARKETS_SDK.md).
 
 The [roadmap](docs/engineering/ROADMAP.md) specifies application exit criteria; [Program B release gates](protocol/ghost-markets/docs/VALIDATION.md) track the separate market program. We are seeking alignment with maintainers on official SDK/program versions, actual policy conformance, supported settlement and scoped audit reporting. The first proposed upstream contribution is a small documentation checklist; it is not a submitted or accepted PR. [Helius contribution kit](contrib/helius/README.md).
 

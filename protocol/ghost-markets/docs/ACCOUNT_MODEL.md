@@ -58,10 +58,14 @@ Genesis liquidity has no claimable creator position. Later providers receive LP 
 
 With reserves B,Q and current total LP supply S, let max deposit amounts be b,q. `shares = min(floor(b*S/B), floor(q*S/Q))`. Actual deposits are `ceil(shares*B/S)` and `ceil(shares*Q/S)`; shares must be positive and meet the requested minimum. When withdrawing `l` shares, outputs are `floor(l*B/S)` and `floor(l*Q/S)` with both minimums enforced. `l` cannot exceed user balance or total supply minus live locked shares. Reserve and share arithmetic is checked, and all transfers/mint/burn/state changes settle atomically. Rounding favors the pool, so a same-state LP add/remove round trip cannot generate free assets.
 
+## V27 control boundary
+
+The five market instructions require the read-only canonical `ProtocolConfig` PDA as their last account; V26 clients must update their account lists. The existing Market account layout and reserve math are unchanged. See [V27 control model](CONTROL_MODEL.md).
+
 ## Scope restrictions
 
 - Token-2022 extensions (including transfer fees, permanent delegate, transfer hooks) are not admitted. Original SPL accounts are typed and the token program address is fixed by Anchor's `Program<Token>`.
 - Quote mint with non-null freeze authority is rejected to reduce freeze risk. Quote mint may still have a mint authority; an issuer that prints quote assets can compromise market economics. Production assets require a vetted listing policy; no such list is implemented here.
 - Market names/symbols/URI are stored in the market account, not as a Metaplex Token Metadata account. Wallet display and external indexers require separate integration. URIs are untrusted.
-- No admin pause, emergency exits, protocol fees, external pool migration, oracle, market maker subsidy, metadata verification, per-trader position report, confidential transfer or anonymity support.
-- Localnet scripts are operational guardrails, not an on-chain cluster restriction. The source could be deployed elsewhere by a party with tooling; that would not be an approved or validated release.
+- V27 adds a protocol-wide compile-time lock, a singleton configuration, admin/pauser roles and a proposed pause policy tested only in the local-enabled variant. See [control model](CONTROL_MODEL.md). No universal emergency refund, protocol fees, external pool migration, oracle, market maker subsidy, metadata verification, per-trader position report, confidential transfer or anonymity support.
+- Localnet scripts are operational guardrails, not an on-chain cluster restriction. The test-enabled feature must never be deployed publicly. The default V27 binary refuses every market instruction and is only for a fresh locked candidate.

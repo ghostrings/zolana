@@ -1,6 +1,6 @@
 # Engineering roadmap and release gates
 
-![Current release gates with full CI and on-chain milestones outstanding](../assets/roadmap.png)
+**V28 milestone:** locked Program B mainnet deployment reported by owner; public market observer delivered in source. See [deployment evidence](../../deployments/mainnet/README.md) and [V28 SDK](V28_MARKETS_SDK.md). Program A, actual private settlement and production activation remain outstanding. The original application gates below concern the separate Custom Ring integration.
 
 No milestone is represented as complete merely because a UI or simulation exists. The owner should assign reviewers and dates after Helius confirms the supported integration path.
 

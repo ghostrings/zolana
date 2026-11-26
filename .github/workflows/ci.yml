@@ -32,6 +32,8 @@ jobs:
         run: npm run ghost:baseline
       - name: GHOST research checks
         run: npm run ghost:check
+      - name: Market SDK and read-only observer checks
+        run: npm run markets:check
       - name: Application regression tests
         run: npm run test
       - name: TypeScript type-check
@@ -45,6 +47,7 @@ jobs:
           test -s web/dist/index.html
           test -s web/dist/ghost.html
           test -s web/dist/ghost-intelligence.html
+          test -s web/dist/ghost-markets.html
           test -s build/server/src/index.js
       - name: Reproduce synthetic evidence
         run: |

@@ -1,5 +1,28 @@
 # Changelog
 
+## V28 public-source revision — 2026-11-26
+
+- Added the owner-reported finalized RPC status/scan evidence and passing application-check report, with provenance and scope.
+- Hardened publication exclusions, removed a machine-specific username from the historical runbook, and added a publication safety record.
+- No execution code, dependency lockfiles, deployed program, authority or activation state changed. No private release files or keys included.
+
+## V28 mainnet observer and SDK — 2026-11-26
+
+- Recorded the owner-provided successful locked V27 mainnet deployment, program ID, receipt, authority and exact binary hash; no independent audit or current RPC verification claimed during packaging.
+- Integrated the tested build argument forwarding, case-insensitive localnet guard and corrected V27 validator error mapping; preserved Cargo.lock and on-chain Rust source.
+- Added a read-only deployment/account observer, filtered CLI discovery snapshot, recent program history, browser status page, and unsigned local-only public instruction descriptors. No new wallet signing, mainnet execution or private-proof path.
+- Added exact sealed release export and updated Helius technical intake, Program A readiness and upstream discussion draft. No remote actions, activation or PR submission.
+- See [V28 verification record](docs/engineering/V28_MARKETS_SDK.md) for tests and outstanding gates.
+
+## V27 locked mainnet candidate — 2026-11-26
+
+- Imported the owner’s exact working Cargo.lock (266 entries) without changing resolutions; retained the corrected second token account in the validator fixture.
+- Recorded the owner-reported V26 Rust (12/12) and actual local-validator (6/6) results separately from V27.
+- Added a compile-time default execution lock, authenticated singleton configuration, admin/pauser and two-step admin transfer. Local-only controls permit limited exits during pause; no universal refunds.
+- Added two-variant validator runner, fresh mainnet preparation, read-only preflight and byte-verification tools, and explicit reviewed-hash deployment approval. The default binary cannot be activated; the test build must stay local.
+- Packaging checks: 17 GHOST tests, 34 market/reference tests, 229 protected files and the exact lockfile verified. New V27 Rust/SBF compilation, validator execution, security review and deployment remain pending.
+- No operational market or private settlement enabled; application code and npm lock unchanged.
+
 ## v26 combined engineering candidate — 2026-11-26
 
 - Added the complete V25 pricing RFC and V26 GHOST Markets Anchor workspace, including their reference tests, Rust math, instruction source, validation notes and independent CI workflows. No new execution route or private settlement is enabled.

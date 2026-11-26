@@ -83,6 +83,7 @@ export default defineConfig({
         rings: resolve(root, 'rings.html'),
         ghost: resolve(root, 'ghost.html'),
         'ghost-intelligence': resolve(root, 'ghost-intelligence.html'),
+        'ghost-markets': resolve(root, 'ghost-markets.html'),
         wallet: resolve(root, 'wallet.html'),
         view: resolve(root, 'view.html'),
         prvmax: resolve(root, 'prvmax.html'),

@@ -1,0 +1,20 @@
+{
+  "network": "mainnet-beta",
+  "genesis": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+  "programId": "5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n",
+  "programData": "J4iCsaLM24bBqjWGXvtB6N3LzUiJNJWwKAqLtXUzTXxt",
+  "protocol": "423vt8vZMJs5ToVjUtbHQFtXDVQ7AccAVHk7vh6P6vWK",
+  "upgradeAuthority": "J4JRQza7JXnkct6kQC3roPYstoH2xFBoyQ5Wczpt5jPt",
+  "deploymentSlot": "474265505",
+  "binaryBytes": 533632,
+  "binarySha256": "2fba22c284791879f003aec3118c74fbd271f808f91b39e394e2654f9cc80d7d",
+  "signature": "5TMpEwE2XkjWTfY42XShQPks3UoYrVEDWiHFdAzcCXeJcZ1wnu6AXyEaXefQn3cx3geMixMHjKtziSe6vtXaANjT",
+  "reportedDate": "2026-11-26",
+  "evidenceSource": "owner-supplied RPC verification output",
+  "reportedVerified": true,
+  "protocolInitialized": false,
+  "marketExecution": false,
+  "privateSettlement": false,
+  "independentSecurityReview": "not evidenced",
+  "exactReleaseArchiveIncluded": false
+}

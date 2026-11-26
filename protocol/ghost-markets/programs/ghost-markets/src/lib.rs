@@ -1,8 +1,9 @@
 //! GHOST Markets: public SPL-token market research candidate. No private rail.
-//! Uncompiled at preparation time; local-validator conformance is mandatory.
+//! V27: default artifact is intentionally non-operational. Local market execution
+//! exists only under the explicit local-market-testing feature; never deploy it live.
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, spl_token::instruction::AuthorityType, Burn, Mint, MintTo, SetAuthority, Token, TokenAccount, TransferChecked};
-use ghost_market_math::{MarketState, MarketError, POOL};
+use ghost_market_math::{MarketState, MarketError, CURVE, POOL};
 
 // Source placeholder; replace with a fresh local/development deployment key via anchor keys sync.
 declare_id!("FQ9qkZv3nBnDubM5oznc4kF2LzzTA7i5xsmBkC6hAWbg");
@@ -11,7 +12,76 @@ declare_id!("FQ9qkZv3nBnDubM5oznc4kF2LzzTA7i5xsmBkC6hAWbg");
 pub mod ghost_markets {
     use super::*;
 
+    /// The actual upgrade authority must bootstrap the unique config PDA.
+    /// Initialization never admits assets, including in the local test build.
+    pub fn initialize_protocol(ctx: Context<InitializeProtocol>, pauser: Pubkey) -> Result<()> {
+        require!(pauser != Pubkey::default(), ErrorCode::ProtocolAuthority);
+        let config = &mut ctx.accounts.protocol;
+        config.schema = 1;
+        config.bump = ctx.bumps.protocol;
+        config.mode = LOCKED;
+        config.admin = ctx.accounts.authority.key();
+        config.pauser = pauser;
+        config.pending_admin = Pubkey::default();
+        emit!(ProtocolModeChanged { previous: LOCKED, next: LOCKED, authority: config.admin });
+        Ok(())
+    }
+
+    pub fn set_protocol_mode(ctx: Context<ManageProtocol>, next: u8) -> Result<()> {
+        let config = &mut ctx.accounts.protocol;
+        config.check_schema()?;
+        let signer = ctx.accounts.authority.key();
+        // The default release binary cannot be activated by any signer.
+        require!(LOCAL_MARKET_TESTING, ErrorCode::ExecutionDisabled);
+        match (config.mode, next) {
+            (LOCKED, ACTIVE) | (PAUSED, ACTIVE) => {
+                require!(signer == config.admin, ErrorCode::ProtocolAuthority);
+            }
+            (ACTIVE, PAUSED) => {
+                require!(signer == config.admin || signer == config.pauser, ErrorCode::ProtocolAuthority);
+            }
+            _ => return err!(ErrorCode::ProtocolTransition),
+        }
+        let previous = config.mode;
+        config.mode = next;
+        emit!(ProtocolModeChanged { previous, next, authority: signer });
+        Ok(())
+    }
+
+    pub fn nominate_admin(ctx: Context<ManageProtocol>, nominee: Pubkey) -> Result<()> {
+        let config = &mut ctx.accounts.protocol;
+        config.check_schema()?;
+        require_keys_eq!(ctx.accounts.authority.key(), config.admin, ErrorCode::ProtocolAuthority);
+        // A zero key cancels a pending nomination; acceptance always requires a signer.
+        config.pending_admin = nominee;
+        emit!(ProtocolAdminNominated { current: config.admin, nominee });
+        Ok(())
+    }
+
+    pub fn accept_admin(ctx: Context<ManageProtocol>) -> Result<()> {
+        let config = &mut ctx.accounts.protocol;
+        config.check_schema()?;
+        require!(config.pending_admin != Pubkey::default() && ctx.accounts.authority.key() == config.pending_admin, ErrorCode::ProtocolAuthority);
+        let previous = config.admin;
+        config.admin = config.pending_admin;
+        config.pending_admin = Pubkey::default();
+        emit!(ProtocolAdminChanged { previous, next: config.admin });
+        Ok(())
+    }
+
+    pub fn set_pauser(ctx: Context<ManageProtocol>, pauser: Pubkey) -> Result<()> {
+        let config = &mut ctx.accounts.protocol;
+        config.check_schema()?;
+        require_keys_eq!(ctx.accounts.authority.key(), config.admin, ErrorCode::ProtocolAuthority);
+        require!(pauser != Pubkey::default(), ErrorCode::ProtocolAuthority);
+        let previous = config.pauser;
+        config.pauser = pauser;
+        emit!(ProtocolPauserChanged { previous, next: pauser });
+        Ok(())
+    }
+
     pub fn create_market(ctx: Context<CreateMarket>, nonce: u64, args: CreateArgs) -> Result<()> {
+        ctx.accounts.protocol.require_operation(false)?;
         require!(!args.name.is_empty() && args.name.len() <= 32 && !args.name.chars().any(char::is_control), ErrorCode::Metadata);
         require!(!args.symbol.is_empty() && args.symbol.len() <= 10 && args.symbol.bytes().all(|b| b.is_ascii_uppercase() || b.is_ascii_digit()), ErrorCode::Metadata);
         require!(args.metadata_uri.len() <= 200 && !args.metadata_uri.chars().any(char::is_control), ErrorCode::Metadata);
@@ -55,6 +125,7 @@ pub mod ghost_markets {
     }
 
     pub fn swap(ctx: Context<Swap>, buy: bool, amount_in: u64, minimum_out: u64, expected_version: u64, deadline_slot: u64) -> Result<()> {
+        ctx.accounts.protocol.require_operation(!buy && ctx.accounts.market.phase == CURVE)?;
         let a = ctx.accounts;
         let m = &mut a.market;
         let s = m.checked_state(&a.base_vault, &a.quote_vault, expected_version, deadline_slot)?;
@@ -78,6 +149,7 @@ pub mod ghost_markets {
     }
 
     pub fn graduate(ctx: Context<Graduate>, expected_version: u64, deadline_slot: u64) -> Result<()> {
+        ctx.accounts.protocol.require_operation(true)?;
         let a = ctx.accounts;
         let m = &mut a.market;
         let s = m.checked_state(&a.base_vault, &a.quote_vault, expected_version, deadline_slot)?;
@@ -103,6 +175,7 @@ pub mod ghost_markets {
     }
 
     pub fn add_liquidity(ctx: Context<LiquidityChange>, max_base: u64, max_quote: u64, min_shares: u64, expected_version: u64, deadline_slot: u64) -> Result<()> {
+        ctx.accounts.protocol.require_operation(false)?;
         let a = ctx.accounts;
         let m = &mut a.market;
         let s = m.checked_state(&a.base_vault, &a.quote_vault, expected_version, deadline_slot)?;
@@ -122,6 +195,7 @@ pub mod ghost_markets {
     }
 
     pub fn remove_liquidity(ctx: Context<LiquidityChange>, shares: u64, min_base: u64, min_quote: u64, expected_version: u64, deadline_slot: u64) -> Result<()> {
+        ctx.accounts.protocol.require_operation(true)?;
         let a = ctx.accounts;
         let m = &mut a.market;
         let s = m.checked_state(&a.base_vault, &a.quote_vault, expected_version, deadline_slot)?;
@@ -216,6 +290,61 @@ impl Market {
     }
 }
 
+// This switch is compiled into the binary, not read from a website or a config file.
+// It cannot be changed by a transaction. Production activation needs a separately
+// reviewed program upgrade; the test-enabled binary is strictly for loopback tests.
+const LOCAL_MARKET_TESTING: bool = cfg!(feature = "local-market-testing");
+const LOCKED: u8 = 0;
+const ACTIVE: u8 = 1;
+const PAUSED: u8 = 2;
+
+#[account]
+#[derive(InitSpace)]
+pub struct ProtocolConfig {
+    pub schema: u8,
+    pub bump: u8,
+    pub mode: u8,
+    pub admin: Pubkey,
+    pub pauser: Pubkey,
+    pub pending_admin: Pubkey,
+}
+impl ProtocolConfig {
+    fn check_schema(&self) -> Result<()> {
+        require!(self.schema == 1, ErrorCode::Schema);
+        Ok(())
+    }
+    fn require_operation(&self, allowed_while_paused: bool) -> Result<()> {
+        self.check_schema()?;
+        require!(LOCAL_MARKET_TESTING, ErrorCode::ExecutionDisabled);
+        match self.mode {
+            ACTIVE => Ok(()),
+            PAUSED if allowed_while_paused => Ok(()),
+            PAUSED => err!(ErrorCode::ProtocolPaused),
+            _ => err!(ErrorCode::ProtocolLocked),
+        }
+    }
+}
+
+#[derive(Accounts)]
+pub struct InitializeProtocol<'info> {
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    #[account(constraint = program.programdata_address()? == Some(program_data.key()) @ ErrorCode::ProtocolAuthority)]
+    pub program: Program<'info, crate::program::GhostMarkets>,
+    #[account(constraint = program_data.upgrade_authority_address == Some(authority.key()) @ ErrorCode::ProtocolAuthority)]
+    pub program_data: Account<'info, ProgramData>,
+    #[account(init, payer = authority, space = 8 + ProtocolConfig::INIT_SPACE, seeds = [b"protocol"], bump)]
+    pub protocol: Account<'info, ProtocolConfig>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct ManageProtocol<'info> {
+    pub authority: Signer<'info>,
+    #[account(mut, seeds = [b"protocol"], bump = protocol.bump)]
+    pub protocol: Account<'info, ProtocolConfig>,
+}
+
 #[derive(Accounts)]
 #[instruction(nonce: u64)]
 pub struct CreateMarket<'info> {
@@ -236,6 +365,8 @@ pub struct CreateMarket<'info> {
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
+    #[account(seeds = [b"protocol"], bump = protocol.bump)]
+    pub protocol: Box<Account<'info, ProtocolConfig>>,
 }
 
 #[derive(Accounts)]
@@ -250,6 +381,8 @@ pub struct Swap<'info> {
     #[account(mut, token::mint=base_mint, token::authority=trader)] pub user_base: Box<Account<'info, TokenAccount>>,
     #[account(mut, token::mint=quote_mint, token::authority=trader)] pub user_quote: Box<Account<'info, TokenAccount>>,
     pub token_program: Program<'info, Token>,
+    #[account(seeds = [b"protocol"], bump = protocol.bump)]
+    pub protocol: Box<Account<'info, ProtocolConfig>>,
 }
 
 #[derive(Accounts)]
@@ -263,6 +396,8 @@ pub struct Graduate<'info> {
     #[account(token::mint=quote_mint, token::authority=market)] pub quote_vault: Box<Account<'info, TokenAccount>>,
     #[account(mut, token::mint=lp_mint, token::authority=market)] pub lp_lock: Box<Account<'info, TokenAccount>>,
     pub token_program: Program<'info, Token>,
+    #[account(seeds = [b"protocol"], bump = protocol.bump)]
+    pub protocol: Box<Account<'info, ProtocolConfig>>,
 }
 
 #[derive(Accounts)]
@@ -280,7 +415,18 @@ pub struct LiquidityChange<'info> {
     #[account(mut, token::mint=quote_mint, token::authority=provider)] pub user_quote: Box<Account<'info, TokenAccount>>,
     #[account(mut, token::mint=lp_mint, token::authority=provider)] pub user_lp: Box<Account<'info, TokenAccount>>,
     pub token_program: Program<'info, Token>,
+    #[account(seeds = [b"protocol"], bump = protocol.bump)]
+    pub protocol: Box<Account<'info, ProtocolConfig>>,
 }
+
+#[event]
+pub struct ProtocolModeChanged { pub previous: u8, pub next: u8, pub authority: Pubkey }
+#[event]
+pub struct ProtocolAdminNominated { pub current: Pubkey, pub nominee: Pubkey }
+#[event]
+pub struct ProtocolAdminChanged { pub previous: Pubkey, pub next: Pubkey }
+#[event]
+pub struct ProtocolPauserChanged { pub previous: Pubkey, pub next: Pubkey }
 
 #[event]
 pub struct MarketCreated { pub market: Pubkey, pub creator: Pubkey, pub base_mint: Pubkey, pub quote_mint: Pubkey, pub initial_supply: u64,
@@ -308,4 +454,47 @@ pub enum ErrorCode {
     #[msg("Vault balance is below recorded reserve")] VaultAccounting,
     #[msg("Invalid liquidity or LP accounting")] LpAccounting,
     #[msg("Unsupported account schema")] Schema,
+    #[msg("This release binary cannot execute markets")] ExecutionDisabled,
+    #[msg("Market execution has not been activated")] ProtocolLocked,
+    #[msg("Operation is disabled during emergency pause")] ProtocolPaused,
+    #[msg("Signer is not the required protocol authority")] ProtocolAuthority,
+    #[msg("Invalid protocol mode transition")] ProtocolTransition,
+}
+
+#[cfg(test)]
+mod protocol_guard_tests {
+    use super::*;
+    fn config(mode: u8) -> ProtocolConfig {
+        ProtocolConfig { schema: 1, bump: 0, mode, admin: Pubkey::new_unique(), pauser: Pubkey::new_unique(), pending_admin: Pubkey::default() }
+    }
+    #[test]
+    fn locked_and_invalid_modes_refuse_every_operation() {
+        for mode in [LOCKED, 255] {
+            for allowed in [false, true] {
+                assert!(config(mode).require_operation(allowed).is_err());
+            }
+        }
+    }
+    #[test]
+    fn default_binary_refuses_even_active_config_and_exits() {
+        if !LOCAL_MARKET_TESTING {
+            for mode in [ACTIVE, PAUSED] {
+                for allowed in [false, true] {
+                    assert!(config(mode).require_operation(allowed).is_err());
+                }
+            }
+        }
+    }
+    #[test]
+    fn test_variant_allows_only_intended_paused_operations() {
+        if LOCAL_MARKET_TESTING {
+            assert!(config(ACTIVE).require_operation(false).is_ok());
+            assert!(config(ACTIVE).require_operation(true).is_ok());
+            assert!(config(PAUSED).require_operation(false).is_err());
+            assert!(config(PAUSED).require_operation(true).is_ok());
+        }
+        let mut invalid = config(ACTIVE);
+        invalid.schema = 0;
+        assert!(invalid.require_operation(true).is_err());
+    }
 }

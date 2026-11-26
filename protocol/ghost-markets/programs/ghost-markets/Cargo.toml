@@ -10,6 +10,8 @@ name = "ghost_markets"
 
 [features]
 default = []
+# Loopback conformance only; never publish or deploy the enabled artifact.
+local-market-testing = []
 cpi = ["no-entrypoint"]
 no-entrypoint = []
 no-idl = []
