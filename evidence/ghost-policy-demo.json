@@ -1,0 +1,106 @@
+{
+  "schema": "ghost-policy-demo/v1",
+  "source": "synthetic-local",
+  "onChain": false,
+  "status": {
+    "target": {
+      "name": "GHOST Trading Ring v1",
+      "environment": "devnet-research",
+      "privacy": "anonymous",
+      "assets": "all",
+      "membership": "open",
+      "blocklist": true,
+      "freeze": true,
+      "cosigning": true,
+      "auditor": true,
+      "pause": true,
+      "permanentDelegate": false
+    },
+    "execution": "local-simulation-only",
+    "network": null,
+    "ringProgram": null,
+    "canTransact": false,
+    "auditedAnalytics": false,
+    "blockers": [
+      "Anonymous mode is not enabled in the public Helius configurator (checked 2026-11-26).",
+      "No audited, compatible Custom Ring SDK/program has been verified for this release.",
+      "No ring deployment, governance activation, Ring RPC or auditor/operator authorities have been configured.",
+      "Atomic ring settlement, independent security review and operator compliance assessment are pending."
+    ],
+    "checkedOn": "2026-11-26"
+  },
+  "steps": [
+    {
+      "name": "successful fictional fill",
+      "sequence": 1,
+      "operations": 2,
+      "result": "accepted",
+      "reason": "Synthetic policy checks passed.",
+      "rollbackVerified": null
+    },
+    {
+      "name": "second leg lacks balance",
+      "sequence": 2,
+      "operations": 2,
+      "result": "rejected",
+      "reason": "Insufficient test balance.",
+      "rollbackVerified": true
+    },
+    {
+      "name": "co-signer missing",
+      "sequence": 3,
+      "operations": 1,
+      "result": "rejected",
+      "reason": "Simulated co-signer approval is missing.",
+      "rollbackVerified": true
+    },
+    {
+      "name": "blocked recipient",
+      "sequence": 4,
+      "operations": 1,
+      "result": "rejected",
+      "reason": "Recipient is blocklisted.",
+      "rollbackVerified": true
+    },
+    {
+      "name": "frozen sender",
+      "sequence": 5,
+      "operations": 1,
+      "result": "rejected",
+      "reason": "Sender is frozen.",
+      "rollbackVerified": true
+    },
+    {
+      "name": "paused lab",
+      "sequence": 6,
+      "operations": 1,
+      "result": "rejected",
+      "reason": "Ring is paused.",
+      "rollbackVerified": true
+    }
+  ],
+  "aggregates": [
+    {
+      "source": "synthetic-local",
+      "asset": "TEST-SOL",
+      "sequence": 6,
+      "holderCount": 12,
+      "ringUnits": "1266",
+      "totalSupplyUnits": "7266",
+      "ringShareBps": 1742,
+      "topTenShareBps": 8483,
+      "declaredCreatorShareBps": null
+    },
+    {
+      "source": "synthetic-local",
+      "asset": "TEST-TOKEN",
+      "sequence": 6,
+      "holderCount": 12,
+      "ringUnits": "15300",
+      "totalSupplyUnits": "75300",
+      "ringShareBps": 2031,
+      "topTenShareBps": 8660,
+      "declaredCreatorShareBps": null
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+# Application integration readiness checklist (proposal)
+
+This checklist is intended for applications integrating Custom Rings. It is not a deployment guide, an exhaustive security review, or a substitute for the release-specific program, SDK and policy documentation. Confirm each requirement against the supported release and deployment environment.
+
+## Distinguish application readiness from protocol readiness
+
+- Record the exact SDK and program release, network/genesis identity, ring identity, supported mode and matching prover/verification artifacts. Check the ring's actual activation state and the operator roles expected by the supported integration.
+- A local policy model, UI preview or configuration export is not evidence of a deployed ring or real proof verification. Mark unsupported operations and unavailable services explicitly. Reject execution when the required identity or readiness cannot be verified, rather than silently switching privacy modes.
+- Use test-only assets and credentials in integration environments. Treat test-only proving artifacts and example programs as non-production unless the documented supported release says otherwise.
+- Document which existing application operations use the Default Ring, which use a Custom Ring, and which execute against public programs. A private balance does not make a public market execution private.
+
+## Establish operation and failure semantics
+
+Using the maintained integration harness for the supported release, record positive and negative test cases for the operations and policy controls the application actually exposes. Include missing or invalid authorization, policy rejection, inactive/unavailable ring, network or program mismatch, and failed multi-leg settlement where the integration supports it. Check asset conservation and all-or-nothing settlement against actual results, not just a local simulator. Confirm operator upgrade, pause, recovery and delegation powers and disclose relevant limitations to users.
+
+## Separate public observations from audited reports
+
+Public vault totals and public transaction counts are not private holder balances or beneficial ownership. When displaying analytics, label the data source, scope, coverage and observation/finalization status. If audited aggregates are supported, validate ring and asset identity, snapshot coverage, reconciliation and the applicable attestation mechanism before publishing. Do not describe auditor signatures as zero-knowledge proof of aggregate correctness unless such proof is actually verified. Assess small cohorts and repeated-report leakage; avoid exposing raw private member data to ordinary application services.
+
+## Record the evidence
+
+For each supported capability, maintain the exact release/revision, reproducible test command, actual result, environment, outstanding checks and any limitations. Keep test fixtures visibly synthetic and mark pending tests as pending. A successful local build or simulator test does not imply an audited production deployment. Review operational controls and applicable legal responsibilities before operating a live ring.
+
+See the [Custom Rings integration documentation](https://www.helius.dev/docs/privacy/integration/custom-ring) and [security documentation](https://www.helius.dev/docs/privacy/security) for the current supported scope and audit status.

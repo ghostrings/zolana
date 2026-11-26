@@ -1,0 +1,76 @@
+{
+  "name": "privacycash-fun",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "privacycash.fun \u2014 a Solana launchpad where balances, transfers and fills run through Solana Privacy Rings, with launches on Meteora DBC.",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "dev:web": "vite --config web/vite.config.ts",
+    "dev:server": "tsx watch --env-file-if-exists=.env server/src/index.ts",
+    "build": "npm run typecheck && npm run build:web && npm run build:server",
+    "build:web": "vite build --config web/vite.config.ts",
+    "build:server": "tsc -p tsconfig.node.json",
+    "start": "node --env-file-if-exists=.env build/server/src/index.js",
+    "typecheck": "tsc -p tsconfig.node.json --noEmit && tsc -p web/tsconfig.json --noEmit",
+    "test": "vitest run",
+    "doctor": "tsx --env-file-if-exists=.env ops/doctor.ts",
+    "configs:plan": "tsx --env-file-if-exists=.env ops/configs.ts plan",
+    "configs:apply": "tsx --env-file-if-exists=.env ops/configs.ts apply",
+    "configs:verify": "tsx --env-file-if-exists=.env ops/configs.ts verify",
+    "configs:retire": "tsx --env-file-if-exists=.env ops/configs.ts retire",
+    "verify:graduated": "tsx --env-file-if-exists=.env ops/verify-graduated.ts",
+    "migrate": "tsx --env-file-if-exists=.env ops/migrate.ts",
+    "fees:status": "tsx --env-file-if-exists=.env ops/fees.ts status",
+    "fees:claim": "tsx --env-file-if-exists=.env ops/fees.ts claim",
+    "modules:new": "tsx ops/modules.ts new",
+    "modules:status": "tsx --env-file-if-exists=.env ops/modules.ts status",
+    "desk:new": "tsx ops/desk.ts new",
+    "desk:address": "tsx --env-file-if-exists=.env ops/desk.ts address",
+    "desk:register": "tsx --env-file-if-exists=.env ops/desk.ts register",
+    "desk:status": "tsx --env-file-if-exists=.env ops/desk.ts status",
+    "desk:check": "tsx --env-file-if-exists=.env ops/desk.ts check",
+    "ghost:check": "node ops/check-ghost.mjs",
+    "ghost:demo": "node ops/check-ghost.mjs --demo",
+    "ghost:baseline": "node ops/check-baseline.mjs",
+    "verify": "npm run ghost:baseline && npm run ghost:check && npm run test && npm run build"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "0.31.1",
+    "@heliuslabs/spr": "0.9.0-alpha",
+    "@meteora-ag/cp-amm-sdk": "1.5.1",
+    "@meteora-ag/dynamic-bonding-curve-sdk": "2.0.0",
+    "@solana/kit": "^8.3.0",
+    "@solana/spl-token": "0.4.14",
+    "@solana/web3.js": "1.98.4",
+    "@wallet-standard/app": "1.1.0",
+    "bn.js": "5.2.2",
+    "bs58": "6.0.0",
+    "buffer": "6.0.3",
+    "decimal.js": "10.6.0",
+    "express": "^5.1.0",
+    "qrcode-generator": "2.0.4"
+  },
+  "devDependencies": {
+    "@fontsource-variable/archivo": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@types/bn.js": "5.2.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0",
+    "typescript": "~5.9.0",
+    "vite": "^7.0.0",
+    "vite-plugin-node-polyfills": "^0.24.0",
+    "vitest": "^5.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ghostrings/privacycash-fun.git"
+  },
+  "homepage": "https://privacycash.fun",
+  "bugs": {
+    "url": "https://github.com/ghostrings/privacycash-fun/issues"
+  }
+}

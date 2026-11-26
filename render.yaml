@@ -1,0 +1,82 @@
+# Render Blueprint for privacycash.fun. docs/DEPLOY_RENDER.md explains every line.
+#
+# In Render: New > Blueprint, pick this repository. Render creates one web service with one
+# persistent disk and asks for each value marked "sync: false". Copy those from your own .env.
+# Never put DEPLOYER_KEY or PARTNER_KEY here: the operator scripts run on your computer.
+services:
+  - type: web
+    name: privacycash-fun
+    runtime: node
+    region: frankfurt
+    plan: starter
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/status
+    autoDeploy: false
+    disk:
+      name: privacycash-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: "22.22.0"
+      - key: DATA_DIR
+        value: /var/data
+      - key: CLIENT_IP_HEADER
+        value: cf-connecting-ip
+      # The site's main address. Once your domain is the main address, add EXTRA_ORIGINS in the
+      # dashboard with this service's onrender.com address, so that both keep working.
+      - key: PUBLIC_ORIGIN
+        sync: false
+      - key: HELIUS_API_KEY
+        sync: false
+      - key: PINATA_JWT
+        sync: false
+      # Optional. With it, a token can be paid for in SOL or USDC whatever it is priced in,
+      # converted through Jupiter inside the trade. A secret: it stays on the server.
+      - key: JUPITER_API_KEY
+        sync: false
+      - key: PARTNER_WALLET
+        sync: false
+      - key: DBC_CONFIG_200
+        sync: false
+      - key: DBC_CONFIG_300
+        sync: false
+      - key: DBC_CONFIG_400
+        sync: false
+      - key: CURVE_INITIAL_MARKET_CAP_SOL
+        sync: false
+      - key: CURVE_MIGRATION_MARKET_CAP_SOL
+        sync: false
+      # Pair tokens other than SOL (USDC, ZEC, NEAR, XMR, ANT, RENDER, HSOL) are off until you add
+      # their five settings in the dashboard: CURVE_INITIAL_MARKET_CAP_<ID>,
+      # CURVE_MIGRATION_MARKET_CAP_<ID> and DBC_CONFIG_200_<ID>, _300_<ID>, _400_<ID>.
+      # `npm run configs:apply` prints them. .env.example explains each step.
+      - key: CREATOR_FEE_SHARE_PCT
+        sync: false
+      - key: CREATOR_POOL_PAYOUT_PCT
+        value: "30"
+      # Configs kept from an earlier set, after the fee split was changed (docs/MAINNET_RUNBOOK.md,
+      # Part I). Their tokens stay listed. Leave it empty until then.
+      - key: DBC_CONFIGS_PREVIOUS
+        sync: false
+      # Fee modules (docs/MAINNET_RUNBOOK.md, Part J). Off until you set MODULES_ENABLED to YES and
+      # add MODULES_MAINNET_ACK=YES. MODULES_SEED is a secret that must never change once a token
+      # uses it; MODULES_GAS_TANK is the address printed with it. All four are set in the dashboard
+      # and never from this file, so that syncing this file can never switch modules off or on.
+      - key: MODULES_ENABLED
+        sync: false
+      - key: MODULES_SEED
+        sync: false
+      - key: MODULES_GAS_TANK
+        sync: false
+      - key: MODULES_DRY_RUN
+        sync: false
+      - key: MAX_TRADE_LAMPORTS
+        value: "2000000000"
+      - key: PROOFS_PER_MINUTE_PER_IP
+        value: "12"
+      - key: PROOFS_DAILY_LIMIT
+        value: "5000"
+      - key: GHOST_DESK_ENABLED
+        value: "NO"

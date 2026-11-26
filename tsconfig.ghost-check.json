@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": { "types": [], "rootDir": "shared/src/custom-rings", "noEmitOnError": true },
+  "include": ["shared/src/custom-rings/**/*.ts"]
+}

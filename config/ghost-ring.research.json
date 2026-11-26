@@ -1,0 +1,13 @@
+{
+  "name": "GHOST Trading Ring v1",
+  "environment": "devnet-research",
+  "privacy": "anonymous",
+  "assets": "all",
+  "membership": "open",
+  "blocklist": true,
+  "freeze": true,
+  "cosigning": true,
+  "auditor": true,
+  "pause": true,
+  "permanentDelegate": false
+}

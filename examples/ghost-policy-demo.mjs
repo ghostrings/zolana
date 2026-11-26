@@ -1,0 +1,32 @@
+/** Reproducible fixture; no RPC, wallet, proof, live asset or network dependency. */
+import assert from 'node:assert/strict';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+const root = process.env.GHOST_TEST_BUILD;
+if (!root) throw new Error('Run npm run ghost:demo from the repository root.');
+const load = (name) => import(pathToFileURL(resolve(root, name)).href);
+const { ghostRingStatus } = await load('config.js');
+const { GhostRingLab, LAB_ASSETS, LAB_MEMBERS } = await load('lab.js');
+const { labAggregate } = await load('intelligence.js');
+const lab = new GhostRingLab();
+const state = () => LAB_ASSETS.map((asset) => LAB_MEMBERS.map((m) => lab.balance(m, asset)));
+const approval = { ownerApproved: true, cosignerApproved: true };
+const leg = { operation: 'transfer', member: 'TEST-01', recipient: 'TEST-02', asset: 'TEST-SOL', amount: 10n };
+const other = { operation: 'transfer', member: 'TEST-02', recipient: 'TEST-01', asset: 'TEST-TOKEN', amount: 25n };
+const scenario = (name, legs, expected, approvals = approval) => {
+  const before = state();
+  const receipt = lab.execute(legs, approvals);
+  assert.equal(receipt.result, expected);
+  if (expected === 'rejected') assert.deepEqual(state(), before);
+  return { name, ...receipt, rollbackVerified: expected === 'rejected' ? true : null };
+};
+const steps = [scenario('successful fictional fill', [leg, other], 'accepted')];
+steps.push(scenario('second leg lacks balance', [leg, { ...other, amount: 1000000n }], 'rejected'));
+steps.push(scenario('co-signer missing', [leg], 'rejected', { ...approval, cosignerApproved: false }));
+lab.setBlocked('TEST-02', true);
+steps.push(scenario('blocked recipient', [leg], 'rejected'));
+lab.setBlocked('TEST-02', false); lab.setFrozen('TEST-01', true);
+steps.push(scenario('frozen sender', [leg], 'rejected'));
+lab.setFrozen('TEST-01', false); lab.setPaused(true);
+steps.push(scenario('paused lab', [leg], 'rejected'));
+console.log(JSON.stringify({ schema: 'ghost-policy-demo/v1', source: 'synthetic-local', onChain: false, status: ghostRingStatus(), steps, aggregates: LAB_ASSETS.map((asset) => labAggregate(lab.snapshot(asset))) }, null, 2));

@@ -1,0 +1,125 @@
+Local evidence, 2026-11-26
+v22.16.0
+10.9.2
+Version 5.8.3
+
+> privacycash-fun@0.1.0 ghost:baseline
+> node ops/check-baseline.mjs
+
+v23 baseline: 229/229 protected files match
+
+> privacycash-fun@0.1.0 ghost:check
+> node ops/check-ghost.mjs
+
+TAP version 13
+# Subtest: exact research target matches the user-specified JSON, and cannot enable network execution
+ok 1 - exact research target matches the user-specified JSON, and cannot enable network execution
+  ---
+  duration_ms: 1.677829
+  type: 'test'
+  ...
+# Subtest: transfer requires no allowlist and preserves both supply and ring total
+ok 2 - transfer requires no allowlist and preserves both supply and ring total
+  ---
+  duration_ms: 1.367723
+  type: 'test'
+  ...
+# Subtest: deposit and withdrawal conserve synthetic asset supply, and change ring totals exactly
+ok 3 - deposit and withdrawal conserve synthetic asset supply, and change ring totals exactly
+  ---
+  duration_ms: 0.324147
+  type: 'test'
+  ...
+# Subtest: pause rejects every operation without mutating balances, resume restores simulation
+ok 4 - pause rejects every operation without mutating balances, resume restores simulation
+  ---
+  duration_ms: 1.435402
+  type: 'test'
+  ...
+# Subtest: blocklist prevents simulated incoming transfers and deposits, removing it allows receipt
+ok 5 - blocklist prevents simulated incoming transfers and deposits, removing it allows receipt
+  ---
+  duration_ms: 0.388631
+  type: 'test'
+  ...
+# Subtest: freeze prevents spending but permits incoming assets under the lab model
+ok 6 - freeze prevents spending but permits incoming assets under the lab model
+  ---
+  duration_ms: 0.383875
+  type: 'test'
+  ...
+# Subtest: both simulated owner and co-signer approvals are required for every operation
+ok 7 - both simulated owner and co-signer approvals are required for every operation
+  ---
+  duration_ms: 0.722814
+  type: 'test'
+  ...
+# Subtest: valid two-leg fill commits atomically and preserves each asset supply
+ok 8 - valid two-leg fill commits atomically and preserves each asset supply
+  ---
+  duration_ms: 0.211181
+  type: 'test'
+  ...
+# Subtest: failing second leg leaves the first leg untouched
+ok 9 - failing second leg leaves the first leg untouched
+  ---
+  duration_ms: 0.466847
+  type: 'test'
+  ...
+# Subtest: malformed batches, invalid amounts, self-transfers and non-fictional addresses or mints are refused
+ok 10 - malformed batches, invalid amounts, self-transfers and non-fictional addresses or mints are refused
+  ---
+  duration_ms: 1.938703
+  type: 'test'
+  ...
+# Subtest: aggregates use exact integer math, report no per-participant data or creator inference
+ok 11 - aggregates use exact integer math, report no per-participant data or creator inference
+  ---
+  duration_ms: 0.231761
+  type: 'test'
+  ...
+# Subtest: small groups suppress holder count and concentration
+ok 12 - small groups suppress holder count and concentration
+  ---
+  duration_ms: 0.231861
+  type: 'test'
+  ...
+# Subtest: malformed or over-supply synthetic snapshots are refused
+ok 13 - malformed or over-supply synthetic snapshots are refused
+  ---
+  duration_ms: 0.238711
+  type: 'test'
+  ...
+# Subtest: receipts do not expose amounts or owners, and are bounded and copied
+ok 14 - receipts do not expose amounts or owners, and are bounded and copied
+  ---
+  duration_ms: 0.844122
+  type: 'test'
+  ...
+# Subtest: new routes and pages are wired while transaction features fail closed
+ok 15 - new routes and pages are wired while transaction features fail closed
+  ---
+  duration_ms: 1.043846
+  type: 'test'
+  ...
+# Subtest: synthetic snapshots require exactly the fixed participant set and dense bigint entries
+ok 16 - synthetic snapshots require exactly the fixed participant set and dense bigint entries
+  ---
+  duration_ms: 0.358187
+  type: 'test'
+  ...
+# Subtest: deterministic state-machine stress test preserves balances and rollback across 2,000 operations
+ok 17 - deterministic state-machine stress test preserves balances and rollback across 2,000 operations
+  ---
+  duration_ms: 154.703811
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 240.359882
