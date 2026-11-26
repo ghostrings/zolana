@@ -114,3 +114,8 @@ ok 17 - deterministic state-machine stress test preserves balances and rollback 
 # skipped 0
 # todo 0
 # duration_ms 207.107521
+
+Zolana repository packaging check (2026-11-26)
+Destination: https://github.com/ghostrings/zolana; main; public at time of check.
+Local recheck: 229/229 protected hashes match; 17/17 standalone tests pass; demo matches fixture byte-for-byte.
+No remote changes or CI execution. Full build and security review pending.

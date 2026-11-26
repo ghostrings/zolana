@@ -1,4 +1,4 @@
-# Private engineering intake — Helius Privacy Rings
+# Engineering intake draft — Helius Privacy Rings
 
 **Draft for project owner review.** Suggested destination: official Helius integration support or `sales@helius.xyz` as listed in the [Custom Rings integration documentation](https://www.helius.dev/docs/privacy/integration/custom-ring). This is a request for technical collaboration, not an existing accepted pilot, grant application form or partnership. Do not send until a shareable repository and verified evidence are available.
 
@@ -29,7 +29,7 @@ Our intended approach is to reuse the official SDK and reference implementation,
 
 Website: https://privacycash.fun
 GitHub namespace: https://github.com/ghostrings
-Repository/revision: intended https://github.com/ghostrings/privacycash-fun — [confirm access and insert actual commit SHA after upload]
+Repository/revision: https://github.com/ghostrings/zolana — [confirm access and insert actual commit SHA after upload]
 Verification: [insert actual green CI run or clearly labelled pending checks, plus the reproducible demo and validation record]
 Technical contact: [insert authorized project contact]
 
