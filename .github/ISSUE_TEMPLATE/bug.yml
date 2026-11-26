@@ -1,0 +1,24 @@
+name: Reproducible bug
+description: Report a non-security issue with a sanitized reproduction.
+title: 'fix: '
+body:
+  - type: markdown
+    attributes:
+      value: Do not submit vulnerabilities, wallet secrets or customer information here. See SECURITY.md.
+  - type: input
+    id: revision
+    attributes:
+      label: Revision / SDK and Node versions
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction and expected versus actual result
+      description: Use fictional fixtures or public test data; no production credentials.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized evidence and test environment

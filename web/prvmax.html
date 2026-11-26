@@ -1,0 +1,81 @@
+<!doctype html><html lang="en"><head>
+<!--#head-->
+<title>prvmax — privacycash.fun</title>
+<meta name="description" content="prvmax: up to ten vaults behind one wallet, each with its own private balance in Solana Privacy Rings. Spread a balance across them, trade from them, see them in one place, and recall everything to one wallet.">
+<link rel="canonical" href="https://privacycash.fun/prvmax">
+<meta property="og:title" content="prvmax — privacycash.fun"><meta property="og:description" content="Ten vaults behind one wallet, each with its own private balance. Spread, trade, recall."><meta property="og:url" content="https://privacycash.fun/prvmax">
+</head>
+<body data-page="prvmax">
+<!--#header-->
+<div class="site-shell"><main>
+<header class="page-head"><h1>One wallet. Ten private balances.</h1><p>A vault is a wallet of its own with its own private balance, made from your wallet's key. Spread SOL or a token across your vaults, trade from them, see everything in one place, and call it all back to one wallet. What each vault holds, and what moves between you and a vault, is encrypted. The vaults themselves are public, and so is every trade on a pool.</p></header>
+<div id="setup-banner" class="banner-line" hidden></div>
+<div id="px-gate"></div>
+
+<!-- Wallet unlocked, vault keys not derived yet -->
+<section class="section grid-2" id="px-open" hidden>
+<form class="form-panel" id="px-open-form" novalidate><span class="eyebrow">Step one</span><h2>Open your vaults</h2><p class="small muted" id="px-open-text">—</p>
+<label class="field"><span>How many vaults to use</span><select id="px-open-count"></select><div class="hint">One to ten. You can change this at any time; a vault you stop using keeps whatever it holds until you recall it.</div></label>
+<button class="btn wide" type="submit" id="px-open-button">Open vaults</button><div id="px-open-output" aria-live="polite"></div></form>
+<aside class="stack"><div class="box"><span class="eyebrow">What a vault is</span><p class="small muted">An ordinary Solana keypair with its own private balance in Solana Privacy Rings. Its key is worked out from your wallet's key, in this browser, so there is nothing new to back up, and you can export any vault's key and use it in any wallet.</p></div>
+<div class="box"><span class="eyebrow">What it hides, and what it does not</span><dl class="visibility" style="margin-top:12px"><dt>Each vault's address</dt><dd class="is-public">PUBLIC</dd><dt>That your wallet funded it</dt><dd class="is-public">PUBLIC</dd><dt>What you sent it, and how much</dt><dd class="is-hidden">ENCRYPTED</dd><dt>What it holds</dt><dd class="is-hidden">ENCRYPTED</dd><dt>A trade it makes on a pool</dt><dd class="is-public">PUBLIC</dd><dt>A trade it makes with the Ghost desk</dt><dd class="is-hidden">ENCRYPTED</dd></dl><p class="small muted" style="margin-top:12px">Vaults are not a disguise: anyone can see which vaults a wallet funded. <a class="tx-link" href="/docs/prvmax">How prvmax works</a></p></div></aside>
+</section>
+
+<div id="px-main" hidden>
+<section class="section"><div class="section-head"><div><span class="eyebrow">Your vaults</span><h2>Vaults</h2></div><p>Read from chain, and from each vault's encrypted notes with its own viewing key, in this browser. Public SOL is what a vault pays network fees from.</p></div>
+<div class="row-wrap px-toolbar"><label class="px-inline"><span>Vaults in use</span><select id="px-count"></select></label><button class="btn flat" type="button" id="px-refresh">Read again</button><span class="small muted" id="px-read-note"></span></div>
+<div class="banner-line" id="px-twin" hidden><b>This wallet has a second set of vaults, and it has been used.</b> <span id="px-twin-text"></span> <button class="btn flat" type="button" id="px-twin-show" style="margin-left:10px">Show that set</button></div>
+<p class="small muted px-set" id="px-set-note"></p>
+<div class="table-wrap"><table class="px-table"><thead><tr><th>Vault</th><th>Address</th><th class="num">Public SOL</th><th>Rings</th><th class="num">Private SOL</th><th>Other private holdings</th></tr></thead><tbody id="px-vaults"><tr><td colspan="6">Reading…</td></tr></tbody></table></div>
+<div id="px-vault-note" aria-live="polite"></div></section>
+
+<section class="section"><div class="section-head"><div><span class="eyebrow">Do</span><h2>Ready, spread, trade, recall.</h2></div><p>Each step runs one vault after another and says what it is doing. If a step stops, what already settled stays settled: the table above is read again, so you can see where things stand before pressing anything twice.</p></div>
+<form class="form-panel" id="px-form" novalidate>
+<div class="tabs tabs-6"><button type="button" class="on" data-tab="ready">Get ready</button><button type="button" data-tab="spread">Spread</button><button type="button" data-tab="buy">Buy</button><button type="button" data-tab="sell">Sell</button><button type="button" data-tab="recall">Recall</button><button type="button" data-tab="keys">Keys</button></div>
+
+<div data-pane="ready"><p class="small muted">Before a vault can be used it needs two things: some public SOL of its own, because network fees are paid from public SOL, and a one-time registration with Rings, so that it can be sent to privately. Your wallet sends the SOL in one transaction; each vault registers itself.</p>
+<label class="field"><span>Public SOL for each vault</span><div class="input-shell"><input id="px-gas" inputmode="decimal" value="0.03" autocomplete="off"><span class="input-unit">SOL</span></div><div class="hint">Between 0.02 and 0.2. A vault is topped up to this amount; one that already holds it gets nothing. It comes back with a recall.</div></label>
+<dl class="quote-box" id="px-ready-plan"></dl></div>
+
+<div data-pane="spread" hidden><p class="small muted">Splits an amount from your wallet's private balance evenly across the vaults you tick, as private transfers. The amount is taken from what your wallet holds privately: to spread public SOL or public tokens, deposit them on the <a class="tx-link" href="/wallet">Wallet page</a> first.</p>
+<div class="grid-2" style="gap:14px"><label class="field"><span>Asset</span><select id="px-spread-asset"></select></label><label class="field"><span>Amount in total</span><div class="input-shell"><input id="px-spread-amount" inputmode="decimal" placeholder="0.00" autocomplete="off"><span class="input-unit" id="px-spread-unit">SOL</span></div><div class="hint" id="px-spread-hint"></div></label></div>
+<div class="quick-amounts"><button type="button" data-spread-share="25">25%</button><button type="button" data-spread-share="50">50%</button><button type="button" data-spread-share="100">MAX</button></div>
+<div class="field"><span>Into these vaults</span><div class="px-picks" id="px-spread-picks"></div></div>
+<dl class="quote-box" id="px-spread-plan"></dl></div>
+
+<div data-pane="buy" hidden><p class="small muted">Buys one token from each vault you tick, paid from that vault's private balance. The vaults buy one after another, so each buy moves the price the next one pays.</p>
+<label class="field"><span>Token address</span><input id="px-buy-mint" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="The token's address, from its page"><div class="hint" id="px-buy-token">Paste the address of a token launched here. Find one on the <a class="tx-link" href="/">Market</a>.</div></label>
+<div class="grid-2" style="gap:14px"><label class="field"><span>Each vault spends</span><div class="input-shell"><input id="px-buy-amount" inputmode="decimal" placeholder="0.00" autocomplete="off"><span class="input-unit" id="px-buy-unit">SOL</span></div></label><label class="field"><span>Or a share of what each holds</span><select id="px-buy-share"><option value="">An amount, as typed</option><option value="25">25% of each vault's balance</option><option value="50">50% of each vault's balance</option><option value="75">75% of each vault's balance</option><option value="100">All of each vault's balance</option></select></label></div>
+<div class="grid-2" style="gap:14px"><label class="field"><span>Route</span><select id="px-buy-route"></select><div class="hint" id="px-buy-route-hint"></div></label><label class="field" id="px-buy-slip-field"><span>Slippage limit</span><select id="px-buy-slip"></select></label></div>
+<div class="field"><span>From these vaults</span><div class="px-picks" id="px-buy-picks"></div></div>
+<dl class="quote-box" id="px-buy-plan"></dl></div>
+
+<div data-pane="sell" hidden><p class="small muted">Sells a share of one token from each vault you tick. What a sale brings in stays in that vault's private balance, in the token's pair token.</p>
+<div class="grid-2" style="gap:14px"><label class="field"><span>Token</span><select id="px-sell-token"></select><div class="hint" id="px-sell-hint"></div></label><label class="field"><span>How much of each vault's holding</span><select id="px-sell-share"><option value="25">25%</option><option value="50">50%</option><option value="75">75%</option><option value="100" selected>All of it</option></select></label></div>
+<div class="grid-2" style="gap:14px"><label class="field"><span>Route</span><select id="px-sell-route"></select><div class="hint" id="px-sell-route-hint"></div></label><label class="field" id="px-sell-slip-field"><span>Slippage limit</span><select id="px-sell-slip"></select></label></div>
+<div class="field"><span>From these vaults</span><div class="px-picks" id="px-sell-picks"></div></div>
+<dl class="quote-box" id="px-sell-plan"></dl></div>
+
+<div data-pane="recall" hidden><p class="small muted">Empties every vault into one wallet: all ten are checked, whether or not they are in use. Each vault's private balances go first, then anything a trade left in its ordinary token accounts, then its public SOL, down to zero.</p>
+<label class="field"><span>Send everything to</span><select id="px-recall-to"><option value="self">This wallet</option><option value="other">Another address</option></select></label>
+<label class="field" id="px-recall-address-field" hidden><span>Destination Solana address</span><input id="px-recall-address" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Solana address"><div class="hint">Check it twice. Whoever holds that address's key receives everything.</div></label>
+<label class="field"><span>How the private balances travel</span><select id="px-recall-mode"><option value="private">Privately: token and amount stay encrypted</option><option value="public">Publicly: a withdrawal, visible to everyone</option></select><div class="hint" id="px-recall-hint"></div></label>
+<dl class="quote-box" id="px-recall-plan"></dl></div>
+
+<div data-pane="keys" hidden><p class="small muted">Every vault is an ordinary Solana keypair. Its secret key works in any Solana wallet, and on this site's Wallet page under Import a secret key, where the vault joins your list as a wallet of its own. That is the way to reach a vault without this page. Anyone who has a vault's secret key controls what that vault holds.</p>
+<p class="small muted" id="px-keys-how">—</p>
+<div class="grid-2" style="gap:14px"><label class="field"><span>Vault</span><select id="px-key-vault"></select></label><div class="field"><span>&nbsp;</span><button class="btn flat" type="button" id="px-key-show">Show its secret key</button></div></div>
+<div id="px-key-panel" hidden><div class="secret-box" id="px-key-secret" title="Click to reveal">—</div><div class="row-wrap" style="margin-top:12px"><button class="btn flat" type="button" data-copy data-copy-target="#px-key-secret">Copy secret key</button><button class="btn flat" type="button" id="px-key-hide">Hide</button></div></div>
+<div class="notice-box" style="margin-top:22px"><span class="eyebrow">Two sets of vaults</span><p class="small muted" id="px-set-how">—</p><button class="btn flat" type="button" id="px-set-switch" hidden>Show the other set</button></div></div>
+
+<dl class="visibility" id="px-visibility"></dl>
+<button class="btn wide" type="submit" id="px-button" style="margin-top:18px">Get vaults ready</button>
+<div id="px-progress" aria-live="polite"></div><div id="px-output" aria-live="polite"></div></form></section>
+
+<section class="section"><div class="section-head"><div><span class="eyebrow">Only you can read this</span><h2>Portfolio</h2></div><p>Your wallet and every vault, added up in this browser. Nothing on this list is sent to the server, and no explorer can show the private columns.</p></div><div class="table-wrap"><table class="px-table"><thead><tr><th>Asset</th><th class="num">Wallet, private</th><th class="num">Vaults, private</th><th class="num">Together</th><th>Held in</th></tr></thead><tbody id="px-portfolio"><tr><td colspan="5">Reading…</td></tr></tbody></table></div></section>
+
+<section class="section"><div class="section-head"><div><span class="eyebrow">Kept in this browser</span><h2>What your vaults traded</h2></div><p>A list this page keeps of the trades it sent from vaults. It lives in this browser only: clearing the browser's storage clears it, and it knows nothing of trades made any other way. Buys count what a vault paid at most; sells count what it received at least.</p></div><div class="table-wrap"><table class="px-table"><thead><tr><th>Token</th><th class="num">Bought</th><th class="num">Paid, at most</th><th class="num">Sold</th><th class="num">Received, at least</th><th class="num">Trades</th></tr></thead><tbody id="px-activity"><tr><td colspan="6">Nothing yet.</td></tr></tbody></table></div><div class="row-wrap"><button class="btn flat" type="button" id="px-activity-clear" hidden>Clear this list</button></div></section>
+</div>
+</main><!--#footer--></div>
+<script type="module" src="/src/pages/prvmax.ts"></script>
+</body></html>

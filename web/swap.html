@@ -1,0 +1,48 @@
+<!doctype html><html lang="en"><head>
+<!--#head-->
+<title>Buy any token, privately — privacycash.fun</title>
+<meta name="description" content="Buy a Solana token that was not launched here: paid from your private balance and delivered into it, in one transaction, through Jupiter. The swap itself is public; what you held before and what you hold after are not.">
+<link rel="canonical" href="https://privacycash.fun/swap">
+<meta property="og:title" content="Buy any token, privately — privacycash.fun"><meta property="og:description" content="Any token Jupiter can route, paid from your private balance and delivered into it, in one transaction."><meta property="og:url" content="https://privacycash.fun/swap">
+</head>
+<body data-page="swap">
+<!--#header-->
+<div class="site-shell"><main id="swap-page">
+<header class="page-head"><h1>Buy any token. Hold it privately.</h1><p>A token that was not launched here, bought through Jupiter. What you pay leaves your private balance and what you buy arrives in it, in one transaction. The swap in between is public, like any swap.</p></header>
+<div id="swap-banner" class="banner-line" hidden></div>
+<section class="trade-layout">
+<div class="trade-main">
+<div class="swap-lookup">
+<form id="lookup-form" class="swap-find" novalidate autocomplete="off"><label class="field"><span>Token address</span><div class="input-shell"><input id="lookup-address" name="mint" inputmode="text" placeholder="Paste the token’s address" maxlength="48" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search"><button class="btn flat" type="submit" id="lookup-button">Look up</button></div><div class="hint">The address of the token itself, often called its mint or contract address. A name is not enough: anybody can create a token with any name.</div></label></form>
+<div id="lookup-output" aria-live="polite"></div>
+<article class="swap-token" id="token-card" hidden><div class="token-avatar" id="tk-avatar"></div><div class="swap-token-main"><h2 id="tk-name">—</h2><p class="swap-token-sub" id="tk-sub"></p><p class="swap-token-address"><code id="tk-address"></code><button class="btn flat" type="button" data-copy data-copy-target="#tk-address">Copy</button><a class="tx-link" id="tk-explorer" target="_blank" rel="noopener noreferrer" href="#">Explorer</a></p><div class="pill-row" id="tk-pills"></div></div></article>
+<div id="token-problems" aria-live="polite"></div>
+</div>
+
+<section class="section-tight" id="facts-section" hidden><div class="section-head"><div><span class="eyebrow">Read from chain just now</span><h2>What this token is</h2></div><p>Each line comes from the token’s own account on Solana, read by this page. Nothing here says whether the token is worth anything.</p></div><dl class="kv" id="tk-facts"></dl><div id="tk-notes"></div></section>
+
+<section class="section-tight"><div class="section-head"><div><span class="eyebrow">One transaction</span><h2>What a buy does</h2></div><p>Either all of it happens or none of it does. Nobody holds your funds in between: your wallet signs once, for the whole thing.</p></div>
+<ol class="swap-steps"><li><b>What you pay leaves your private balance.</b><span>SOL or USDC, for exactly the amount you entered. From here on the amount is public.</span></li><li><b>Jupiter swaps it for the token.</b><span>On the pools of the route Jupiter chose. The instructions come from Jupiter; this page reads every one of them before your wallet sees anything, and refuses any that would pay somebody else.</span></li><li><b>The token goes into your private balance.</b><span>For the least the swap can return. Whatever it returns above that is moved in right afterwards, if you leave that box ticked.</span></li></ol>
+<p class="tiny dim" style="margin:14px 0 0">The price is Jupiter’s. This page checks that the swap does what the quote says; it cannot tell you whether the quote is a good price, or whether the token can be sold again later. <a class="tx-link" href="/docs/buy-any-token">How this works, and what can go wrong</a>.</p></section>
+</div>
+
+<aside class="trade-panel"><form id="swap-form" class="form-panel" novalidate>
+<div class="tabs"><button type="button" class="on" data-side="buy">Buy</button><button type="button" data-side="sell">Sell</button></div>
+<div class="balance-strip has-pair" id="sw-balances"><div class="is-private"><span id="sw-private-label">Private SOL</span><b id="sw-private-counter">—</b><small id="sw-private-token">—</small></div><div id="sw-public-cell"><span id="sw-public-label">Public</span><b id="sw-public-counter">—</b><small id="sw-public-token">—</small></div><div><span>Public SOL</span><b id="sw-public-sol">—</b><small>fees + rent</small></div></div>
+<div class="counter-field"><span class="field-label" id="sw-counter-label">Pay with</span><div class="counter-options" id="sw-counter-options"></div></div>
+<span class="field-label" id="sw-source-label">Pay from</span>
+<div class="routes" id="sw-sources" role="radiogroup" aria-label="Which balance"></div>
+<label class="field"><span id="sw-amount-label">You pay</span><div class="input-shell"><input id="sw-amount" inputmode="decimal" placeholder="0.00" autocomplete="off"><span class="input-unit" id="sw-amount-unit">SOL</span></div><div class="hint" id="sw-amount-hint"></div></label>
+<div class="quick-amounts" id="sw-quick"></div>
+<label class="field" id="sw-slippage-field"><span>Slippage limit</span><select id="sw-slippage"></select><div class="hint">How far the price may move before the trade is refused. New and thinly traded tokens often need more.</div></label>
+<label class="check-row" id="sw-rest-field"><input type="checkbox" id="sw-rest" checked><span>Then move what is left over into my private balance too. A swap usually returns a little more than its guaranteed minimum; a second transaction moves that part in and closes the temporary account.</span></label>
+<dl class="quote-box" id="sw-quote"><dt>Look up a token</dt><dd>—</dd></dl>
+<dl class="visibility" id="sw-visibility"></dl>
+<div id="sw-gate" style="margin-top:18px"></div>
+<button class="btn wide" id="sw-button" type="submit" style="margin-top:18px">Buy</button>
+<div id="sw-output" aria-live="polite"></div>
+</form></aside>
+</section>
+</main><!--#footer--></div>
+<script type="module" src="/src/pages/swap.ts"></script>
+</body></html>

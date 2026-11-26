@@ -67,10 +67,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ghostrings/privacycash-fun.git"
+    "url": "git+https://github.com/ghostrings/zolana.git"
   },
   "homepage": "https://privacycash.fun",
   "bugs": {
-    "url": "https://github.com/ghostrings/privacycash-fun/issues"
+    "url": "https://github.com/ghostrings/zolana/issues"
   }
 }

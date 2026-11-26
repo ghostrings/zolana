@@ -1,0 +1,6 @@
+# Preserve archived source bytes for the release-specific SHA-256 baseline check.
+* -text
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff2 binary

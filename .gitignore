@@ -1,0 +1,26 @@
+node_modules/
+build/
+web/dist/
+data/
+data-*/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+
+# Local keys, wallet exports, local tooling and audit outputs
+*.pem
+*.key
+*.p12
+*.pfx
+*.keypair.json
+*-keypair.json
+wallet-export*.json
+wallet-backup*.json
+secrets/
+keys/
+coverage/
+playwright-report/
+test-results/
+.github-local/

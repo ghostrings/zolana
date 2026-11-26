@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head>
+<!--#head-->
+<title>Read-only view — privacycash.fun</title>
+<meta name="description" content="Open a viewing pass to read one wallet's private balance and history on Solana Privacy Rings. Nothing can be moved from this page.">
+<link rel="canonical" href="https://privacycash.fun/view">
+<meta property="og:title" content="Read-only view — privacycash.fun"><meta property="og:description" content="Read one wallet's private balance and history with a viewing pass. Nothing can be moved from here."><meta property="og:url" content="https://privacycash.fun/view">
+</head>
+<body data-page="view">
+<!--#header-->
+<div class="site-shell"><main class="wallet-main">
+<div id="setup-banner" class="banner-line" hidden></div>
+
+<!-- No pass open -->
+<section class="section" id="view-closed">
+<header class="page-head"><h1>Read a wallet. Move nothing.</h1><p>A viewing pass opens one wallet's private balance and history for reading: the view an accountant needs. It holds no key that signs, so nothing can be sent, unshielded or traded from this page. The pass is opened in this browser and kept only while the page is open.</p></header>
+<div class="view-open">
+<form class="form-panel" id="view-form" novalidate>
+<label class="field"><span>Viewing pass</span><textarea id="view-pass" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="pcfview1.…"></textarea></label>
+<p class="view-file small muted">Or <label class="tx-link" for="view-file-input" style="cursor:pointer">choose the file it was saved as</label>.<input type="file" id="view-file-input" accept=".txt,text/plain" hidden></p>
+<label class="field"><span>Passphrase of the pass</span><input type="password" id="view-passphrase" placeholder=" " autocomplete="off"></label>
+<button class="btn wide" type="submit" id="view-button">Open for reading</button>
+<div id="view-output" aria-live="polite"></div>
+</form>
+<aside class="stack">
+<div class="box"><span class="eyebrow">What you will see</span><p class="small muted">The wallet's private holdings, its private history with tokens and amounts, and a statement you can download as a file. The same things its owner sees.</p></div>
+<div class="box"><span class="eyebrow">What stays with you</span><p class="small muted">The pass is not stored by this page and never sent to this site's server. Closing the tab closes the view. Nobody is told that you opened it.</p></div>
+<div class="box"><span class="eyebrow">Is it your own wallet?</span><p class="small muted">Then use <a class="tx-link" href="/wallet">the wallet page</a>. A pass is made there, on the Keys tab.</p></div>
+</aside>
+</div>
+</section>
+
+<!-- A pass is open -->
+<div id="view-opened" hidden>
+<header class="view-head"><div><span class="tag">READ ONLY</span><h1 id="view-name">Wallet</h1><div class="view-address" id="view-address">—</div><div class="view-balance"><b id="view-sol">—</b><span id="view-sub">Private SOL</span></div></div><div class="row-wrap"><button class="btn flat" type="button" id="view-refresh">Read again</button><button class="btn secondary" type="button" id="view-close">Close the view</button></div></header>
+<div id="view-status" aria-live="polite"></div>
+<section class="section"><div class="section-head"><div><span class="eyebrow">Encrypted on chain</span><h2>Private holdings</h2></div><p>Decrypted in this browser with the wallet's viewing key. No explorer can show this list.</p></div><div class="holdings-grid" id="view-holdings"></div></section>
+<section class="section"><div class="section-head"><div><span class="eyebrow">Decrypted here</span><h2>Private history</h2></div><p>The latest forty entries, newest first. The statement below covers all of it.</p></div><div class="table-wrap"><table><thead><tr><th>Type</th><th>Direction</th><th>Asset</th><th class="num">Amount</th><th>On chain</th><th>Transaction</th></tr></thead><tbody id="view-history"><tr><td colspan="6">Reading…</td></tr></tbody></table></div></section>
+<section class="section"><div class="section-head"><div><span class="eyebrow">Worked out in this browser</span><h2>Statement</h2></div><p>The wallet's private history for a period, as a file. It is put together in this browser: the server is asked only for block times and for what the chain shows in public. <a class="tx-link" href="/docs/statements">What is in it</a></p></div><div id="view-statement"></div></section>
+<p class="tiny dim" style="margin:0 0 30px">What a pass cannot show: the notes the owner's own browser kept with payments, the wallet's public balance history, and anything in a prvmax vault of the wallet, which is a wallet of its own. <a class="tx-link" href="/docs/read-only-access">More about viewing passes</a></p>
+</div>
+</main><!--#footer--></div>
+<script type="module" src="/src/pages/view.ts"></script>
+</body></html>

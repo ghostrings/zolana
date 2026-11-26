@@ -1,0 +1,73 @@
+<!doctype html><html lang="en"><head>
+<!--#head-->
+<title>Trade — privacycash.fun</title>
+<meta name="description" content="Trade a token from an encrypted Solana Privacy Rings balance, in the pair token it was launched against. Ghost fill hides the asset and the amount; the Shielded route trades the Meteora pool directly.">
+<link rel="canonical" href="https://privacycash.fun/token">
+<meta property="og:title" content="Trade — privacycash.fun"><meta property="og:description" content="Trade from an encrypted balance. Fixed fees before and after graduation."><meta property="og:url" content="https://privacycash.fun/token">
+</head>
+<body data-page="market">
+<!--#header-->
+<div class="site-shell"><main id="token-page">
+<div class="empty-state ghost-state" id="token-loading"><span class="ghost-mark" aria-hidden="true"></span><b>LOADING THE CURVE<span class="blink">_</span></b></div>
+<div id="token-body" hidden>
+<header class="token-head"><div class="token-avatar" id="t-avatar"></div><div class="token-head-main"><div class="token-head-line"><span class="status-dot" id="t-stage">LIVE</span><span id="t-change"></span></div><h1 id="t-symbol">$—</h1><p class="token-name" id="t-title">—</p><p class="token-story" id="t-story" hidden></p><div class="pill-row" id="t-links"></div></div><dl class="creator-chip" id="t-creator"><dt>Creator</dt><dd>—</dd></dl></header>
+<div id="token-banner" class="banner-line" hidden></div>
+<section class="trade-layout">
+<div class="trade-main">
+<div class="chart-shell"><div class="chart-topline"><span id="t-chart-unit">PRICE IN SOL PER TOKEN</span><span id="t-chart-note">—</span></div><svg class="chart" id="price-chart" role="img" aria-label="Price history"></svg></div>
+<div class="graduation-block"><div class="progress-copy"><span id="t-grad-label">GRADUATION</span><b id="t-grad-pct">—</b></div><div class="pixel-bar" id="grad-bar"></div><div class="graduate-box" id="graduate-box" hidden><span class="eyebrow">This curve is complete</span><p id="graduate-note"></p><div id="graduate-gate"></div><button class="btn" type="button" id="graduate-button">Graduate it now</button><div id="graduate-output" aria-live="polite" style="margin-top:12px"></div></div></div>
+<div class="trade-stats"><div><span>Spot price</span><b id="t-price">—</b></div><div><span>Market cap</span><b id="t-cap">—</b></div><div><span id="t-reserve-label">Curve reserve</span><b id="t-reserve">—</b></div><div><span>Total volume</span><b id="t-volume">—</b></div></div>
+<div class="supply-strip" id="t-supply-strip"><div><span>Supply now</span><b id="t-supply">—</b></div><div><span>Burned</span><b id="t-burned">—</b></div><div><span>Can more be minted</span><b id="t-mintable">—</b></div></div>
+<p class="tiny dim">Prices and reserves are read from the Meteora pool, which is public. Holder counts are not shown: balances kept in Rings sit in one pooled account, so no count would be true. <a class="tx-link" id="ghost-intelligence-link" href="/ghost-intelligence">GHOST Intelligence: public asset metrics</a>.</p>
+
+<section class="section-tight" id="rewards-section" hidden><div class="panel pixel-corners"><span class="eyebrow">Your rewards on this token</span><h2 id="rewards-amount">—</h2><p class="muted small" id="rewards-note">—</p><div class="row-wrap" style="margin-top:14px"><button class="btn" type="button" id="rewards-claim">Claim into private balance</button></div><div id="rewards-output" aria-live="polite" style="margin-top:14px"></div></div></section>
+
+<section class="section-tight" id="modules-section" hidden><div class="section-head"><div><span class="eyebrow">Creator fees</span><h2 id="modules-title">Fee modules</h2></div><p id="modules-lede"></p></div><div id="modules-body"></div><form class="form-panel" id="modules-form" novalidate hidden><div id="modules-picker"></div><label class="field"><span>Type PERMANENT to confirm</span><input id="modules-confirm" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder=" "><div class="hint">Switching fee modules on cannot be undone or changed afterwards, by you or by this site.</div></label><button class="btn wide" id="modules-button" type="submit" disabled>Switch fee modules on</button></form><div id="modules-output" aria-live="polite"></div></section>
+
+<section class="section-tight" id="move"><div class="section-head"><div><span class="eyebrow">Your tokens</span><h2>Send or burn</h2></div><p>Send it to another wallet without showing which token or how much. Or burn it: gone for good, and the supply drops for all to see. <a class="tx-link" href="/docs/private-transfers">How sending works</a> · <a class="tx-link" href="/docs/burning">How burning works</a></p></div>
+<form class="form-panel" id="mv-form" novalidate>
+<div class="tabs"><button type="button" class="on" data-mv="send">Send privately</button><button type="button" data-mv="burn">Burn</button></div>
+<div class="balance-strip"><div class="is-private"><span>Private, in Rings</span><b id="mv-private">—</b><small>only you can read this</small></div><div><span>Public, in your token account</span><b id="mv-public">—</b><small>visible to everyone</small></div></div>
+<div class="grid-2 move-grid"><div>
+<label class="field" id="mv-source-field" hidden><span>Burn from</span><select id="mv-source"><option value="private">Private balance</option><option value="public">Public balance</option></select><div class="hint" id="mv-source-hint"></div></label>
+<label class="field" id="mv-recipient-field"><span>Recipient Solana address</span><input id="mv-recipient" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Solana address"><div class="hint" id="mv-recipient-hint"></div></label>
+<label class="field"><span id="mv-amount-label">Amount to send</span><div class="input-shell"><input id="mv-amount" inputmode="decimal" placeholder="0.00" autocomplete="off"><span class="input-unit" id="mv-unit">TOKEN</span></div><div class="hint" id="mv-hint"></div></label>
+<div class="quick-amounts"><button type="button" data-mv-share="25">25%</button><button type="button" data-mv-share="50">50%</button><button type="button" data-mv-share="100">MAX</button></div>
+<label class="field" id="mv-confirm-field" hidden><span>Type BURN to confirm</span><input id="mv-confirm" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder=" "><div class="hint">A burn cannot be undone. Nobody can bring the tokens back, this site included.</div></label>
+</div><div>
+<dl class="quote-box" id="mv-effect" style="margin-top:0"></dl>
+<dl class="visibility" id="mv-visibility"></dl>
+</div></div>
+<div id="mv-gate" style="margin-top:18px"></div>
+<button class="btn wide" id="mv-button" type="submit" style="margin-top:18px">Send privately</button>
+<div id="mv-output" aria-live="polite"></div>
+</form></section>
+
+<section class="section-tight"><div class="section-head"><div><span class="eyebrow">Only you can read this</span><h2>Your private activity</h2></div><p>Decrypted in this browser with your viewing key. Nobody else, including this site's server, can produce this list.</p></div><div class="receipt-list" id="activity"><div class="empty-state">UNLOCK A WALLET TO SEE YOUR ACTIVITY</div></div></section>
+
+<section class="section-tight"><div class="section-head"><div><span class="eyebrow">On chain</span><h2>Token facts</h2></div><p>Everything in this table is public and can be checked on an explorer.</p></div><dl class="kv" id="facts"></dl></section>
+</div>
+
+<aside class="trade-panel"><form id="trade-form" class="form-panel" novalidate>
+<div class="tabs"><button type="button" class="on" data-side="buy">Buy</button><button type="button" data-side="sell">Sell</button></div>
+<div class="balance-strip" id="balances"><div class="is-private"><span>Private balance</span><b id="b-private-quote">—</b><small id="b-private-token">—</small></div><div id="b-public-quote-cell" hidden><span id="b-public-quote-label">Public</span><b id="b-public-quote">—</b><small>in your token account</small></div><div><span>Public SOL</span><b id="b-public-sol">—</b><small>fees + temporary rent</small></div></div>
+<div class="counter-field" id="counter-field" hidden><span class="field-label" id="counter-label">Pay with</span><div class="counter-options" id="counter-options"></div></div>
+<span class="field-label">Route</span>
+<div class="routes" id="routes" role="radiogroup" aria-label="Trade route"></div>
+<label class="field"><span id="amount-label">You pay</span><div class="input-shell"><input id="amount" inputmode="decimal" placeholder="0.00" autocomplete="off"><span class="input-unit" id="amount-unit">SOL</span></div><div class="hint" id="amount-hint"></div></label>
+<div class="quick-amounts" id="quick"></div>
+<p class="convert-line" id="convert-line" hidden></p>
+<label class="field" id="slippage-field"><span>Slippage limit</span><select id="slippage"></select></label>
+<dl class="quote-box" id="quote-box"><dt>Enter an amount</dt><dd>—</dd></dl>
+<dl class="visibility" id="visibility"></dl>
+<div id="trade-gate" style="margin-top:18px"></div>
+<button class="btn wide" id="trade-button" type="submit" style="margin-top:18px">Buy</button>
+<div id="trade-output" aria-live="polite"></div>
+<p class="tiny dim" style="margin:16px 0 0">Holding some already? <a class="tx-link" href="#move">Send it privately or burn it</a>.</p>
+<p class="tiny dim" style="margin:8px 0 0">Using vaults? <a class="tx-link" id="prvmax-link" href="/prvmax">Trade this token from them</a>.</p>
+</form></aside>
+</section>
+</div>
+</main><!--#footer--></div>
+<script type="module" src="/src/pages/token.ts"></script>
+</body></html>

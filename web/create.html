@@ -1,0 +1,58 @@
+<!doctype html><html lang="en"><head>
+<!--#head-->
+<title>Launch a token — privacycash.fun</title>
+<meta name="description" content="Launch a token on a Meteora bonding curve, priced in SOL or another pair token, with a fixed 2%, 3% or 4% fee. Your first buy lands in an encrypted Rings balance in the same transaction.">
+<link rel="canonical" href="https://privacycash.fun/create">
+<meta property="og:title" content="Launch a token — privacycash.fun"><meta property="og:description" content="One signature: mint, curve, Rings interface, and a first buy that lands in your encrypted balance."><meta property="og:url" content="https://privacycash.fun/create">
+</head>
+<body data-page="create">
+<!--#header-->
+<div class="site-shell"><main>
+<p class="small muted">GHOST Launch uses the existing mainnet Meteora and Default Ring flow. <a class="tx-link" href="/ghost">Custom Ring research</a> does not change your launch or first buy.</p>
+<header class="page-head"><h1>Launch it. Hold it unseen.</h1><p>Three steps and one signature. The token goes live on a Meteora bonding curve, priced in the pair token and with the fee you pick. It can be held in an encrypted balance from the first block, and your own first buy lands there in the same transaction.</p></header>
+<div id="setup-banner" class="banner-line" hidden></div>
+<section class="create-layout">
+<form id="launch-form" class="form-panel" novalidate>
+<ol class="stepper" id="stepper" aria-label="Launch steps"><li data-step="1" class="is-current"><b>1</b><span>Identity</span></li><li data-step="2"><b>2</b><span>Launch settings</span></li><li data-step="3"><b>3</b><span>Review &amp; sign</span></li></ol>
+
+<div class="step-pane" data-pane="1">
+<div class="art-drop" id="art-drop"><label class="art-thumb" id="art-thumb" for="art-input" title="Choose artwork"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h18v18H3zM5 5v14h14V5zm2 12 3-4 2 2 3-4 2 6z"/></svg></label><div><span class="field-label">Artwork</span><div class="hint">PNG, JPG, GIF or WebP up to 4 MB. Square works best. Leave it empty to use a generated pixel mark.</div><div class="art-actions"><label class="btn flat" for="art-input">Choose file</label><button class="btn flat" type="button" id="art-clear" hidden>Remove</button><span class="tiny dim" id="art-name"></span></div><input type="file" id="art-input" accept="image/png,image/jpeg,image/gif,image/webp"></div></div>
+<label class="field"><span>Name</span><input id="name" maxlength="32" placeholder="Night Shift" autocomplete="off" required><div class="field-meta"><span>Up to 32 bytes</span><span id="name-count">0/32</span></div></label>
+<label class="field"><span>Ticker</span><input id="symbol" maxlength="10" placeholder="NIGHT" autocomplete="off" autocapitalize="characters" required><div class="field-meta"><span>1–10 letters or digits</span><span id="symbol-count">0/10</span></div></label>
+<label class="field"><span>Story (optional)</span><textarea id="description" maxlength="500" placeholder="What is it? Plain words. No promises."></textarea><div class="field-meta"><span>Public, stored with the token's metadata</span><span id="description-count">0/500</span></div></label>
+<div class="grid-2" style="gap:14px"><label class="field"><span>Website (optional)</span><input id="website" type="url" inputmode="url" placeholder="https://" autocomplete="off"></label><label class="field"><span>X link (optional)</span><input id="twitter" type="url" inputmode="url" placeholder="https://x.com/…" autocomplete="off"></label></div>
+<div class="step-actions"><button class="btn wide" type="button" data-next="2">Continue</button></div>
+</div>
+
+<div class="step-pane" data-pane="2" hidden>
+<span class="field-label">Priced and traded in</span>
+<div class="pair-grid" id="pair-grid" role="radiogroup" aria-label="Pair token"></div>
+<p class="pair-note" id="pair-note"></p>
+<span class="field-label">Trading fee</span>
+<div class="tier-grid" id="tier-grid" role="radiogroup" aria-label="Trading fee"></div>
+<div class="notice is-plain"><strong>The pair and the fee are permanent.</strong> Both are written into the token's Meteora config and into the pool the curve graduates to. Nobody can change them later, including you and this platform.</div>
+<label class="field"><span>Your first buy (optional)</span><div class="input-shell"><input id="first-buy" inputmode="decimal" placeholder="0.00" autocomplete="off"><span class="input-unit" id="first-buy-unit">SOL</span></div><div class="hint" id="first-buy-hint">Paid from your public SOL in the launch transaction. The tokens go straight into your encrypted balance.</div></label>
+<div class="quick-amounts" id="first-buy-quick"><button type="button" data-first-buy="0">None</button></div>
+<div id="module-picker" hidden></div>
+<dl class="quote-box" id="settings-box"><dt>Loading</dt><dd>—</dd></dl>
+<div class="step-actions"><button class="btn secondary" type="button" data-next="1">Back</button><button class="btn" type="button" data-next="3">Continue</button></div>
+</div>
+
+<div class="step-pane" data-pane="3" hidden>
+<dl class="review-list" id="review-list"></dl>
+<dl class="visibility" id="launch-visibility"></dl>
+<label class="check-row" style="margin-top:18px"><input type="checkbox" id="risk-check"><span>I understand that creating a token is public and permanent: my wallet is recorded as its creator, the fee cannot be changed, after graduation the pool's liquidity is locked for good and held by the platform, and the token can go to zero.</span></label>
+<div id="launch-gate"></div>
+<div class="step-actions"><button class="btn secondary" type="button" data-next="2">Back</button><button class="btn" type="submit" id="launch-button" disabled>Sign and launch</button></div>
+<div id="launch-output" aria-live="polite"></div>
+</div>
+</form>
+
+<aside class="preview-stack"><span class="eyebrow">Live preview</span><article class="preview-card pixel-corners"><div class="preview-hero"><div class="token-avatar" id="preview-avatar"></div></div><div class="preview-copy"><span class="status-dot">PRE-LAUNCH</span><h2 id="preview-symbol">$TICKER</h2><h3 id="preview-name">Your name here</h3><p id="preview-description">Your story appears here.</p><div class="progress-copy"><span>GRADUATION</span><b>0%</b></div><div class="mini-progress"><i style="width:0%"></i></div><div class="token-card-foot"><span id="preview-fee">FEE — · BOTH PHASES</span><span>1B SUPPLY</span></div></div></article>
+<div class="revenue-calc"><span class="eyebrow">Creator fee arithmetic</span><label class="field"><span>Lifetime trading volume</span><div class="input-shell"><input id="volume-sim" inputmode="decimal" value="1000"><span class="input-unit" id="volume-unit">SOL</span></div></label><div class="revenue-number" id="creator-revenue">—</div><p class="small muted" id="revenue-note">Arithmetic, not a forecast.</p></div></aside>
+</section>
+
+<section class="section grid-2"><div><span class="eyebrow">One signature</span><h2>What the launch transaction does.</h2><ol class="steps"><li><div><b>Creates the mint and its curve</b><span>A fixed supply of 1,000,000,000 tokens on a Meteora bonding curve, priced in the pair token you chose. The mint authority is revoked and the metadata cannot be edited.</span></div></li><li><div><b>Opens the token to Rings</b><span>It registers the mint with Solana Privacy Rings, so anyone can hold it in an encrypted balance from the first block.</span></div></li><li><div><b>Makes your first buy</b><span>Optional. It is an ordinary curve trade, so its size is public.</span></div></li><li><div><b>Moves it into your private balance</b><span>The tokens you bought are deposited into Rings before the transaction ends. Your public token account is closed again.</span></div></li></ol><p class="small muted" style="margin-top:14px">If you chose fee modules, a second transaction follows as soon as the token is listed: it hands the token's creator role to the wallet that runs them, with your settings written on chain. <a class="tx-link" href="/docs/fee-modules">How fee modules work</a></p></div><div class="panel"><span class="eyebrow">Creator rules</span><h2>Set once.</h2><p class="muted">These are written on chain when the token is created. The platform cannot change them afterwards.</p><dl class="kv" id="rules-kv"><dt>Supply</dt><dd>1,000,000,000 · 6 decimals</dd><dt>Pair token</dt><dd>SOL, or another that is live · fixed</dd><dt>Trading fee</dt><dd>2%, 3% or 4% · fixed</dd><dt>Fee after graduation</dt><dd>The same</dd><dt>Liquidity after graduation</dt><dd>100% locked permanently</dd></dl></div></section>
+</main><!--#footer--></div>
+<script type="module" src="/src/pages/create.ts"></script>
+</body></html>

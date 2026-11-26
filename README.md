@@ -1,7 +1,8 @@
 <div align="center">
   <a href="https://privacycash.fun"><img src="docs/assets/readme-banner.png" width="100%" alt="GHOST — privacy infrastructure for Solana markets; v24 engineering candidate, Custom Ring research not deployed" /></a>
-  <p><strong>Independent Solana Privacy Rings integration</strong></p>
-  <p><a href="https://privacycash.fun">Website</a> · <a href="https://github.com/ghostrings">GHOSTRINGS</a> · <a href="docs/engineering/ARCHITECTURE.md">Architecture</a> · <a href="docs/engineering/VALIDATION.md">Validation</a> · <a href="contrib/helius/README.md">Helius collaboration</a></p>
+  <h1>Zolana</h1>
+  <p><strong>GHOST engineering · Independent Solana Privacy Rings integration</strong></p>
+  <p><a href="https://privacycash.fun">Website</a> · <a href="https://github.com/ghostrings/zolana">Repository</a> · <a href="https://github.com/ghostrings">GHOSTRINGS</a> · <a href="docs/engineering/ARCHITECTURE.md">Architecture</a> · <a href="docs/engineering/VALIDATION.md">Validation</a> · <a href="contrib/helius/README.md">Helius collaboration</a></p>
   <p><code>TypeScript</code> &nbsp; <code>Node 22</code> &nbsp; <code>Solana</code> &nbsp; <code>Meteora DBC</code> &nbsp; <code>SPR 0.9.0-alpha</code></p>
 </div>
 
@@ -49,7 +50,7 @@ npm run verify
 npm run --silent ghost:demo
 ```
 
-No wallet, API key, devnet SOL or mainnet account is needed for these checks. The [engineering workflow](.github/workflows/ci.yml) runs on pushes to `main`, PRs and manual dispatch with read-only permissions and no deploy step. It verifies the baseline, standalone model, Vitest tests, production build and deterministic fixture. [View GitHub Actions after upload](https://github.com/ghostrings/privacycash-fun/actions). Remote CI has not been run for this package; dependency installation, full typecheck/build, HTTP test and browser smoke remain pending. [Validation record](docs/engineering/VALIDATION.md) · [Fixture walkthrough](docs/engineering/DEMO.md).
+No wallet, API key, devnet SOL or mainnet account is needed for these checks. The [engineering workflow](.github/workflows/ci.yml) runs on pushes to `main`, PRs and manual dispatch with read-only permissions and no deploy step. It verifies the baseline, standalone model, Vitest tests, production build and deterministic fixture. [View GitHub Actions after upload](https://github.com/ghostrings/zolana/actions). Remote CI has not been run for this package; dependency installation, full typecheck/build, HTTP test and browser smoke remain pending. [Validation record](docs/engineering/VALIDATION.md) · [Fixture walkthrough](docs/engineering/DEMO.md).
 
 ### Local browser preview
 
@@ -99,10 +100,10 @@ The [roadmap](docs/engineering/ROADMAP.md) specifies exit criteria. We are seeki
 | [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Code of conduct](CODE_OF_CONDUCT.md) | Review, disclosure and collaboration |
 | [GitHub publication guide](docs/engineering/PUBLISHING.md) | Manual upload, repository settings and release review |
 | [Platform reference](PLATFORM.md) · [Docs index](docs/README.md) | Original application and operational documentation |
-| [Helius integration intake](contrib/helius/HELIUS_INTAKE.md) | Private collaboration draft for owner review |
+| [Helius integration intake](contrib/helius/HELIUS_INTAKE.md) | Collaboration draft for owner review |
 
 **Upstream:** [Helius Privacy Rings](https://www.helius.dev/docs/privacy/concepts/overview) · [Custom Rings](https://www.helius.dev/docs/privacy/integration/custom-ring) · [Custom Ring reference](https://github.com/helius-labs/custom-privacy-rings) · [Privacy Rings SDK](https://github.com/helius-labs/privacy-rings) · [Example clients](https://github.com/helius-labs/privacy-ring-examples).
 
 ## Rights and independence
 
-This project is independent and is not affiliated with or endorsed by Helius, Meteora, the Solana Foundation or privacycash.org. No source license has been selected. Rights remain reserved; keep this complete application private until the owner confirms publication rights, third-party obligations and security clearance. See [NOTICE](NOTICE.md). Proposed repository: `ghostrings/privacycash-fun`; the actual remote and CI status must be confirmed after manual upload.
+This project is independent and is not affiliated with or endorsed by Helius, Meteora, the Solana Foundation or privacycash.org. No source license has been selected. Rights remain reserved; keep this complete application private until the owner confirms publication rights, third-party obligations and security clearance. See [NOTICE](NOTICE.md). Repository: [ghostrings/zolana](https://github.com/ghostrings/zolana). CI status must be confirmed after manual upload.

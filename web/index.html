@@ -1,0 +1,34 @@
+<!doctype html><html lang="en"><head>
+<!--#head-->
+<title>privacycash.fun — ghost markets on Solana</title>
+<meta name="description" content="Launch a token on a Meteora bonding curve and hold it in an encrypted balance. Balances and transfers run through Solana Privacy Rings. Fees are fixed at 2%, 3% or 4% and stay the same after graduation.">
+<link rel="canonical" href="https://privacycash.fun/">
+<meta property="og:title" content="privacycash.fun — ghost markets on Solana"><meta property="og:description" content="Encrypted balances. Meteora bonding curves. Fees fixed at launch, the same after graduation."><meta property="og:url" content="https://privacycash.fun/">
+</head>
+<body data-page="market">
+<!--#header-->
+<div class="ticker" id="ticker" aria-hidden="true" hidden><div class="ticker-track" id="ticker-track"></div></div>
+<svg class="spark-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><linearGradient id="spark-fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs></svg>
+<div class="site-shell"><main class="market-main">
+<section class="hud" aria-label="Market overview"><div class="hud-title"><h1>Ghost markets</h1><p>Launch on a Meteora curve. Hold it in an encrypted balance. The fee you pick is fixed for good.</p></div><dl class="hud-stats"><div><dt>Tokens</dt><dd id="s-tokens">—</dd></div><div><dt>Held in curves</dt><dd id="s-reserve">—</dd></div><div><dt>Total volume</dt><dd id="s-volume">—</dd></div><div><dt>Graduated</dt><dd id="s-graduated">—</dd></div></dl><div class="hud-actions"><a class="btn" href="/create">Launch a token</a><a class="btn secondary" href="/ghost">Explore GHOST</a></div></section>
+<div id="setup-banner" class="banner-line" hidden></div>
+<section class="market" id="market" aria-label="Tokens">
+<div class="market-bar" id="market-toolbar">
+<div class="strips" id="strips">
+<div class="seg" id="sort-tabs" role="group" aria-label="Order"><button type="button" data-sort="hot" aria-pressed="true" title="The most traded in the last 24 hours">Trending</button><button type="button" data-sort="new" aria-pressed="false" title="The most recently launched">New</button><button type="button" data-sort="volume" aria-pressed="false" title="The most traded since launch">Volume</button><button type="button" data-sort="cap" aria-pressed="false" title="The highest market cap"><span class="lab-wide">Market cap</span><span class="lab-tight">Cap</span></button><button type="button" data-sort="graduation" aria-pressed="false" title="The curves closest to graduating">Graduating</button></div>
+<div class="seg seg-pairs" id="pair-filter" role="group" aria-label="Priced in" hidden></div>
+</div>
+<label class="search-field market-search"><span class="sr-only">Search by ticker, name or mint address</span><input id="search" type="search" placeholder="Search tokens" autocomplete="off" spellcheck="false" enterkeyhint="search"><kbd class="search-key" aria-hidden="true">/</kbd></label>
+<div class="seg seg-icons" id="view-toggle" role="group" aria-label="Layout"><button type="button" data-view="cards" aria-pressed="true" aria-label="Cards" title="Cards"></button><button type="button" data-view="grid" aria-pressed="false" aria-label="Grid" title="Grid"></button><button type="button" data-view="table" aria-pressed="false" aria-label="Table" title="Table"></button></div>
+</div>
+<div class="market-meta"><span id="market-count" aria-live="polite">— tokens</span><span id="market-updated"></span></div>
+<div class="token-grid" id="token-grid" data-view="cards" aria-busy="true"><div class="empty-state ghost-state"><span class="ghost-mark" aria-hidden="true"></span><b>LOADING THE REEL<span class="blink">_</span></b></div></div>
+<nav class="pager" id="pager" aria-label="Market pages" hidden></nav>
+<p class="market-note">Prices, reserves and progress are read from the Meteora pools. No holder counts are shown: balances kept in Rings sit in one pooled account, and who owns what inside it is encrypted.</p>
+</section>
+
+<section class="section grid-2" id="how"><div><h2>Four moves.</h2><ol class="steps"><li><div><b>Open a ghost wallet</b><span>A Solana keypair made in your browser and encrypted with your passphrase. Or connect your own wallet.</span></div></li><li><div><b>Shield SOL into Rings</b><span>A deposit is public. From then on the balance is an encrypted note only you can read.</span></div></li><li><div><b>Trade from the private balance</b><span>Ghost fill swaps with the desk in one co-signed transaction: asset and amount encrypted. The Shielded route trades the pool directly.</span></div></li><li><div><b>Hold, send or burn</b><span>Tokens stay in your encrypted balance. Send them to any registered address without revealing what or how much, or burn them for good. <a class="tx-link" href="/docs">Read the docs</a>.</span></div></li></ol></div><div><h2>Private where it can be. Plain about the rest.</h2><div class="feature-stack"><article class="feature"><h3>Balances are encrypted</h3><p>SOL and tokens held in Rings are notes only your viewing key opens. No holder list can be read off token accounts.</p></article><article class="feature"><h3>Transfers hide asset and amount</h3><p>A private transfer shows the two wallets and nothing else. Which token moved, and how much, is ciphertext.</p></article><article class="feature"><h3>Wallets are not hidden</h3><p>The Default Ring is confidential, not anonymous. Sender and recipient addresses are public on every transaction.</p></article><article class="feature"><h3>Pool trades are public</h3><p>A Meteora pool is a public account. Any swap against it shows its size. Deposits and withdrawals show theirs too.</p></article></div></div></section>
+<section class="section panel pixel-corners"><div class="grid-2"><div><h2>Fixed at launch. Fixed after graduation.</h2></div><div><p class="muted">A creator picks 2%, 3% or 4%. That number is written into the token's Meteora config, which cannot be changed, and the same number is written into the pool the curve graduates to. There is no schedule that lowers it and no dynamic component. <span data-split-sentence>On the curve, 24% of every fee goes to the creator, 56% to the platform and 20% to Meteora's protocol. After graduation the platform holds all of the locked liquidity, and the platform pays the creator 30% of the pool fees it collects.</span></p><a class="btn secondary" href="/protocol#fees">Read the fee rules</a></div></div></section>
+</main><!--#footer--></div>
+<script type="module" src="/src/pages/index.ts"></script>
+</body></html>

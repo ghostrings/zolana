@@ -1,0 +1,200 @@
+/* The swap page: a token that was not launched here, looked up by its address. */
+
+.swap-lookup {
+  min-width: 0;
+}
+
+/* The address field carries its own button, where another field carries its unit. */
+.swap-find .input-shell input {
+  padding-right: 104px;
+  font-family: var(--mono);
+  font-size: 0.86rem;
+}
+
+.swap-find .input-shell .btn {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  min-height: 0;
+  padding: 7px 14px;
+  font-size: 0.78rem;
+}
+
+.swap-token {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r4);
+  background: var(--gloss), var(--s2);
+  box-shadow: var(--lift);
+}
+
+.swap-token .token-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+}
+
+.swap-token-main {
+  min-width: 0;
+}
+
+.swap-token h2 {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: clamp(1.3rem, 2.6vw, 1.9rem);
+  line-height: 1.15;
+}
+
+.swap-token-sub {
+  margin: 4px 0 0;
+  color: var(--smoke);
+  font-size: 0.84rem;
+}
+
+.swap-token-address {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin: 10px 0 0;
+}
+
+.swap-token-address code {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--silver);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+}
+
+.swap-token-address .btn {
+  min-height: 0;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+}
+
+.swap-token .pill-row {
+  margin-top: 12px;
+}
+
+/* A reason the token cannot be bought, or something a buyer should know first. */
+.swap-notes {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.swap-notes li {
+  position: relative;
+  padding: 10px 14px 10px 30px;
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--well);
+  color: var(--silver);
+  font-size: 0.86rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.swap-notes li:before {
+  content: '!';
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.swap-steps {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: swap-step;
+}
+
+.swap-steps li {
+  position: relative;
+  padding: 14px 16px 14px 54px;
+  border: 1px solid var(--line);
+  border-radius: var(--r3);
+  background: var(--well);
+  counter-increment: swap-step;
+}
+
+.swap-steps li:before {
+  content: counter(swap-step);
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--line-3);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 0.76rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.swap-steps b {
+  display: block;
+  font-size: 0.94rem;
+  font-weight: 650;
+}
+
+.swap-steps span {
+  display: block;
+  margin-top: 3px;
+  color: var(--smoke);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+/* A quote line that asks to be read before the button is pressed. */
+.quote-box dd.is-warning,
+.quote-box dt.is-warning {
+  color: #fff;
+  font-weight: 650;
+}
+
+#sw-rest-field {
+  margin: 4px 0 16px;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 900px) {
+  /* The address comes first, then the form, then the long read. */
+  .trade-main > .swap-lookup {
+    order: 1;
+  }
+}
+
+@media (max-width: 520px) {
+  .swap-token {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px;
+  }
+
+  .swap-token .token-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+  }
+}
+
+/* Room for a ticker of a few letters beside the amount. */
+#sw-amount {
+  padding-right: 92px;
+}

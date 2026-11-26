@@ -2,7 +2,7 @@
 
 This is an independent application integration, not the Helius protocol repository. Changes must preserve the separation of existing mainnet code and synthetic Custom Ring research.
 
-Target application repository: `ghostrings/privacycash-fun` (confirm the actual remote after upload). Review the [code of conduct](CODE_OF_CONDUCT.md) before contributing.
+Application repository: [ghostrings/zolana](https://github.com/ghostrings/zolana). Review the [code of conduct](CODE_OF_CONDUCT.md) before contributing.
 
 ## Workflow
 

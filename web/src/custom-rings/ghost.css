@@ -1,0 +1,34 @@
+/* The research products use the existing monochrome screening-room design. */
+.ghost-product { max-width: 1260px; margin: 0 auto; padding: 30px 0 48px; }
+.ghost-hero { display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr); align-items:center; gap:28px; padding:clamp(24px,4vw,56px); }
+.ghost-hero h1 { margin:10px 0 12px; font-size:clamp(48px,8vw,110px); line-height:.91; letter-spacing:-.075em; }
+.ghost-hero p { max-width: 64ch; color:var(--silver); margin:18px 0 25px; line-height:1.55; }
+.ghost-outline { color:var(--smoke); }
+.ghost-hero-mark { min-height:160px; display:grid; align-content:center; justify-items:center; gap:20px; text-align:center; }
+.ghost-hero-mark .ghost-mark { transform:scale(2.5); margin:36px 0; }
+.ghost-product-grid,.ghost-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:18px; }
+.ghost-product-grid article { display:flex; flex-direction:column; gap:12px; min-height:208px; }
+.ghost-product-grid h2 { font-size:clamp(19px,2vw,25px); line-height:1.1; }
+.ghost-product-grid p { color:var(--silver); font-size:14px; line-height:1.5; flex:1; }
+.ghost-label,.ghost-metrics span { font:11px/1.4 var(--mono); color:var(--smoke); letter-spacing:.02em; }
+.ghost-two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+.ghost-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.ghost-config dd { overflow-wrap:anywhere; }
+.ghost-list { padding-left:19px; color:var(--silver); line-height:1.55; font-size:14px; }
+.ghost-list li { margin:7px 0; }
+.ghost-checks { display:grid; gap:12px; margin:20px 0; }
+.ghost-checks label { display:flex; align-items:center; gap:10px; color:var(--silver); font-size:14px; }
+.ghost-checks input { width:17px; height:17px; accent-color:#fff; flex:none; }
+.ghost-result { min-height:45px; margin:14px 0 0; color:var(--silver); font-size:14px; overflow-wrap:anywhere; }
+.ghost-result[data-result] { color:var(--white); font-weight:600; }
+.ghost-lab-banner { margin-bottom:14px; }
+.ghost-audit { margin-top:14px; }
+.ghost-receipt { display:grid; grid-template-columns:75px 100px minmax(0,1fr); gap:12px; padding:10px 0; border-bottom:1px solid var(--line); font-size:13px; }
+.ghost-receipt span { color:var(--silver); overflow-wrap:anywhere; }
+.ghost-metrics article { display:flex; flex-direction:column; gap:13px; min-height:107px; }
+.ghost-metrics b { font:600 clamp(16px,2.2vw,29px)/1.1 var(--font); overflow-wrap:anywhere; }
+.ghost-metrics[hidden],.ghost-product [hidden] { display:none!important; }
+.ghost-product .small { line-height:1.55; }
+@media(max-width:960px) {.ghost-product-grid,.ghost-metrics {grid-template-columns:repeat(2,minmax(0,1fr));}.ghost-hero {grid-template-columns:minmax(0,1fr) 120px;}}
+@media(max-width:640px) {.ghost-two,.ghost-hero {grid-template-columns:minmax(0,1fr);}.ghost-hero-mark {display:none;}.ghost-fields {grid-template-columns:minmax(0,1fr);}.ghost-product {padding-top:14px;}.ghost-product-grid article {min-height:0;}.ghost-product-grid .btn {font-size:12px; padding:10px;}.ghost-receipt {grid-template-columns:48px 80px minmax(0,1fr); gap:7px;}.ghost-metrics article {padding:14px;}}
+@media(max-width:360px) {.ghost-product-grid,.ghost-metrics {grid-template-columns:minmax(0,1fr);}}

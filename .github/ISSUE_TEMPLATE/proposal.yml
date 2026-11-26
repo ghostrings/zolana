@@ -1,0 +1,22 @@
+name: Engineering proposal
+description: Propose a focused, reviewable integration improvement.
+title: 'proposal: '
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and affected interface
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed behavior and alternatives
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria, risks, and verification plan
+    validations:
+      required: true

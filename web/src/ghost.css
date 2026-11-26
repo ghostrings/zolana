@@ -1,0 +1,233 @@
+/*
+ * The room and its ghost.
+ *
+ * The room: a projector's light falling from the top of the screen, dust
+ * drifting through it, a little film grain, the corners falling off to black.
+ * The ghost: the site's mark, drawn wherever something is private, missing or
+ * still on its way. All of it holds still under prefers-reduced-motion.
+ */
+
+:root {
+  --ghost: url('/assets/ghost.svg');
+}
+
+/*
+ * The page's own background sits on the root, and the body is clear. A body
+ * with a solid background would paint over everything placed behind the
+ * content, which is where the light and the dust are.
+ */
+html {
+  background: #000;
+}
+
+body {
+  background: none;
+}
+
+.ambient-ui {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#pixel-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* The projector: one broad cone from above, and a spill of it to one side. */
+.beam {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 78% 44% at 50% -10%, rgba(255, 255, 255, 0.135), transparent 72%),
+    radial-gradient(ellipse 36% 30% at 8% -4%, rgba(255, 255, 255, 0.06), transparent 70%),
+    radial-gradient(ellipse 30% 26% at 96% 2%, rgba(255, 255, 255, 0.04), transparent 70%);
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.085;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 120% 90% at 50% 30%, transparent 52%, rgba(0, 0, 0, 0.82) 100%);
+}
+
+/* The mark: the logo's ghost as a shape, in the colour of the text around it. */
+.ghost-mark {
+  display: inline-block;
+  flex: none;
+  width: 30px;
+  aspect-ratio: 15 / 16;
+  background: currentColor;
+  -webkit-mask: var(--ghost) center / contain no-repeat;
+  mask: var(--ghost) center / contain no-repeat;
+}
+
+@keyframes ghost-float {
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+@keyframes ghost-bob {
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes materialise {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+}
+
+@keyframes haunt {
+  0%,
+  100% {
+    opacity: 0.07;
+    transform: translate(0, 0);
+  }
+  50% {
+    opacity: 0.13;
+    transform: translate(-5px, -4px);
+  }
+}
+
+/* Pages fade up like a print in the tray. Nothing moves, so a link to a heading lands on it. */
+main {
+  animation: appear 0.5s ease-out backwards;
+}
+
+/*
+ * Going from one page to another is a dissolve, where the browser can do one:
+ * the old page fades into the new while the header and the dock stay where
+ * they are. A browser that cannot simply loads the next page, as before.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  .nav-wrap {
+    view-transition-name: site-header;
+  }
+
+  .mobile-dock {
+    view-transition-name: site-dock;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.26s;
+  }
+
+  /* The dissolve is the entrance: the page does not fade up a second time under it. */
+  @supports (view-transition-name: none) {
+    main {
+      animation: none;
+    }
+  }
+}
+
+/* Empty, waiting and failed states carry the ghost. */
+.empty-state.ghost-state {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 48px 24px 44px;
+}
+
+.ghost-state .ghost-mark {
+  width: 52px;
+  color: #fff;
+  filter: drop-shadow(0 0 22px rgba(255, 255, 255, 0.45));
+  animation: ghost-float 3.6s ease-in-out infinite;
+}
+
+.ghost-state b {
+  color: #fff;
+  font-stretch: 116%;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+}
+
+.ghost-state p {
+  max-width: 520px;
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.empty-state:not(.ghost-state):before {
+  content: '';
+  display: block;
+  width: 34px;
+  aspect-ratio: 15 / 16;
+  margin: 0 auto 14px;
+  background: #fff;
+  opacity: 0.85;
+  -webkit-mask: var(--ghost) center / contain no-repeat;
+  mask: var(--ghost) center / contain no-repeat;
+  animation: ghost-bob 3s ease-in-out infinite;
+}
+
+/* What is private has a ghost in it. */
+.balance-strip .is-private {
+  position: relative;
+  overflow: hidden;
+}
+
+.balance-strip .is-private:after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  bottom: -8px;
+  width: 52px;
+  aspect-ratio: 15 / 16;
+  background: #000;
+  opacity: 0.08;
+  -webkit-mask: var(--ghost) center / contain no-repeat;
+  mask: var(--ghost) center / contain no-repeat;
+  animation: haunt 6s ease-in-out infinite;
+}
+
+.visibility dd.is-hidden:before,
+.chip-hidden:before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  aspect-ratio: 15 / 16;
+  margin-right: 6px;
+  background: #000;
+  vertical-align: -1px;
+  -webkit-mask: var(--ghost) center / contain no-repeat;
+  mask: var(--ghost) center / contain no-repeat;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main {
+    animation: none;
+  }
+
+  #pixel-field {
+    display: none;
+  }
+}

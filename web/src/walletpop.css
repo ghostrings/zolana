@@ -1,0 +1,622 @@
+/*
+ * The wallet, as a panel that opens from the header on every page: what a
+ * wallet extension's pop-up is to a browser. On a wide screen it hangs from
+ * the wallet button; on a phone it rises from the foot of the screen.
+ */
+
+.wp-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 58;
+  background: rgba(0, 0, 0, 0.28);
+  animation: appear 0.2s ease-out;
+}
+
+.wp {
+  position: fixed;
+  z-index: 60;
+  top: calc(var(--nav-h) + 8px);
+  right: max(var(--gutter), calc((100vw - var(--max)) / 2));
+  display: flex;
+  flex-direction: column;
+  width: min(392px, calc(100vw - 2 * var(--gutter)));
+  max-height: calc(100vh - var(--nav-h) - 24px);
+  max-height: calc(100dvh - var(--nav-h) - 24px);
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  border-radius: 24px;
+  background:
+    radial-gradient(ellipse 90% 34% at 100% 0%, rgba(255, 255, 255, 0.13), transparent 70%),
+    linear-gradient(170deg, #1b1b1b 0%, #0c0c0c 34%, #050505 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 40px 80px -20px #000, 0 0 0 1px #000, 0 30px 90px -30px rgba(255, 255, 255, 0.25);
+  transform-origin: calc(100% - 60px) 0;
+  animation: wp-in 0.24s var(--ease);
+}
+
+@keyframes wp-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.96);
+  }
+}
+
+.wp:focus {
+  outline: none;
+}
+
+body.wp-held {
+  overflow: hidden;
+}
+
+.wp-scroll {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--s4) transparent;
+}
+
+.wp-pad {
+  padding: 16px;
+}
+
+/* Who it is: the wallet in use, and the way to another. */
+.wp-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 12px 12px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.wp-who {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  padding: 4px 8px 4px 4px;
+  border: 0;
+  border-radius: 14px;
+  background: none;
+  color: #fff;
+  cursor: default;
+  text-align: left;
+}
+
+button.wp-who {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+button.wp-who:hover,
+button.wp-who[aria-expanded='true'] {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.wp-who .wallet-icon {
+  width: 40px;
+  height: 40px;
+  padding: 6px;
+  cursor: inherit;
+}
+
+.wp-who span {
+  display: grid;
+  min-width: 0;
+}
+
+.wp-who b {
+  overflow: hidden;
+  font-stretch: 62%;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.wp-who small {
+  color: var(--smoke);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+}
+
+.wp-who .icon {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin-left: auto;
+  color: var(--smoke);
+  transition: transform 0.2s var(--ease);
+}
+
+.wp-who[aria-expanded='true'] .icon {
+  transform: rotate(180deg);
+}
+
+.wp-tools {
+  display: flex;
+  flex: none;
+  gap: 4px;
+}
+
+.wp-tools .icon-btn {
+  width: 34px;
+  height: 34px;
+  border-color: transparent;
+  border-radius: 10px;
+  background: none;
+  color: var(--silver);
+}
+
+.wp-tools .icon-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.wp-tools .icon {
+  width: 17px;
+  height: 17px;
+}
+
+/* The other wallets, one press each. */
+.wp-wallets {
+  display: grid;
+  gap: 2px;
+  max-height: 232px;
+  padding: 8px;
+  overflow-y: auto;
+  border-bottom: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.45);
+  animation: drop-in 0.18s var(--ease);
+}
+
+.wp-wallets button,
+.wp-wallets a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+  transition: background 0.12s;
+}
+
+.wp-wallets button:hover,
+.wp-wallets a:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.wp-wallets button[aria-current='true'] {
+  background: rgba(255, 255, 255, 0.06);
+  cursor: default;
+}
+
+.wp-wallets .wallet-icon {
+  width: 30px;
+  height: 30px;
+  padding: 4px;
+  border-radius: 9px;
+  cursor: inherit;
+}
+
+.wp-wallets small {
+  margin-left: auto;
+  color: var(--smoke);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+}
+
+.wp-wallets a {
+  color: var(--silver);
+  font-size: 0.82rem;
+}
+
+.wp-wallets a .icon {
+  width: 16px;
+  height: 16px;
+  margin: 0 7px;
+}
+
+/* The balance. */
+.wp-balance {
+  position: relative;
+  padding: 18px 18px 4px;
+}
+
+.wp-balance > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--smoke);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.wp-balance > span .ghost-mark {
+  width: 11px;
+  color: #fff;
+}
+
+.wp-balance b {
+  display: block;
+  margin: 4px 0 6px;
+  overflow-wrap: anywhere;
+  font-stretch: 62%;
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: 0.005em;
+  line-height: 0.95;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 34px rgba(255, 255, 255, 0.28);
+  transition: opacity 0.2s;
+}
+
+.wp-balance b i {
+  color: var(--smoke);
+  font-size: 0.5em;
+  font-style: normal;
+  text-shadow: none;
+}
+
+.wp-balance b.is-waiting {
+  color: var(--smoke);
+  font-stretch: 100%;
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 2.7;
+  text-shadow: none;
+}
+
+.wp-balance b.is-stale {
+  opacity: 0.45;
+}
+
+.wp-balance small {
+  display: block;
+  color: var(--silver);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.wp-refresh {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+}
+
+.wp-refresh.is-turning .icon {
+  animation: sweep 0.9s linear infinite;
+}
+
+.wp .wallet-actions {
+  margin: 0;
+  padding: 16px 12px 14px;
+}
+
+.wp a.wact {
+  text-decoration: none;
+}
+
+.wp-receive {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  margin: 0 16px 14px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r3);
+  background: rgba(0, 0, 0, 0.5);
+  animation: drop-in 0.18s var(--ease);
+}
+
+.wp-receive .qr-box {
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.wp-receive .qr-box svg {
+  width: 112px;
+  height: 112px;
+}
+
+.wp-receive p {
+  margin: 0 0 8px;
+  color: var(--silver);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.wp-receive code {
+  display: block;
+  margin-bottom: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow-wrap: anywhere;
+  color: #fff;
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+.wp .wtabs {
+  margin: 0 12px 6px;
+}
+
+.wp .wtabs button {
+  min-height: 34px;
+}
+
+/* What it holds, and what happened to it. */
+.wp-list {
+  display: grid;
+  gap: 1px;
+  padding: 0 8px 8px;
+}
+
+.wp-row {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  gap: 11px;
+  align-items: center;
+  min-height: 54px;
+  padding: 7px 8px;
+  border-radius: 14px;
+  transition: background 0.12s;
+}
+
+a.wp-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.wp-row .token-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+}
+
+.wp-row .wp-glyph {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: var(--s3);
+}
+
+.wp-row .wp-glyph .icon {
+  width: 17px;
+  height: 17px;
+}
+
+.wp-row div {
+  min-width: 0;
+}
+
+.wp-row b {
+  display: block;
+  overflow: hidden;
+  font-size: 0.94rem;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wp-row small {
+  display: block;
+  overflow: hidden;
+  color: var(--smoke);
+  font-size: 0.76rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wp-row .wp-amount {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.wp-row .wp-amount b {
+  font-size: 0.96rem;
+}
+
+.wp-chip {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.wp-chip.is-private {
+  background: #fff;
+  color: #000;
+}
+
+.wp-chip.is-public {
+  color: var(--silver);
+  box-shadow: inset 0 0 0 1px var(--line-3);
+}
+
+.wp-note {
+  margin: 0;
+  padding: 18px 16px 22px;
+  color: var(--smoke);
+  font-size: 0.84rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.wp-note b {
+  display: block;
+  margin-bottom: 4px;
+  color: #fff;
+}
+
+.wp-note .btn {
+  margin-top: 12px;
+}
+
+.wp-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.wp-foot a,
+.wp-foot button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--silver);
+  cursor: pointer;
+  font-size: 0.84rem;
+  font-weight: 600;
+  transition: background 0.12s, color 0.12s;
+}
+
+.wp-foot a:hover,
+.wp-foot button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.wp-foot .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Locked, or no wallet yet: the gate. */
+.wp-stage {
+  display: block;
+}
+
+.wp-gate {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.wp-gate .unlock-scene {
+  min-height: 150px;
+}
+
+.wp-gate h2 {
+  margin: 4px 0 0;
+  font-size: 2rem;
+}
+
+.wp-gate p {
+  margin: 0;
+  color: var(--silver);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.wp-gate p b {
+  color: #fff;
+}
+
+.wp-gate .field {
+  margin: 0;
+}
+
+.wp-gate .status {
+  margin-top: 0;
+}
+
+.wp-gate .wp-more {
+  justify-self: center;
+  color: var(--smoke);
+  font-size: 0.82rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.wp-gate .wp-more:hover {
+  color: #fff;
+}
+
+.wp-close-corner {
+  position: absolute;
+  z-index: 2;
+  top: 10px;
+  right: 10px;
+}
+
+@media (max-width: 600px) {
+  .wp-veil {
+    background: rgba(0, 0, 0, 0.62);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+  }
+
+  .wp {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-height: 90vh;
+    max-height: 90dvh;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    border-width: 1px 0 0;
+    border-radius: 24px 24px 0 0;
+    transform-origin: 50% 100%;
+    animation: wp-up 0.3s var(--ease);
+  }
+
+  /* The handle of a sheet. */
+  .wp:before {
+    content: '';
+    flex: none;
+    width: 38px;
+    height: 4px;
+    margin: 8px auto 0;
+    border-radius: 4px;
+    background: var(--line-3);
+  }
+
+  .wp-balance b {
+    font-size: 2.7rem;
+  }
+}
+
+@keyframes wp-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wp,
+  .wp-veil,
+  .wp-wallets,
+  .wp-receive {
+    animation: none;
+  }
+}

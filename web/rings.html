@@ -1,0 +1,30 @@
+<!doctype html><html lang="en"><head>
+<!--#head-->
+<title>Rings, in the open — privacycash.fun</title>
+<meta name="description" content="What anyone can read of Solana Privacy Rings: which tokens are held privately and how much, what was shielded and unshielded, and which wallets paid each other. Balances and the amounts of private transfers are not here, because nobody can read them.">
+<link rel="canonical" href="https://privacycash.fun/rings">
+<meta property="og:title" content="Rings, in the open — privacycash.fun"><meta property="og:description" content="Tokens held privately, what went in and out, and who paid whom on Solana Privacy Rings. Read from public chain data."><meta property="og:url" content="https://privacycash.fun/rings">
+</head>
+<body data-page="rings">
+<!--#header-->
+<svg class="spark-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><linearGradient id="spark-fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs></svg>
+<div class="site-shell"><main class="market-main">
+<section class="hud" aria-label="Rings overview"><div class="hud-title"><h1>Rings, in the open</h1><p>What anyone can read of Solana Privacy Rings: what went in, what came out, and who paid whom. Never what a wallet holds.</p></div><dl class="hud-stats"><div title="Tokens registered with Rings, so they can be held privately"><dt>Tokens</dt><dd id="r-tokens">—</dd></div><div title="Wallets registered to be paid privately"><dt>Wallets</dt><dd id="r-wallets">—</dd></div><div title="Shields, unshields, pool trades and private transfers in the last 24 hours"><dt>Moves, 24h</dt><dd id="r-moves">—</dd></div><div title="SOL held privately by everyone together"><dt>SOL shielded</dt><dd id="r-sol">—</dd></div></dl></section>
+<div id="rings-banner" class="banner-line" hidden></div>
+<section class="market" id="rings" aria-label="Rings explorer">
+<div class="market-bar" id="rg-bar">
+<div class="strips" id="rg-strips">
+<div class="seg" id="rg-views" role="group" aria-label="View"><button type="button" data-view="tokens" aria-pressed="true" title="Every token registered with Rings, and how much of it is held privately">Tokens</button><button type="button" data-view="live" aria-pressed="false" title="The newest public activity, as it happens">Live</button></div>
+<div class="seg" id="rg-sorts" role="group" aria-label="Order"><button type="button" data-sort="share" aria-pressed="true" title="The largest share of supply held privately">Most shielded</button><button type="button" data-sort="flow24h" aria-pressed="false" title="The most moved into Rings over a day, net of what left">Inflow 24h</button><button type="button" data-sort="flow7d" aria-pressed="false" title="The most moved into Rings over seven days, net of what left">Inflow 7d</button><button type="button" data-sort="active" aria-pressed="false" title="The most shields and unshields in the last day">Busiest</button><button type="button" data-sort="new" aria-pressed="false" title="The most recently registered">New</button></div>
+<div class="seg" id="rg-kinds" role="group" aria-label="Show" hidden><button type="button" data-kind="" aria-pressed="true">Everything</button><button type="button" data-kind="shield" aria-pressed="false">Shields</button><button type="button" data-kind="unshield" aria-pressed="false">Unshields</button><button type="button" data-kind="transfer" aria-pressed="false">Transfers</button><button type="button" data-kind="trade" aria-pressed="false">Pool trades</button></div>
+</div>
+<form class="rg-search" id="rg-search-form" role="search" autocomplete="off"><label class="search-field market-search"><span class="sr-only">Search a token by ticker or name, or paste a wallet or token address</span><input id="rg-search" type="search" placeholder="Token, or paste an address" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" maxlength="64"></label></form>
+</div>
+<div class="market-meta"><span id="rg-count" aria-live="polite">Reading…</span><span id="rg-updated"></span></div>
+<div id="rg-body" aria-busy="true"><div class="empty-state ghost-state"><span class="ghost-mark" aria-hidden="true"></span><b>READING THE CHAIN<span class="blink">_</span></b></div></div>
+<nav class="pager" id="rg-pager" aria-label="Pages" hidden></nav>
+<p class="market-note" id="rg-note">Read from public chain data: the transactions of the Rings program and the balances of its vaults. Nothing is decrypted and no wallet is connected. A wallet’s private balance, and the token and amount of a private transfer, are not shown because nobody can read them. <a class="tx-link" href="/docs/rings-explorer">How to read this page</a> · <a class="tx-link" href="/ghost-intelligence">GHOST Intelligence</a>.</p>
+</section>
+</main><!--#footer--></div>
+<script type="module" src="/src/pages/rings.ts"></script>
+</body></html>
