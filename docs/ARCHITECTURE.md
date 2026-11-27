@@ -448,6 +448,21 @@ accepted anywhere on the wallet page.
   offers, the modules, what each has done, its running totals, and which sharing wallets it
   has opened a token account for.
 
+#### The desk's blocklist and its fills
+
+`DESK_BLOCKED_WALLETS` is a list of addresses the desk does not trade with. It is read at
+start (a value that is not an address stops the server) and checked first thing when a fill is
+asked for, before the desk does any work. It decides who the desk deals with and nothing else:
+the Shielded route does not pass through the desk, and nothing on this server stands between
+a wallet and Rings or the pools.
+
+`npm run desk:fills` (`ops/desk.ts`, `shared/src/desk-fills.ts`) writes the desk's fills to a
+CSV file. It does not read the server's quote table: it reads the desk wallet's private
+history from chain with the desk's key in the operator's shell, builds the same statement a
+wallet's own page builds, and keeps the rows that are halves of a fill (a private transfer
+with another token going the other way in the same transaction). The file is written outside
+the project folder and never over an existing file.
+
 ### Web
 
 Seven static pages built with Vite; vanilla TypeScript modules, no framework. The market,
@@ -611,10 +626,39 @@ re-read afterwards, because somebody told "failed" tries again and pays twice.
 
 ### The Rings page
 
-`web/rings.html` and `web/src/pages/rings.ts`: one page with four views kept in the address
-bar (tokens, live, one wallet, one token). `web/src/rings-render.ts` holds every sentence the
-page writes about a row, apart from the page, so the wording is tested: it must never say more
-than the chain shows. The page loads the market's styles and none of the trading code.
+`web/rings.html` and `web/src/pages/rings.ts`: one page with five views kept in the address
+bar (tokens, live, custom rings, one wallet, one token). `web/src/rings-render.ts` holds every
+sentence the page writes about a row, apart from the page, so the wording is tested: it must
+never say more than the chain shows. The page loads the market's styles and none of the
+trading code.
+
+#### The register of custom rings
+
+A custom ring is a program of its own. It registers one account with the Solana Privacy
+Program: 69 bytes, type 4, at the address derived from the seed `ring_auth` under the ring's
+program. The account names the program, the address that may change the entry, and three
+switches: `activated` and the authority rail belong to Rings governance, `paused` to the
+ring's operator.
+
+- `shared/src/custom-rings.ts` reads one account as a registration and returns null for
+  anything else. The test that matters is the address: the account has to sit where its own
+  contents say it must, with the bump it stores. The program checks that derivation once, when
+  the entry is created; this code checks it on every read, so an account that only has the
+  right size and first byte is never listed. `mergeRegister` keeps when a ring was first seen
+  and orders the list; `parseRegister` reads the kept list back and trusts none of it.
+- `server/src/rings/chain.ts` finds candidates with one `getProgramAccounts` call filtered by
+  size and first byte, the same kind of scan the token list makes, and reads how new rings are
+  activated from the protocol's own settings account.
+- `server/src/rings/indexer.ts` runs that every fifteen minutes, and at once when a
+  transaction carries one of the four instructions that write a registration
+  (`decode.ts` marks those). The result is one JSON value in the follower's own table. A
+  failed scan leaves the last list in place; a failed read of the activation setting keeps
+  its last known value.
+- `GET /api/rings/custom` serves the kept list. No request from a visitor reaches the chain.
+- `npm run doctor` makes the same two reads and prints them, for the operator.
+
+Nothing here decrypts, signs or sends, and nothing here uses a custom ring. The site's own
+transactions are all Default Ring transactions.
 
 ### Wallet extras
 
@@ -645,6 +689,48 @@ the explorer's read of the indexer (`shared/src/ring-tags.ts`, below).
   signer and builds no transaction.
 - Wording that must not overstate is kept apart from the pages and tested:
   `web/src/checkup-words.ts`, `web/src/alert-words.ts`.
+
+#### Pay many
+
+`/pay` pays a pasted list from a private balance: one private transfer per line, the wallet
+page's own (`transferTransaction`), sent one after another.
+
+- **Reading the list** (`shared/src/paymany.ts`, `parsePayList`). A line is read from the
+  left, one part at a time, so it comes apart the same way whichever separators were used.
+  Every line becomes a payment or a problem; a problem blocks the run. The one deliberate
+  strictness: anything that looks like a number straight after the amount refuses the line,
+  because `1,000` and `1 000` would otherwise pay 1 with a note of `000`.
+- **A run** (`paymany.ts`) is a list of items in one of five states: `todo`, `sent`, `paid`,
+  `failed`, `left`. `markSent` accepts only a `todo` item, so no code path can put a second
+  signature on a line. `failed` always means that nothing moved: refused before sending,
+  rejected on chain, or past its last block. `left` is a wallet that could not be paid
+  privately when the run was made (not a wallet, or not registered with Rings).
+- **The order** (`shared/src/payrun.ts`, `payNext`): check that it can be afforded; build and
+  sign; write the signature down; only then send, with `sendAndSettleFinal`, which stays with
+  the transaction until the chain has decided and takes a rejection only once its block is
+  confirmed (a failure on a fork that is dropped is not one). If the record cannot be written, nothing is sent.
+  If the send fails in the RPC's own simulation the line is `failed`; if it fails any other
+  way, or the wait ends without an answer, the line stays `sent` and the run stops. While any
+  line is `sent`, `payNext` builds nothing. `settleSent` resolves such a line with one look at
+  the chain (`lookUpSent`) and sends nothing. The steps themselves come in as ports, so
+  `tests/payrun.test.ts` runs this order against every failure.
+- **What each step is** (`web/src/pay-flows.ts`): the SDK's transfer, the wallet's signature,
+  the network. The last block a transaction can land in is read from the compiled transaction
+  (`carriedLastValid`); if it were ever missing, the newest lifetime is asked for, which is
+  never earlier, so nothing is called too old too soon.
+- **Where a run is kept** (`web/src/pay-records.ts`): localStorage, under the paying wallet's
+  address, written and read back before every send. It is removed with the wallet.
+- **One tab at a time** (`web/src/pages/pay.ts`): sending and looking up run inside the
+  browser's own lock (`navigator.locks`), named after the wallet, so a second tab cannot work
+  on the same run at the same moment. Before every payment the page also checks that the copy
+  it holds stands where the record stands (`sameProgress`); if another tab moved the run on,
+  it sends nothing and shows the record. The second check is what covers a browser without
+  the lock.
+- **Pacing**: payments are started at least six seconds apart (`PAY_PROOF_SPACING_MS`), as
+  prvmax's steps are, to stay under the relay's proofs-per-minute limit. Each payment is one
+  proof billed to the operator's Helius key.
+- **A token's creator** cannot run a list in that token (`creatorRefused`, the rule prvmax
+  uses). One private transfer at a time, from the wallet page, is unchanged.
 
 ## What is deliberately not here
 

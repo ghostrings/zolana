@@ -4,8 +4,9 @@
  * and it must never claim more than the chain shows.
  */
 
-import type { RingKind, RingLabels, RingLeg, RingRow } from '../../shared/src/rings-api.js';
+import type { CustomRing, CustomRingsView, RingKind, RingLabels, RingLeg, RingRow } from '../../shared/src/rings-api.js';
 import { WSOL_MINT } from '../../shared/src/constants.js';
+import { type RingState, ringStateOf } from '../../shared/src/custom-rings.js';
 import { compactUnits, formatUnits, groupDigits } from '../../shared/src/units.js';
 
 const ESCAPES: Readonly<Record<string, string>> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
@@ -134,7 +135,11 @@ export function rowWords(row: RingRow, labels: RingLabels): RowWords {
     case 'self':
       return { label, html: `${who} moved its own private balance`, note: 'Nothing left the wallet. What it holds is encrypted.' };
     case 'private':
-      if (row.ring) return { label, html: `${who} moved funds inside another ring`, note: 'Not the Default Ring: this site does not read who was paid.' };
+      if (row.ring) {
+        // The ring is named by its program, and the register says what state it is in. Who was paid stays unread.
+        const ring = looksLikeAddress(row.ring) ? `<a class="rg-addr" href="/rings?view=rings" title="${esc(row.ring)}">a custom ring</a>` : 'another ring';
+        return { label, html: `${who} moved funds inside ${ring}`, note: 'Not the Default Ring: this site does not read who was paid.' };
+      }
       return { label, html: `${who} made a private move`, note: `${HIDDEN} Who was paid has not been read yet.` };
     case 'token':
       return { label, html: `${addressLink(row.payer)} registered a token with Rings`, note: 'It can be held privately from now on.' };
@@ -177,4 +182,31 @@ export function amountText(units: string, decimals: number): string {
 export function utcTime(at: number): string {
   if (!Number.isFinite(at) || at <= 0) return '';
   return `${new Date(at).toISOString().slice(0, 16).replace('T', ' ')} UTC`;
+}
+
+/* ---------------- custom rings ---------------- */
+
+/**
+ * What a custom ring's two switches add up to, in words. It says only what
+ * the registration says: whether anything can move, and whose switch stops it.
+ */
+export function ringStateWords(ring: Pick<CustomRing, 'activated' | 'paused'>): { state: RingState; label: string; note: string } {
+  const state = ringStateOf(ring);
+  if (state === 'active') return { state, label: 'Active', note: 'Activated and not paused: transfers in this ring can go through.' };
+  if (state === 'paused') return { state, label: 'Paused', note: 'Paused by its own operator: nothing moves in this ring until it is resumed.' };
+  return { state, label: 'Not activated', note: 'Registered, and not activated by Rings governance: nothing can move in this ring.' };
+}
+
+/** How a new ring starts out on this network. */
+export function activationWords(activation: CustomRingsView['activation']): string {
+  if (activation === 'open') return 'On Solana mainnet a new ring is active from the moment it registers.';
+  if (activation === 'governance') return 'On Solana mainnet a new ring does nothing until Rings governance activates it.';
+  return 'How new rings are activated on Solana mainnet could not be read just now.';
+}
+
+/** The headline count of the register. */
+export function ringCountWords(rings: readonly Pick<CustomRing, 'activated' | 'paused'>[]): string {
+  if (rings.length === 0) return 'No custom ring is registered';
+  const usable = rings.filter((ring) => ringStateOf(ring) === 'active').length;
+  return `${rings.length} custom ring${rings.length === 1 ? '' : 's'} registered, ${usable} active`;
 }

@@ -11,14 +11,13 @@ import './walletpop.css';
 
 import { type IconName, icon } from './icons.js';
 
-type PageKey = 'market' | 'create' | 'swap' | 'rings' | 'ghost' | 'wallet' | 'prvmax' | 'protocol' | 'docs';
+type PageKey = 'market' | 'create' | 'swap' | 'rings' | 'wallet' | 'prvmax' | 'protocol' | 'docs';
 
 const PAGE_LABELS: Record<PageKey, readonly [string, string, IconName]> = {
   market: ['Market', '/', 'market'],
   create: ['Launch', '/create', 'plus'],
   swap: ['Swap', '/swap', 'swap'],
   rings: ['Rings', '/rings', 'rings'],
-  ghost: ['GHOST', '/ghost', 'shield'],
   wallet: ['Wallet', '/wallet', 'wallet'],
   prvmax: ['prvmax', '/prvmax', 'layers'],
   protocol: ['Protocol', '/protocol', 'docs'],

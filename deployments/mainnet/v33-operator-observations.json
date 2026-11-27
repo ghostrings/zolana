@@ -1,0 +1,20 @@
+{
+  "source": "owner-provided public configuration, local-validator and rent/balance outputs; not independently fetched",
+  "programId": "5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n",
+  "upgradeAuthority": "J4JRQza7JXnkct6kQC3roPYstoH2xFBoyQ5Wczpt5jPt",
+  "administrator": "J4JRQza7JXnkct6kQC3roPYstoH2xFBoyQ5Wczpt5jPt",
+  "treasury": "78XzeLvhyvsgQTirz9LmerGB6PNMDgFhdtHXSWoo83oi",
+  "pauser": "4xbhc9hzcGZpWpyHsguQbB5JdBZzGTcnBouyk1fbTbwF",
+  "authorityConfiguration": "proposed; not initialized on chain",
+  "feePayerBalanceLamports": "3324702588",
+  "programDataRentLamports": "2711729400",
+  "candidateProgramDataRentEstimateLamports": "2783784120",
+  "candidateBufferRentEstimateLamports": "2783743480",
+  "priorV33WalletTests": {
+    "passed": 5,
+    "failed": 0,
+    "scope": "owner-reported loopback validator; independent signatures, native wrapping, paused exit, fee claims"
+  },
+  "productionReview": "pending",
+  "privateSettlement": false
+}

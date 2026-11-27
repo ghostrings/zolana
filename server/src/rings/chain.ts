@@ -14,7 +14,8 @@ import type { SprClient } from '@heliuslabs/spr/client';
 import { decodeSplAssetRegistry } from '@heliuslabs/spr/interface';
 
 import { SPP_PROGRAM_ID, USER_REGISTRY_PROGRAM_ID } from '../../../shared/src/constants.js';
-import { createRingsClient } from '../../../shared/src/privacy.js';
+import { RING_CONFIG_SCAN } from '../../../shared/src/custom-rings.js';
+import { createRingsClient, readProtocolFacts } from '../../../shared/src/privacy.js';
 import { taggedEvents } from '../../../shared/src/ring-tags.js';
 import { RINGS_REGISTRY_SCAN } from '../proxy.js';
 import type { RawTransaction, RingEvent } from './decode.js';
@@ -125,6 +126,18 @@ export function createRingChain(options: RingChainOptions): RingChain & { isRegi
         }
       }
       return entries;
+    },
+
+    async ringConfigs() {
+      const accounts = await connection.getProgramAccounts(program, {
+        commitment: 'confirmed',
+        filters: [{ dataSize: RING_CONFIG_SCAN.dataSize }, { memcmp: { offset: 0, bytes: bs58.encode(Uint8Array.of(RING_CONFIG_SCAN.type)) } }],
+      });
+      return accounts.map(({ pubkey, account }) => ({ address: pubkey.toBase58(), data: new Uint8Array(account.data) }));
+    },
+
+    async ringActivationOpen() {
+      return (await readProtocolFacts(await spr())).ringActivationIsPermissionless;
     },
 
     async accounts(addresses) {

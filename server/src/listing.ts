@@ -66,3 +66,20 @@ export function tokenPage(store: Pick<Store, 'tokenPage'>, request: PageRequest,
   }
   return { tokens: result.rows.map(listed), total: result.total, page, pages, size: request.size };
 }
+
+/**
+ * At most 32 real, positive price observations, oldest first. Keep both
+ * endpoints and select existing rows only; never interpolate or invent prices.
+ * The input is not mutated, and the original price text keeps its precision.
+ */
+export function sampleMarketPrices(
+  rows: ReadonlyArray<{ readonly at: number; readonly price_sol: string }>,
+): Array<{ at: number; price: string }> {
+  const points = rows
+    .filter((row) => Number.isFinite(row.at) && Number.isFinite(Number(row.price_sol)) && Number(row.price_sol) > 0)
+    .map((row) => ({ at: row.at, price: row.price_sol }))
+    .sort((a, b) => a.at - b.at);
+  const limit = 32;
+  if (points.length <= limit) return points;
+  return Array.from({ length: limit }, (_, i) => points[Math.floor(i * (points.length - 1) / (limit - 1))]!);
+}

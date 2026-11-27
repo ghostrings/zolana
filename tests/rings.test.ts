@@ -12,6 +12,7 @@ import { InstructionTag, transactInstruction, type TransactInstructionData } fro
 import { AssetRegistry } from '@heliuslabs/spr/transaction';
 
 import { DBC_PROGRAM_ID, SPP_PROGRAM_ID, WSOL_MINT } from '../shared/src/constants.js';
+import { NO_AUTHORITY, RING_CONFIG_SCAN, ringConfigAddress } from '../shared/src/custom-rings.js';
 import { addSignature } from '../shared/src/signing.js';
 import { composeV1 } from '../shared/src/tx.js';
 import { type DecodeContext, type RawMeta, type RawTransaction, type RingEvent, UnreadableTransaction, decodeRing, readMessage } from '../server/src/rings/decode.js';
@@ -415,11 +416,15 @@ interface Scripted {
   registry: Array<{ mint: string; assetId: string }>;
   accounts: Map<string, { lamports: bigint; data: Uint8Array }>;
   names: Map<string, { symbol: string; name: string }> | 'throw';
-  calls: { signatures: number; transaction: number; events: number; registry: number; accounts: number; names: number; wallets: number };
+  /** Accounts of the program with the size and type of a custom ring's registration. `throw` makes the scan fail. */
+  rings: Array<{ address: string; data: Uint8Array }> | 'throw';
+  /** Whether a new ring is active from the moment it registers. `throw` makes that read fail. */
+  activationOpen: boolean | 'throw';
+  calls: { signatures: number; transaction: number; events: number; registry: number; accounts: number; names: number; wallets: number; rings: number };
 }
 
 function scripted(): Scripted {
-  return { list: [], txs: new Map(), events: new Map(), registry: [], accounts: new Map(), names: new Map(), calls: { signatures: 0, transaction: 0, events: 0, registry: 0, accounts: 0, names: 0, wallets: 0 } };
+  return { list: [], txs: new Map(), events: new Map(), registry: [], accounts: new Map(), names: new Map(), rings: [], activationOpen: false, calls: { signatures: 0, transaction: 0, events: 0, registry: 0, accounts: 0, names: 0, wallets: 0, rings: 0 } };
 }
 
 function chainOf(script: Scripted): RingChain {
@@ -454,6 +459,15 @@ function chainOf(script: Scripted): RingChain {
     async walletCount() {
       script.calls.wallets += 1;
       return 321;
+    },
+    async ringConfigs() {
+      script.calls.rings += 1;
+      if (script.rings === 'throw') throw new Error('scan refused');
+      return script.rings;
+    },
+    async ringActivationOpen() {
+      if (script.activationOpen === 'throw') throw new Error('settings not served');
+      return script.activationOpen;
     },
     async names(mints) {
       script.calls.names += 1;
@@ -800,3 +814,158 @@ describe('the Rings indexer', () => {
     }
   });
 });
+
+/* ------------------------------------------------------------------ */
+/* The register of custom rings                                        */
+/* ------------------------------------------------------------------ */
+
+/** A ring's registration account, as the program lays it out: type, authority, program, three switches, bump. */
+async function ringAccount(
+  program: string,
+  flags: { activated?: boolean; paused?: boolean; rail?: boolean; authority?: string } = {},
+): Promise<{ address: string; data: Uint8Array }> {
+  const { address, bump } = await ringConfigAddress(program);
+  const data = new Uint8Array(RING_CONFIG_SCAN.dataSize);
+  data[0] = RING_CONFIG_SCAN.type;
+  data.set(bs58.decode(flags.authority ?? Keypair.generate().publicKey.toBase58()), 1);
+  data.set(bs58.decode(program), 33);
+  data[65] = flags.rail ? 1 : 0;
+  data[66] = flags.paused ? 1 : 0;
+  data[67] = flags.activated ? 1 : 0;
+  data[68] = bump;
+  return { address, data };
+}
+
+describe('the register of custom rings', () => {
+  it('lists every ring that checks out, usable ones first, and says how new rings start out', async () => {
+    const w = await world();
+    try {
+      const [waiting, active, paused] = [0, 1, 2].map(() => Keypair.generate().publicKey.toBase58()) as [string, string, string];
+      expect(w.indexer.customRings()).toEqual({ enabled: true, readAt: null, activation: null, rings: [] });
+      w.script.rings = [
+        await ringAccount(waiting),
+        await ringAccount(active, { activated: true, rail: true, authority: NO_AUTHORITY }),
+        await ringAccount(paused, { activated: true, paused: true }),
+      ];
+      await w.indexer.pass();
+      const view = w.indexer.customRings();
+      expect(view.activation).toBe('governance');
+      expect(view.readAt).toBe(NOW);
+      expect(view.rings.map((ring) => ring.program)).toEqual([active, paused, waiting]);
+      expect(view.rings[0]).toMatchObject({ activated: true, paused: false, authorityRail: true, authority: '', moves: 0, firstSeen: NOW });
+      expect(view.rings[0]?.config).toBe((await ringConfigAddress(active)).address);
+      expect(view.rings[2]).toMatchObject({ activated: false, paused: false, authorityRail: false });
+      expect(w.logs.filter((line) => line.includes('custom ring'))).toEqual([]); // the first read announces nothing
+    } finally {
+      w.close();
+    }
+  });
+
+  it('leaves out an account that only looks like a registration, and says so once', async () => {
+    const w = await world();
+    try {
+      const real = Keypair.generate().publicKey.toBase58();
+      const good = await ringAccount(real, { activated: true });
+      // The right size and type, at an address its own contents do not call for.
+      const stray = { address: Keypair.generate().publicKey.toBase58(), data: good.data };
+      // The right address, with a bump that is not the one the address was made with.
+      const forged = await ringAccount(Keypair.generate().publicKey.toBase58());
+      forged.data[68] = (forged.data[68] ?? 0) === 255 ? 254 : (forged.data[68] ?? 0) + 1;
+      w.script.rings = [stray, good, forged];
+      await w.indexer.pass();
+      expect(w.indexer.customRings().rings.map((ring) => ring.program)).toEqual([real]);
+      expect(w.logs.filter((line) => line.includes('do not check out'))).toHaveLength(1);
+    } finally {
+      w.close();
+    }
+  });
+
+  it('reads the register every fifteen minutes, and at once when a transaction changes a registration', async () => {
+    const w = await world();
+    try {
+      const first = Keypair.generate().publicKey.toBase58();
+      w.script.rings = [await ringAccount(first)];
+      await w.indexer.pass();
+      expect(w.script.calls.rings).toBe(1);
+      w.advance(60_000);
+      await w.indexer.pass();
+      expect(w.script.calls.rings).toBe(1);
+
+      // Governance activates it: the transaction carries the instruction, and the register is read again on that pass.
+      w.script.rings = [await ringAccount(first, { activated: true })];
+      w.script.activationOpen = true;
+      w.land(await raw(relay, [bare(InstructionTag.setRingActivation, [[relay.address, AccountRole.WRITABLE_SIGNER]])], [relay]), null, 1_000);
+      w.advance(60_000);
+      await w.indexer.pass();
+      expect(w.script.calls.rings).toBe(2);
+      let view = w.indexer.customRings();
+      expect(view.rings[0]).toMatchObject({ program: first, activated: true, firstSeen: NOW }); // first seen is kept
+      expect(view.activation).toBe('open');
+
+      // A second ring registers: it is announced, and the first keeps its place.
+      const second = Keypair.generate().publicKey.toBase58();
+      w.script.rings = [await ringAccount(second), await ringAccount(first, { activated: true })];
+      w.land(await raw(relay, [bare(InstructionTag.createRingConfig, [[relay.address, AccountRole.WRITABLE_SIGNER]])], [relay]), null, 1_000);
+      w.advance(60_000);
+      await w.indexer.pass();
+      view = w.indexer.customRings();
+      expect(view.rings.map((ring) => ring.program)).toEqual([first, second]);
+      expect(view.rings[1]?.firstSeen).toBe(NOW + 180_000);
+      expect(w.logs.filter((line) => line.includes(`a custom ring was registered: program ${second}`))).toHaveLength(1);
+
+      w.advance(16 * 60_000);
+      await w.indexer.pass();
+      expect(w.script.calls.rings).toBe(4);
+    } finally {
+      w.close();
+    }
+  });
+
+  it('keeps the last register when the scan fails, and the last known setting when only that read fails', async () => {
+    const w = await world();
+    try {
+      const program = Keypair.generate().publicKey.toBase58();
+      w.script.rings = [await ringAccount(program, { activated: true })];
+      w.script.activationOpen = true;
+      await w.indexer.pass();
+      expect(w.indexer.customRings()).toMatchObject({ activation: 'open', readAt: NOW });
+
+      w.advance(16 * 60_000);
+      w.script.activationOpen = 'throw';
+      await w.indexer.pass();
+      expect(w.indexer.customRings()).toMatchObject({ activation: 'open', readAt: NOW + 16 * 60_000 });
+      expect(w.indexer.customRings().rings).toHaveLength(1);
+
+      w.advance(16 * 60_000);
+      w.script.rings = 'throw';
+      await w.indexer.pass();
+      const view = w.indexer.customRings();
+      expect(view.readAt).toBe(NOW + 16 * 60_000); // not read this time: the date says so
+      expect(view.rings.map((ring) => ring.program)).toEqual([program]);
+      expect(w.logs.filter((line) => line.includes('register of custom rings did not finish'))).toHaveLength(1);
+    } finally {
+      w.close();
+    }
+  });
+
+  it('counts the transactions it has read of each ring', async () => {
+    const w = await world();
+    try {
+      const program = Keypair.generate().publicKey.toBase58();
+      w.script.rings = [await ringAccount(program, { activated: true })];
+      const move = bare(InstructionTag.ringTransact, [[alice.address, AccountRole.WRITABLE_SIGNER]]);
+      w.land(await raw(alice, [move], [alice]), [{ tags: [], nullifiers: 1, proofless: false, ring: program }], 2_000);
+      w.land(await raw(alice, [move], [alice]), [{ tags: [], nullifiers: 1, proofless: false, ring: program }], 1_000);
+      // The indexer may name the ring by its registration instead of its program: it is the same ring.
+      const config = (await ringConfigAddress(program)).address;
+      w.land(await raw(alice, [move], [alice]), [{ tags: [], nullifiers: 1, proofless: false, ring: config }], 500);
+      // A transaction of some other ring is not counted for this one.
+      w.land(await raw(alice, [move], [alice]), [{ tags: [], nullifiers: 1, proofless: false, ring: Keypair.generate().publicKey.toBase58() }], 400);
+      await w.indexer.pass();
+      expect(w.indexer.customRings().rings[0]).toMatchObject({ program, moves: 3 });
+    } finally {
+      w.close();
+    }
+  });
+});
+

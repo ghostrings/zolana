@@ -136,7 +136,7 @@ describe('the docs’ pages', () => {
   });
 
   it('link only to pages and places that exist', () => {
-    const places = new Set(['/', '/create', '/swap', '/wallet', '/view', '/prvmax', '/rings', '/protocol', '/docs']);
+    const places = new Set(['/', '/create', '/swap', '/wallet', '/pay', '/view', '/prvmax', '/rings', '/protocol', '/docs']);
     for (const page of DOC_PAGES) {
       const { html, sections } = renderMarkdown(page.body, full);
       const anchors = new Set(sections.map((section) => section.id));

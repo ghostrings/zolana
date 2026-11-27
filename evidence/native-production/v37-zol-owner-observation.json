@@ -1,0 +1,19 @@
+{
+  "source": "operator-provided native market page screenshot; not independently fetched",
+  "programId": "5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n",
+  "displayedFinalizedSlot": 474470616,
+  "market": "AqwuGpwStiafXGnwqxEQ1sdqnPodnytvWrzU71odCrrg",
+  "mint": "2P2pLKSZr48zr7M3GQWEC4uwNgRv9JbJn3Ja2a9DutgX",
+  "name": "ZOL",
+  "symbol": "ZOL",
+  "displayedPhase": "curve",
+  "displayedMode": "active",
+  "displayedFeeBps": 300,
+  "displayedBaseReserveUnits": "1000000000000",
+  "displayedQuoteReserveLamports": "0",
+  "displayedStateVersion": "0",
+  "privateSettlement": false,
+  "registrationStatus": "not independently observed",
+  "launchSignature": null,
+  "warning": "Historical owner observation only; re-read finalized state before any action. Not an audit."
+}

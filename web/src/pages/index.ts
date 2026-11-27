@@ -1,4 +1,9 @@
 import '../market.css';
+import type { NativeCard } from '../native-v33/catalog.mjs';
+import { catalogWindow } from '../native-v33/catalog-data.mjs';
+import { MARKET_PAGE_SIZE } from '../../../shared/src/api.js';
+type CardToken = TokenSummary & {native?: NativeCard['native']};
+type CatalogPage = Omit<TokenPageResponse,'tokens'> & {tokens: readonly CardToken[]};
 
 import { type StatusResponse, type TokenPageResponse, type TokenSort, type TokenSummary } from '../../../shared/src/api.js';
 import { INITIAL_SUPPLY_UNITS } from '../../../shared/src/constants.js';
@@ -38,11 +43,11 @@ const tickerTrack = byId('ticker-track');
 let view: MarketView = readMarketView(location.search);
 let layout: Layout = readLayout();
 /** The page on screen. Null until the first one has loaded. */
-let shown: TokenPageResponse | null = null;
+let shown: CatalogPage | null = null;
 /** What the list was last built from. While it is the same, a refresh changes figures in place and rebuilds nothing. */
 let built = '';
 /** The tokens as they were last drawn, by mint: what a refresh is compared with. */
-const drawn = new Map<string, TokenSummary>();
+const drawn = new Map<string, CardToken>();
 /** What each figure on screen was last set to, so one that did not change is left alone. */
 const written = new WeakMap<Element, string>();
 /** Counts requests, so an answer that arrives after a newer question is dropped. */
@@ -71,9 +76,11 @@ function readLayout(): Layout {
 
 /* ---------------- What a token says about itself ---------------- */
 
-const symbolOf = (token: TokenSummary): string => `$${escapeHtml(token.symbol || '???')}`;
-const nameOf = (token: TokenSummary): string => escapeHtml(token.name || 'Unnamed token');
-const hrefOf = (token: TokenSummary): string => `/token?mint=${encodeURIComponent(token.mint)}`;
+const symbolOf = (token: CardToken): string => `$${escapeHtml(token.symbol || '???')}`;
+const nameOf = (token: CardToken): string => escapeHtml(token.name || 'Unnamed token');
+const hrefOf = (token: CardToken): string => token.native ? `/native-token?market=${encodeURIComponent(token.native.market)}` : `/token?mint=${encodeURIComponent(token.mint)}`;
+const ringBadge = (token: CardToken): string => token.native?.registered ? '<span class="tk-ring-badge" title="Verified Privacy Rings asset: encrypted holdings supported. Market execution is public. Native markets are unaudited." aria-label="Rings asset; trades are public"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/></svg> Rings</span>' : token.native ? '<span class="tk-tag" title="Native market; Rings registration not verified">Native</span>' : '';
+const change = (token: CardToken): string => token.native ? '<span class="chg flat" data-f="chg" title="24h return unavailable for this bounded history">—</span>' : changeChip(token.change24h);
 
 /** "42s", "7m", "3h", "12d": how long ago a token was launched, short enough for a card. */
 function ageText(time: number): string {
@@ -86,11 +93,13 @@ function ageText(time: number): string {
 
 /** A price. A very small one is written the way trading screens write it: 0.0, the count of zeros, the digits. */
 function priceHtml(price: string): string {
+  if (price.startsWith('Below ')) return escapeHtml(price);
   const small = smallPrice(price);
   return small ? `0.0<sub>${small.zeros}</sub>${escapeHtml(small.digits)}` : escapeHtml(decimalText(price));
 }
 
-function capHtml(token: TokenSummary): string {
+function capHtml(token: CardToken): string {
+  if (token.native && !token.native.capKnown) return "—";
   return `${escapeHtml(decimalText(token.marketCap))} <i>${escapeHtml(token.pair.symbol)}</i>`;
 }
 
@@ -99,45 +108,49 @@ const CARD_CAP_FROM = 100_000;
 const TIGHT_CAP_FROM = 10_000;
 
 /** Market cap cut short from `from` up: 79,724 is 79.7K. Smaller ones are written out. */
-function capShortHtml(token: TokenSummary, from: number = TIGHT_CAP_FROM): string {
+function capShortHtml(token: CardToken, from: number = TIGHT_CAP_FROM): string {
+  if (token.native && !token.native.capKnown) return "—";
   const value = Number(token.marketCap);
   const short = (Number.isFinite(value) && value >= from ? shortAmount(value) : null) ?? decimalText(token.marketCap);
   return `${escapeHtml(short)} <i>${escapeHtml(token.pair.symbol)}</i>`;
 }
 
 /** A tile's market cap is the number alone: the pair stands in the line above it. */
-function capTileHtml(token: TokenSummary): string {
+function capTileHtml(token: CardToken): string {
+  if (token.native && !token.native.capKnown) return "—";
   const value = Number(token.marketCap);
   return escapeHtml((Number.isFinite(value) && value >= TIGHT_CAP_FROM ? shortAmount(value) : null) ?? decimalText(token.marketCap));
 }
 
 /** What a token has traded since launch, on its curve and after it. */
-function volumeHtml(token: TokenSummary): string {
-  const text = compact(token.volume ?? '0', token.pair);
+function volumeHtml(token: CardToken): string {
+  if (token.native && token.native.recentVolume === null) return '—';
+  const text = compact(token.native ? token.native.recentVolume! : token.volume ?? '0', token.pair);
   const cut = text.lastIndexOf(' ');
-  return cut > 0 ? `${escapeHtml(text.slice(0, cut))} <i>${escapeHtml(text.slice(cut + 1))}</i>` : escapeHtml(text);
+  const partial = token.native?.incomplete ? '≥ ' : '';
+  return cut > 0 ? partial + `${escapeHtml(text.slice(0, cut))} <i>${escapeHtml(text.slice(cut + 1))}</i>` : partial + escapeHtml(text);
 }
 
-const percentDone = (token: TokenSummary): number => (token.stage === 'curve' ? Math.round(Math.max(0, Math.min(1, token.progress)) * 100) : 100);
+const percentDone = (token: CardToken): number => (token.stage === 'curve' ? Math.round(Math.max(0, Math.min(1, token.progress)) * 100) : 100);
 
-function stageText(token: TokenSummary): string {
+function stageText(token: CardToken): string {
   if (token.stage === 'graduated') return 'Graduated';
   if (token.stage === 'migrating') return 'Migrating';
   return `${percentDone(token)}%`;
 }
 
-function track(token: TokenSummary): string {
+function track(token: CardToken): string {
   const percent = percentDone(token);
   return `<span class="track${token.stage === 'curve' ? '' : ' is-done'}" role="progressbar" aria-label="Progress to graduation" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}"><i data-f="bar" style="width:${percent}%"></i></span>`;
 }
 
 /** The fee tier, and after it whatever else is permanent about the token: fee modules, supply burned. */
-function tags(token: TokenSummary): string {
+function tags(token: CardToken): string {
   const list = [`${feeLabel(token.feeBps)} fee`];
   const modules = moduleTag(token);
   if (modules) list.push(modules.charAt(0) + modules.slice(1).toLowerCase());
   const burned = BigInt(token.burned || '0');
-  if (burned > 0n) list.push(`${percentOf(burned, INITIAL_SUPPLY_UNITS)}% burned`);
+  if (burned > 0n && !token.native) list.push(`${percentOf(burned, INITIAL_SUPPLY_UNITS)}% burned`);
   return list.map((text) => `<span class="tk-tag">${escapeHtml(text)}</span>`).join('');
 }
 
@@ -146,27 +159,28 @@ function tags(token: TokenSummary): string {
  * frame: a ticker of nine or ten letters is set a little smaller, and a pair
  * symbol longer than four letters is written once on a card, not twice.
  */
-function marks(token: TokenSummary): string {
+function marks(token: CardToken): string {
   return `${[...(token.symbol || '')].length >= 9 ? ' data-long' : ''}${[...(token.pair.symbol || '')].length > 4 ? ' data-unit-long' : ''}`;
 }
 
-const chart = (token: TokenSummary): string => `<div class="tk-chart" data-f="spark">${sparkSvg(token.spark ?? [])}</div>`;
-const age = (token: TokenSummary): string => `<time class="tk-age" data-age="${token.createdAt}" title="Launched ${escapeHtml(new Date(token.createdAt).toLocaleString())}">${ageText(token.createdAt)}</time>`;
+const chartMarkup = (token: CardToken): string => token.native && (token.spark?.length ?? 0)<2 ? '<span class="tk-no-history">Awaiting trade history</span>' : sparkSvg(token.spark ?? []);
+const chart = (token: CardToken): string => `<div class="tk-chart" data-f="spark" title="${token.native ? 'Recent finalized executions (up to 10 signatures)' : 'Last 24 hours'}">${chartMarkup(token)}</div>`;
+const age = (token: CardToken): string => token.native && !token.createdAt ? '<span class="tk-age" title="Launch time unavailable">—</span>' : `<time class="tk-age" data-age="${token.createdAt}" title="Launched ${escapeHtml(new Date(token.createdAt).toLocaleString())}">${ageText(token.createdAt)}</time>`;
 
 /* ---------------- The three layouts ---------------- */
 
-function card(token: TokenSummary, index: number): string {
+function card(token: CardToken, index: number): string {
   return `<article class="tk" data-mint="${escapeHtml(token.mint)}"${marks(token)} style="--i:${index}"><a class="tk-link" href="${hrefOf(token)}">
-    <div class="tk-head"><div class="token-avatar">${tokenArt(token)}</div><div class="tk-id"><div class="tk-top"><b class="tk-sym">${symbolOf(token)}</b>${changeChip(token.change24h)}</div><div class="tk-sub">${pairChip(token.pair)}<span class="tk-name">${nameOf(token)}</span>${age(token)}</div></div></div>
+    <div class="tk-head"><div class="token-avatar">${tokenArt(token)}</div><div class="tk-id"><div class="tk-top"><b class="tk-sym">${symbolOf(token)}</b>${change(token)}</div><div class="tk-sub">${pairChip(token.pair)}${ringBadge(token)}<span class="tk-name">${nameOf(token)}</span>${age(token)}</div></div></div>
     ${chart(token)}
-    <dl class="tk-stats"><div><dt>Market cap</dt><dd data-f="capcard">${capShortHtml(token, CARD_CAP_FROM)}</dd></div><div><dt>Total volume</dt><dd data-f="vol">${volumeHtml(token)}</dd></div><div><dt>Price</dt><dd data-f="price">${priceHtml(token.price)}</dd></div></dl>
+    <dl class="tk-stats"><div><dt>${token.native ? 'Est. cap' : 'Market cap'}</dt><dd data-f="capcard">${capShortHtml(token, CARD_CAP_FROM)}</dd></div><div><dt>${token.native ? 'Recent volume' : 'Total volume'}</dt><dd data-f="vol">${volumeHtml(token)}</dd></div><div><dt>Price</dt><dd data-f="price">${priceHtml(token.price)}</dd></div></dl>
     <div class="tk-foot">${track(token)}<b class="tk-pct" data-f="pct">${stageText(token)}</b><span class="tk-tags">${tags(token)}</span></div>
   </a></article>`;
 }
 
-function tile(token: TokenSummary, index: number): string {
+function tile(token: CardToken, index: number): string {
   return `<article class="tk tile" data-mint="${escapeHtml(token.mint)}"${marks(token)} style="--i:${index}"><a class="tk-link" href="${hrefOf(token)}">
-    <div class="tile-top"><div class="token-avatar">${tokenArt(token)}</div>${changeChip(token.change24h)}</div>
+    <div class="tile-top"><div class="token-avatar">${tokenArt(token)}</div>${ringBadge(token)}${change(token)}</div>
     <div class="tk-id"><b class="tk-sym">${symbolOf(token)}</b><span class="tk-name"><span class="tile-name">${nameOf(token)}</span><span class="tile-pair">${escapeHtml(token.pair.symbol)}</span></span></div>
     ${chart(token)}
     <div class="tile-cap"><span data-f="captile">${capTileHtml(token)}</span><b class="tk-pct" data-f="pct">${stageText(token)}</b></div>
@@ -180,14 +194,14 @@ function tile(token: TokenSummary, index: number): string {
  * curve it is drawn on the line under it. `--len` is the length of the ticker,
  * which that strip keeps room for, and `--p` is that line's length.
  */
-function row(token: TokenSummary, index: number, rank: number): string {
+function row(token: CardToken, index: number, rank: number): string {
   return `<tr class="tk-row" data-mint="${escapeHtml(token.mint)}" data-href="${hrefOf(token)}"${marks(token)}${token.stage === 'curve' ? '' : ' data-done'} style="--i:${index};--len:${[...(token.symbol || '???')].length};--p:${percentDone(token)}%">
     <td class="c-rank">${rank}</td>
-    <td class="c-token"><a class="tk-cell" href="${hrefOf(token)}"><div class="token-avatar">${tokenArt(token)}</div><div class="tk-id"><div class="tk-line"><b class="tk-sym">${symbolOf(token)}</b>${pairChip(token.pair)}</div><span class="tk-name"><b class="row-stage" data-f="pct">${stageText(token)}</b>${nameOf(token)}</span></div></a></td>
+    <td class="c-token"><a class="tk-cell" href="${hrefOf(token)}"><div class="token-avatar">${tokenArt(token)}</div><div class="tk-id"><div class="tk-line"><b class="tk-sym">${symbolOf(token)}</b>${pairChip(token.pair)}${ringBadge(token)}</div><span class="tk-name"><b class="row-stage" data-f="pct">${stageText(token)}</b>${nameOf(token)}</span></div></a></td>
     <td class="num c-price" data-f="price">${priceHtml(token.price)}</td>
-    <td class="num c-chg">${changeChip(token.change24h)}</td>
+    <td class="num c-chg">${change(token)}</td>
     <td class="num c-cap"><span class="cap-full" data-f="cap">${capHtml(token)}</span><span class="cap-short" data-f="capshort">${capShortHtml(token)}</span></td>
-    <td class="num c-vol" data-f="vol">${volumeHtml(token)}</td>
+    <td class="num c-vol" data-f="vol" title="${token.native ? 'Recent finalized volume only' : 'Lifetime volume'}">${volumeHtml(token)}${token.native ? ' <small>recent</small>' : ''}</td>
     <td class="c-grad"><div class="tk-grad">${track(token)}<b class="tk-pct" data-f="pct">${stageText(token)}</b></div></td>
     <td class="c-fee">${escapeHtml(feeLabel(token.feeBps))}</td>
     <td class="num c-age">${age(token)}</td>
@@ -201,15 +215,15 @@ function heading(label: string, sort: TokenSort): string {
   return `<button type="button" data-sort="${sort}" aria-pressed="${on}" title="Order by ${label.toLowerCase()}">${label}</button>`;
 }
 
-function table(tokens: readonly TokenSummary[], firstRank: number): string {
-  return `<div class="tk-table-wrap"><table class="tk-table"><thead><tr><th class="c-rank">#</th><th class="c-token">Token</th><th class="num c-price">Price</th><th class="num c-chg">24h</th><th class="num c-cap">${heading('Market cap', 'cap')}</th><th class="num c-vol">${heading('Total volume', 'volume')}</th><th class="c-grad">${heading('Graduation', 'graduation')}</th><th class="c-fee">Fee</th><th class="num c-age">${heading('Age', 'new')}</th><th class="num c-spark">Last 24h</th></tr></thead><tbody>${tokens
+function table(tokens: readonly CardToken[], firstRank: number): string {
+  return `<div class="tk-table-wrap"><table class="tk-table"><thead><tr><th class="c-rank">#</th><th class="c-token">Token</th><th class="num c-price">Price</th><th class="num c-chg">24h</th><th class="num c-cap">${heading('Market cap', 'cap')}</th><th class="num c-vol">${heading('Volume', 'volume')}</th><th class="c-grad">${heading('Graduation', 'graduation')}</th><th class="c-fee">Fee</th><th class="num c-age">${heading('Age', 'new')}</th><th class="num c-spark">Chart</th></tr></thead><tbody>${tokens
     .map((token, index) => row(token, index, firstRank + index))
     .join('')}</tbody></table></div>`;
 }
 
 /** Everything about a token that is not a moving figure. When any of it changes the list is built again. */
-function fixedPart(token: TokenSummary): string {
-  return JSON.stringify([token.mint, token.name, token.symbol, token.image, token.stage, token.feeBps, token.pair.symbol, moduleTag(token), BigInt(token.burned || '0') > 0n ? token.burned : '']);
+function fixedPart(token: CardToken): string {
+  return JSON.stringify([token.native?.registered,token.native?.assetId,token.native?.capKnown,token.native?.recentVolume,token.native?.recentCount,token.native?.incomplete,token.createdAt,token.mint, token.name, token.symbol, token.image, token.stage, token.feeBps, token.pair.symbol, moduleTag(token), BigInt(token.burned || '0') > 0n ? token.burned : '']);
 }
 
 /* ---------------- Drawing ---------------- */
@@ -243,7 +257,7 @@ function moved(before: string | undefined, after: string): 'up' | 'down' | undef
 }
 
 /** Brings the figures of the tokens already on screen up to date, without rebuilding their cards. */
-function refreshFigures(tokens: readonly TokenSummary[]): void {
+function refreshFigures(tokens: readonly CardToken[]): void {
   for (const token of tokens) {
     const holder = grid.querySelector(`[data-mint="${CSS.escape(token.mint)}"]`);
     if (!holder) continue;
@@ -256,9 +270,9 @@ function refreshFigures(tokens: readonly TokenSummary[]): void {
     write(holder, 'vol', volumeHtml(token));
     write(holder, 'price', priceHtml(token.price), moved(before?.price, token.price));
     write(holder, 'pct', stageText(token));
-    write(holder, 'spark', sparkSvg(token.spark ?? []));
+    write(holder, 'spark', chartMarkup(token));
     const chip = holder.querySelector('[data-f="chg"]');
-    const nextChip = changeChip(token.change24h);
+    const nextChip = change(token);
     if (chip && written.get(chip) !== nextChip) {
       const known = written.has(chip);
       if (known) {
@@ -280,7 +294,7 @@ function refreshFigures(tokens: readonly TokenSummary[]): void {
 }
 
 /** Notes what every figure shows right after a build, so the first refresh has something to compare with. */
-function remember(tokens: readonly TokenSummary[]): void {
+function remember(tokens: readonly CardToken[]): void {
   drawn.clear();
   for (const token of tokens) drawn.set(token.mint, token);
   refreshFigures(tokens);
@@ -431,7 +445,23 @@ async function loadPage(options: { quiet?: boolean; scroll?: boolean } = {}): Pr
     grid.classList.add('is-turning');
   }
   try {
-    const data = await api.tokenPage(view);
+    const requestView = view;
+    const [legacyFirst, catalog] = await Promise.all([api.tokenPage({...requestView,page:1}), import('../native-v33/catalog.mjs').catch(()=>null)]);
+    const snapshot = catalog ? await catalog.nativeCatalog() : null;
+    if (mine !== asked) return;
+    const matches = catalog ? catalog.matchingNative(snapshot,requestView) : [];
+    const window = catalogWindow(matches.length,legacyFirst.total,requestView.page,MARKET_PAGE_SIZE);
+    const legacyRows: TokenSummary[] = [];
+    if (window.legacyTake) {
+      const first = Math.floor(window.legacyStart/MARKET_PAGE_SIZE)+1;
+      const skip = window.legacyStart%MARKET_PAGE_SIZE;
+      const pages = [first]; if (skip+window.legacyTake>MARKET_PAGE_SIZE) pages.push(first+1);
+      for (const p of pages) legacyRows.push(...(p===1?legacyFirst:await api.tokenPage({...requestView,page:p})).tokens);
+      legacyRows.splice(0,skip);legacyRows.splice(window.legacyTake);
+    }
+    const nativeRows = snapshot && catalog ? await catalog.catalogTokens(matches.slice(window.nativeStart,window.nativeEnd),snapshot) : [];
+    const data: CatalogPage = {tokens:[...nativeRows,...legacyRows],total:window.total,pages:window.pages,page:window.page,size:window.size};
+    if (mine === asked) byId('market-native-note').textContent = snapshot ? `${matches.length} native match${matches.length===1?'':'es'} · native first` : 'Native index unavailable · Meteora shown';
     if (mine !== asked) return;
     shown = data;
     readAt = Date.now();
@@ -444,7 +474,7 @@ async function loadPage(options: { quiet?: boolean; scroll?: boolean } = {}): Pr
     render(quiet);
     if (options.scroll) byId('market').scrollIntoView({ behavior: 'smooth', block: 'start' });
     // The first page of the default order is also what the ticker runs.
-    if (view.page === 1 && !view.query && !view.pair && view.sort === 'hot') renderTicker(data.tokens);
+    if (view.page === 1 && !view.query && !view.pair && view.sort === 'hot') renderTicker(legacyFirst.tokens);
   } catch {
     if (mine !== asked) return;
     // A refresh that fails leaves the page that is already on screen alone.
@@ -478,7 +508,7 @@ function go(next: MarketView, options: { push?: boolean; scroll?: boolean } = {}
 /* ---------------- The ticker ---------------- */
 
 /** The most traded tokens, running along the top. With fewer than four there is nothing to run, and it stays away. */
-function renderTicker(tokens: readonly TokenSummary[]): void {
+function renderTicker(tokens: readonly CardToken[]): void {
   tickerFed = true;
   const moving = tokens.slice(0, 16);
   if (moving.length < 4) {
@@ -492,7 +522,7 @@ function renderTicker(tokens: readonly TokenSummary[]): void {
   const items = moving
     .map(
       (token) =>
-        `<a href="${hrefOf(token)}" tabindex="-1"><span class="token-avatar">${tokenArt(token)}</span><b>${symbolOf(token)}</b>${changeChip(token.change24h)}<span>${capShortHtml(token)}</span></a>`,
+        `<a href="${hrefOf(token)}" tabindex="-1"><span class="token-avatar">${tokenArt(token)}</span><b>${symbolOf(token)}</b>${change(token)}<span>${capShortHtml(token)}</span></a>`,
     )
     .join('');
   // Twice over, so the strip can run on without a seam.

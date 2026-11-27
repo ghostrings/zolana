@@ -1,0 +1,2 @@
+import '../native-markets.css';import {readNativeSnapshot,renderMarketCards,el,text} from '../native-v33/browser-ui.mjs';
+const root=document.getElementById('native-home-list');if(root){try{const snapshot=await readNativeSnapshot();text('native-home-note',`${snapshot.markets.markets.length} native markets · finalized slot ${snapshot.markets.slot}`);await renderMarketCards(root,snapshot.markets.markets.slice(0,6));}catch{text('native-home-note','Native market snapshot unavailable. The Meteora listing below remains independent.');}}

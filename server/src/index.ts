@@ -29,13 +29,13 @@ import { EnvError, PUBLIC_PINATA_GATEWAY, configuredTiers, readEnv, requireRpc }
 import { createRingChain } from './rings/chain.js';
 import { RingIndexer } from './rings/indexer.js';
 import { ringsRouter } from './rings/routes.js';
-import { customRingsRouter } from './custom-rings/routes.js';
 import { RingStore } from './rings/store.js';
 import { lifetimeVolume, readPageRequest, tokenPage } from './listing.js';
 import { describePair } from './pairs.js';
 import { CLIENT_IP_HEADER_SETTING, HTTPS_ORIGIN_SETTING, RateLimiter, asyncRoute, clientIp, isHashedAsset, sameOrigin, securityHeaders, sendError } from './http.js';
 import { type PriorityOracle, fixedPriority, startPriorityOracle } from './priority.js';
 import { proxyRouter } from './proxy.js';
+import { nativeMarketsRouter } from './native-markets.js';
 import { redact } from './redact.js';
 import { Trends } from './trend.js';
 import { MAX_IMAGE_BYTES, UploadError, Uploads, metadataBytes, metadataJson } from './uploads.js';
@@ -243,6 +243,7 @@ async function main(): Promise<void> {
   const api = express.Router();
   api.use(sameOrigin(env.allowedOrigins, reportUnlisted));
   api.use(proxyRouter(env, limiter, chain ? () => (chain as Chain).assertNetwork() : undefined));
+  api.use('/ghost-markets', nativeMarketsRouter(env.heliusRpcUrl, limiter));
 
   const originOf = (request: Request): string => env.publicOrigin ?? `${request.protocol}://${request.get('host') ?? 'localhost'}`;
 
@@ -434,7 +435,6 @@ async function main(): Promise<void> {
   /* ---------------- Rings explorer ---------------- */
 
   api.use('/rings', ringsRouter({ rings, limiter }));
-  api.use('/custom-rings', customRingsRouter());
 
   /* ---------------- desk ---------------- */
 

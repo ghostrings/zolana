@@ -172,3 +172,38 @@ export interface RingAssetView {
   readonly shielders: number;
   readonly unshielders: number;
 }
+
+/** One custom ring, as its registration on chain reads, with what this server has seen of it. */
+export interface CustomRing {
+  /** The ring's program. Every transaction of the ring runs through it. */
+  readonly program: string;
+  /** The account the ring registered with Rings. */
+  readonly config: string;
+  /** Who may change the registration. Empty when that right has been given up. */
+  readonly authority: string;
+  /** Set by Rings governance. Nothing moves in a ring that is not activated. */
+  readonly activated: boolean;
+  /** Set by the ring's operator. Nothing moves in the ring while it is paused. */
+  readonly paused: boolean;
+  /** Set by Rings governance. Whether the ring may move notes without their owners' signatures. */
+  readonly authorityRail: boolean;
+  /** When this server first saw the ring registered. */
+  readonly firstSeen: number;
+  /** Transactions of this ring in the history this server has read. */
+  readonly moves: number;
+}
+
+/** The public register of custom rings on this network. */
+export interface CustomRingsView {
+  /** False when this server does not follow Rings: nothing below means anything then. */
+  readonly enabled: boolean;
+  /** When the register was last read from chain. Null before the first read. */
+  readonly readAt: number | null;
+  /**
+   * How a new ring starts out: `open` when it is active from the moment it
+   * registers, `governance` when it does nothing until Rings governance
+   * activates it. Null when the network's setting could not be read.
+   */
+  readonly activation: 'open' | 'governance' | null;
+  readonly rings: readonly CustomRing[];
+}

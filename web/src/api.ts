@@ -9,7 +9,7 @@ import type {
   TokenPageResponse,
   TokenSummary,
 } from '../../shared/src/api.js';
-import type { RingAddressView, RingAssetPage, RingAssetView, RingFeed, RingOverview } from '../../shared/src/rings-api.js';
+import type { CustomRingsView, RingAddressView, RingAssetPage, RingAssetView, RingFeed, RingOverview } from '../../shared/src/rings-api.js';
 import type {
   GhostPrepareRequest,
   GhostPrepareResponse,
@@ -112,6 +112,8 @@ export const api = {
   convertBuild: (query: URLSearchParams) => request<unknown>(`/convert/build?${query.toString()}`),
   /* The Rings explorer: public chain data this site's server has read. Nothing about the visitor is sent with these. */
   ringOverview: () => request<RingOverview>('/rings/overview'),
+  /** The public register of custom rings, as this site's server last read it from chain. */
+  ringCustom: () => request<CustomRingsView>('/rings/custom'),
   ringTokens(input: { sort: string; page: number; query?: string }): Promise<RingAssetPage> {
     const params = new URLSearchParams({ sort: input.sort, page: String(input.page) });
     if (input.query) params.set('q', input.query);

@@ -202,6 +202,12 @@ export class RingStore {
     }
   }
 
+  /** How many of the transactions read so far ran through each custom ring, by the ring's program. */
+  ringCounts(): Map<string, number> {
+    const rows = this.#db.prepare('SELECT ring, COUNT(*) AS n FROM ring_tx WHERE ring IS NOT NULL GROUP BY ring').all() as Array<{ ring: string; n: number }>;
+    return new Map(rows.map((row) => [row.ring, Number(row.n)]));
+  }
+
   /* ---------------- meta ---------------- */
 
   meta(key: string): string | undefined {

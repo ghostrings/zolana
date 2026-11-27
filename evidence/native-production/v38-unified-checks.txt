@@ -1,0 +1,11 @@
+V38 packaging checks — no live RPC or transaction execution.
+markets-check: 23 passed; 0 failed
+markets-pilot-check: 45 passed; 0 failed
+markets-lab-check: 8 passed; 0 failed
+markets-wallet-check: 7 passed; 0 failed
+markets-production-check: 21 passed; 0 failed
+markets-browser-check: 7 passed; 0 failed
+markets-live-check: 9 passed; 0 failed
+markets-unified-check: 5 passed; 0 failed
+Total 125 passed. Dependency-backed tests and full build not run: npm ci --offline failed on uncached yocto-queue.
+The candidate is not independently reviewed. No mainnet execution or private settlement enabled.

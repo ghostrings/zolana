@@ -1,0 +1,155 @@
+{
+  "scope": "Owner-supplied V29 local validator archive, inspected for this V30 release; not an independent audit or mainnet upgrade approval",
+  "network": "loopback-local-validator",
+  "programId": "HcvkfmLNsXdGrDh3wamMRReqkdJ5nj6iMXwT9KD6KRzu",
+  "binaryBytes": 537352,
+  "binarySha256": "2d9d039286489dc95e35f707b724a8b131b54d5232756599738160e8139e906b",
+  "cargoLockSha256": "f5a0248c921f81d1e941d6a1c01e069bb46a0ef6f098d428a4f283cb350a5e74",
+  "lockedTests": {
+    "passed": 3,
+    "failed": 0
+  },
+  "publicPilotTests": {
+    "passed": 6,
+    "failed": 0
+  },
+  "archiveSha256": "598e2cf5ddf42d83e7e8a419814073f1e9128639f9810bce773ff6f9b57d7317",
+  "sourceDifferences": [
+    "Anchor.toml: local program ID, Anchor-generated registry/config formatting, script selection and shutdown_wait",
+    "programs/ghost-markets/src/lib.rs: local program ID only"
+  ],
+  "binaryIncluded": false,
+  "privateKeysIncluded": false,
+  "marketExecutionOnMainnet": false,
+  "privateSettlement": false,
+  "files": [
+    {
+      "path": "Anchor.toml",
+      "bytes": 487,
+      "sha256": "30f0b620a9801f74b91e8ceec1084a7028fcd9c761fc11a0ef3ab60447a34b85",
+      "matchesPackagedSource": false
+    },
+    {
+      "path": "Cargo.lock",
+      "bytes": 74816,
+      "sha256": "f5a0248c921f81d1e941d6a1c01e069bb46a0ef6f098d428a4f283cb350a5e74",
+      "matchesPackagedSource": true
+    },
+    {
+      "path": "Cargo.toml",
+      "bytes": 158,
+      "sha256": "7b8cc447c362f23daa76bdfb2dd262146a864dc141aa2c0cd398c9c8a81484b5",
+      "matchesPackagedSource": true
+    },
+    {
+      "path": "crates/market-math/Cargo.toml",
+      "bytes": 115,
+      "sha256": "c5e1787fc0e0d30050e84a586b0f204c83d302f28073c7fd0d60ef89e44323e9",
+      "matchesPackagedSource": true
+    },
+    {
+      "path": "crates/market-math/src/lib.rs",
+      "bytes": 16389,
+      "sha256": "e8137485db819aeaf22c6bad6e60d117212eae0a025edd9f4449f9c0589c95cb",
+      "matchesPackagedSource": true
+    },
+    {
+      "path": "programs/ghost-markets/Cargo.toml",
+      "bytes": 700,
+      "sha256": "7dadf5e7dab4db5b37f94b52263afe6f9922c2af39fb7c1ebf68c96633611b0c",
+      "matchesPackagedSource": true
+    },
+    {
+      "path": "programs/ghost-markets/src/lib.rs",
+      "bytes": 29366,
+      "sha256": "7bb32a7f539edc3d6bd854a632f5585b1a8f7a7944578969d7fe9a976269fe7a",
+      "matchesPackagedSource": false
+    },
+    {
+      "path": "reference/generate-vectors.mjs",
+      "bytes": 1271,
+      "sha256": "bcb39d7b4a190d02b791d4a9264ef1e068a34b25fab3af872b4dd30da2e32d88",
+      "matchesPackagedSource": true
+    },
+    {
+      "path": "reference/lifecycle-vectors.csv",
+      "bytes": 18897,
+      "sha256": "2e55326bb340d7c8e8dbe383d066e4f20f97b9e2575697f9d40c38236f00f881",
+      "matchesPackagedSource": true
+    },
+    {
+      "path": "reference/lifecycle.mjs",
+      "bytes": 4065,
+      "sha256": "66f8a40e795bad85b8fe9582b26632f22c2ea3e17c5fcb54251399835170d25c",
+      "matchesPackagedSource": true
+    },
+    {
+      "path": "reference/pilot-instructions.mjs",
+      "bytes": 4391,
+      "sha256": "3ba7da10d80fe9b44bbb485c1a84bfae5fa0cf51ebc17cd73d3084a8048dddf5",
+      "matchesPackagedSource": true
+    },
+    {
+      "path": "reference/pilot-profile.mjs",
+      "bytes": 896,
+      "sha256": "fe28803da50bfd87da974c3055966cc824a6d347a92ca3f770ce96e1dfa88c70",
+      "matchesPackagedSource": true
+    },
+    {
+      "path": "reference/quote.mjs",
+      "bytes": 2156,
+      "sha256": "c856d863893cfbf307c4d2e47e7e91bcd8adfa448f5a623b2d7249d837a0d5f3",
+      "matchesPackagedSource": true
+    },
+    {
+      "path": "target/deploy/ghost_markets.so",
+      "bytes": 537352,
+      "sha256": "2d9d039286489dc95e35f707b724a8b131b54d5232756599738160e8139e906b"
+    },
+    {
+      "path": "target/idl/ghost_markets.json",
+      "bytes": 21434,
+      "sha256": "acb2deee6e8ededd2b82d1a6269f12026b6287d22ff48bf84555049b964bf64f"
+    },
+    {
+      "path": "target/locked-local-test.txt",
+      "bytes": 643,
+      "sha256": "0a09313f05ba0c977daca5d652d4d7a060a522b2dad432d2ef1b9340488ce507"
+    },
+    {
+      "path": "target/public-pilot-local-test.txt",
+      "bytes": 1345,
+      "sha256": "b9ef24d940a3fb415dfff152f7b3a45805b8af9f5c1de07a2d0aa40b46003071"
+    },
+    {
+      "path": "tests/lifecycle.test.mjs",
+      "bytes": 6654,
+      "sha256": "f39cdd9a0312e094a57a3d3d3f821f4b166ad416dfc532e8bb37201c54153c3a",
+      "matchesPackagedSource": true
+    },
+    {
+      "path": "tests/localnet.integration.mjs",
+      "bytes": 17944,
+      "sha256": "c848be8016a475c37ffacbdae1f7d823e95b781066c62df1b3d039931c2ffb3d",
+      "matchesPackagedSource": true
+    },
+    {
+      "path": "tests/pilot-profile.test.mjs",
+      "bytes": 2426,
+      "sha256": "98baa5c26ae4164597189f4aecd612b63c9531e4797486a6e36da606e42ead47",
+      "matchesPackagedSource": true
+    },
+    {
+      "path": "tests/pilot.integration.mjs",
+      "bytes": 8392,
+      "sha256": "71e22dd16d1e8866f0d0a2f1e4382bf72a08ff12a2336f6a677e36e8ab80231a",
+      "matchesPackagedSource": true
+    },
+    {
+      "path": "tests/quote.test.mjs",
+      "bytes": 2750,
+      "sha256": "8e042e2f9619be746288b1487b3817159adf56d04b88a8dca83df1d807906617",
+      "matchesPackagedSource": true
+    }
+  ]
+}

@@ -12,6 +12,7 @@ Rings that also hide the wallets are not available on mainnet for general use. W
 | --- | --- | --- | --- |
 | Hold a private balance | — | ==Hidden== | ==Hidden== |
 | Private transfer | ++Public++ | ==Hidden== | ==Hidden== |
+| Pay many: a list of private transfers, one after another | ++Public++ | ==Hidden== | ==Hidden== |
 | Ghost fill (trade with the desk) | ++Public++ | ==Hidden== | ==Hidden== |
 | Consolidate notes | ++Public++ | ==Hidden== | ==Hidden== |
 | prvmax: spread to a vault, recall privately | ++Public++ | ==Hidden== | ==Hidden== |

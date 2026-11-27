@@ -125,6 +125,12 @@ export interface DeskEnv {
    * consolidation work on mainnet.
    */
   readonly autoConsolidate: boolean;
+  /**
+   * Wallets the desk does not trade with, by the operator's choice. It only
+   * decides who the desk itself deals with: such a wallet can still use Rings
+   * and trade on the pools, which nobody here can or does stop.
+   */
+  readonly blockedWallets: ReadonlySet<string>;
 }
 
 /** The Rings explorer: a read-only follower of the Rings program. On unless switched off. */
@@ -542,6 +548,8 @@ export function readEnv(env: NodeJS.ProcessEnv = process.env): AppEnv {
       maxImpactBps: integer(env, 'DESK_MAX_IMPACT_BPS', 150, 10, 2000),
       stockMints: Object.freeze(publicKeyList(env, 'DESK_STOCK_MINTS', 50)),
       autoConsolidate: flag(env, 'DESK_AUTO_CONSOLIDATE'),
+      // A mistyped address fails the start, loudly: a blocklist that silently drops an entry is worse than none.
+      blockedWallets: new Set(publicKeyList(env, 'DESK_BLOCKED_WALLETS', 2_000)),
     }),
     rings: Object.freeze({
       // On by default: it only reads. RINGS_EXPLORER=NO switches it off.

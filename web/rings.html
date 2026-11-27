@@ -14,7 +14,7 @@
 <section class="market" id="rings" aria-label="Rings explorer">
 <div class="market-bar" id="rg-bar">
 <div class="strips" id="rg-strips">
-<div class="seg" id="rg-views" role="group" aria-label="View"><button type="button" data-view="tokens" aria-pressed="true" title="Every token registered with Rings, and how much of it is held privately">Tokens</button><button type="button" data-view="live" aria-pressed="false" title="The newest public activity, as it happens">Live</button></div>
+<div class="seg" id="rg-views" role="group" aria-label="View"><button type="button" data-view="tokens" aria-pressed="true" title="Every token registered with Rings, and how much of it is held privately">Tokens</button><button type="button" data-view="live" aria-pressed="false" title="The newest public activity, as it happens">Live</button><button type="button" data-view="rings" aria-pressed="false" title="Every custom ring registered on Solana mainnet, and whether anything can move in it">Custom rings</button></div>
 <div class="seg" id="rg-sorts" role="group" aria-label="Order"><button type="button" data-sort="share" aria-pressed="true" title="The largest share of supply held privately">Most shielded</button><button type="button" data-sort="flow24h" aria-pressed="false" title="The most moved into Rings over a day, net of what left">Inflow 24h</button><button type="button" data-sort="flow7d" aria-pressed="false" title="The most moved into Rings over seven days, net of what left">Inflow 7d</button><button type="button" data-sort="active" aria-pressed="false" title="The most shields and unshields in the last day">Busiest</button><button type="button" data-sort="new" aria-pressed="false" title="The most recently registered">New</button></div>
 <div class="seg" id="rg-kinds" role="group" aria-label="Show" hidden><button type="button" data-kind="" aria-pressed="true">Everything</button><button type="button" data-kind="shield" aria-pressed="false">Shields</button><button type="button" data-kind="unshield" aria-pressed="false">Unshields</button><button type="button" data-kind="transfer" aria-pressed="false">Transfers</button><button type="button" data-kind="trade" aria-pressed="false">Pool trades</button></div>
 </div>
@@ -23,7 +23,7 @@
 <div class="market-meta"><span id="rg-count" aria-live="polite">Reading…</span><span id="rg-updated"></span></div>
 <div id="rg-body" aria-busy="true"><div class="empty-state ghost-state"><span class="ghost-mark" aria-hidden="true"></span><b>READING THE CHAIN<span class="blink">_</span></b></div></div>
 <nav class="pager" id="rg-pager" aria-label="Pages" hidden></nav>
-<p class="market-note" id="rg-note">Read from public chain data: the transactions of the Rings program and the balances of its vaults. Nothing is decrypted and no wallet is connected. A wallet’s private balance, and the token and amount of a private transfer, are not shown because nobody can read them. <a class="tx-link" href="/docs/rings-explorer">How to read this page</a> · <a class="tx-link" href="/ghost-intelligence">GHOST Intelligence</a>.</p>
+<p class="market-note" id="rg-note">Read from public chain data: the transactions of the Rings program and the balances of its vaults. Nothing is decrypted and no wallet is connected. A wallet’s private balance, and the token and amount of a private transfer, are not shown because nobody can read them. <a class="tx-link" href="/docs/rings-explorer">How to read this page</a>.</p>
 </section>
 </main><!--#footer--></div>
 <script type="module" src="/src/pages/rings.ts"></script>

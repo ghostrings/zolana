@@ -1,0 +1,5 @@
+{
+  "previousV31Sha256": "f5a0248c921f81d1e941d6a1c01e069bb46a0ef6f098d428a4f283cb350a5e74",
+  "candidateSha256": "7b558a248caee28bb0421811776ba296863426df0bc09a03e377cd0f3d32d7b7",
+  "change": "Direct dependency edge to existing solana-security-txt 1.1.3; no package versions changed."
+}

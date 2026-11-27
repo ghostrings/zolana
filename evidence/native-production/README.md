@@ -1,0 +1,3 @@
+# Application V34 local validation
+
+15 new dependency-free production release/intent/gate/static checks, 23 original observer checks, 45 pilot/reference checks, 8 lab checks, and 7 wallet-wire checks passed (98 total). The supplied V33 release SHA256SUMS (14 files) and source-sha256.txt (8 files) passed. These are not production wallet or on-chain execution tests. The new dependency-backed client tests, full Vitest, production Vite/TypeScript build, and actual browser/portable-signature integration are outstanding. `npm ci --offline` failed due to missing cached packages; registry DNS lookup also failed in this environment. No RPC requests or real signer operations were made in the packaging checks.

@@ -1,0 +1,268 @@
+/* Pay many: the list read back, the run, and its controls. */
+
+.pay-steps {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: pay-step;
+}
+
+.pay-steps li {
+  position: relative;
+  padding: 14px 16px 14px 54px;
+  border: 1px solid var(--line);
+  border-radius: var(--r3);
+  background: var(--well);
+  counter-increment: pay-step;
+}
+
+.pay-steps li:before {
+  content: counter(pay-step);
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--line-3);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 0.76rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.pay-steps b {
+  display: block;
+  font-size: 0.94rem;
+  font-weight: 650;
+}
+
+.pay-steps span {
+  display: block;
+  margin-top: 3px;
+  color: var(--smoke);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+#pay-list {
+  min-height: 190px;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+  resize: vertical;
+}
+
+/* While a run exists the list cannot be edited: it is the run's own record now. */
+.form-panel.is-locked #pay-list,
+.form-panel.is-locked #pay-asset {
+  opacity: 0.55;
+}
+
+.pay-totals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px;
+  margin: 0 0 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r3);
+  background: var(--line);
+  overflow: hidden;
+}
+
+.pay-totals div {
+  padding: 12px 14px;
+  background: var(--s1);
+}
+
+.pay-totals dt {
+  color: var(--smoke);
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.pay-totals dd {
+  margin: 6px 0 0;
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.pay-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--r3);
+}
+
+.pay-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.pay-table th,
+.pay-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.pay-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.pay-table th {
+  color: var(--smoke);
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.pay-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.pay-table td:first-child {
+  width: 1%;
+  color: var(--smoke);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.pay-table small {
+  display: block;
+  max-width: 46ch;
+  margin-top: 4px;
+  color: var(--smoke);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.pay-wallet {
+  font-family: var(--mono);
+}
+
+/* The state is always written out; the frame only sets "paid" apart from everything that is not. */
+.pay-state {
+  display: inline-block;
+  padding: 2px 7px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--silver);
+  font-size: 0.74rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pay-state[data-state='paid'] {
+  border-color: #fff;
+  background: #fff;
+  color: #000;
+}
+
+.pay-state[data-state='sent'],
+.pay-state[data-state='failed'] {
+  border-color: var(--line-3);
+  color: #fff;
+}
+
+.pay-state + .tx-link {
+  margin-left: 8px;
+  font-size: 0.8rem;
+}
+
+.pay-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.pay-actions:empty {
+  display: none;
+}
+
+.pay-problems {
+  margin: 10px 0 0;
+  padding: 0 0 0 18px;
+}
+
+.pay-problems li {
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.pay-problems code {
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+#pay-run-output:not(:empty),
+#pay-review-problems:not(:empty) {
+  margin-top: 16px;
+}
+
+#pay-review-problems .status + .status {
+  margin-top: 10px;
+}
+
+/* On a phone a row is two lines: who and how much, then what became of it. Nothing has to be scrolled sideways to be read. */
+@media (max-width: 640px) {
+  .pay-table {
+    min-width: 0;
+  }
+
+  .pay-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .pay-table tbody tr {
+    display: grid;
+    grid-template-columns: 2.2em minmax(0, 1fr) auto;
+    column-gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pay-table tbody tr:last-child {
+    border-bottom: 0;
+  }
+
+  .pay-table td {
+    padding: 0;
+    border: 0;
+  }
+
+  .pay-table td:first-child {
+    width: auto;
+  }
+
+  .pay-table td:nth-child(4) {
+    grid-column: 2 / -1;
+    margin-top: 8px;
+  }
+
+  .pay-table small {
+    max-width: none;
+  }
+
+  .pay-actions .btn {
+    flex: 1 1 100%;
+  }
+}

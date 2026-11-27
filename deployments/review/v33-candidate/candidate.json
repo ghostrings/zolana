@@ -1,0 +1,13 @@
+{
+  "programId": "5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n",
+  "version": "V33",
+  "buildFeatures": [
+    "public-pilot"
+  ],
+  "solanaVerifyVersion": "0.5.2",
+  "binaryBytes": 547816,
+  "binarySha256": "bb7545ae08ab37a83f6785f21a019103953c0d43a3e8a47d0162969193e5e411",
+  "solanaVerifyHash": "33a41e48d76fe0bbf936aa41e926a6ebb9005034cfcbf3651318a1ff0e8e9ec5",
+  "status": "local review candidate; NOT deployed or approved",
+  "privateSettlement": false
+}

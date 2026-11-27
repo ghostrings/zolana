@@ -1,0 +1,13 @@
+{
+  "programId": "5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n",
+  "network": "mainnet-beta",
+  "commit": "b723d275bda85bac40ed9c9f4f7d3c479c5758d7",
+  "repository": "https://github.com/ghostrings/zolana",
+  "solanaVerifyHash": "6377135292ec0e082b9f57d8cdd3caec1df31254c33248cfd32df483be9453ad",
+  "jobId": "7959f94e-ff55-4a94-8efc-960dc85b585f",
+  "statusUrl": "https://verify.osec.io/status/5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n",
+  "jobUrl": "https://verify.osec.io/job/7959f94e-ff55-4a94-8efc-960dc85b585f",
+  "source": "Owner-provided successful solana-verify remote verification output, November 26 2026",
+  "appliesTo": "Locked V27 only, not V32",
+  "securityAudit": false
+}

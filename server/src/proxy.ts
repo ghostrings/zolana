@@ -15,6 +15,8 @@ import type { Request, Response, Router } from 'express';
 import express from 'express';
 
 import { SPP_PROGRAM_ID, TEE_POLICY_HOST } from '../../shared/src/constants.js';
+import { V33 } from '../../shared/src/ghost-markets/v33-release.js';
+import { base58 } from '../../shared/src/ghost-markets/observe.js';
 import type { AppEnv } from './env.js';
 import { type RateLimiter, clientIp, sendError } from './http.js';
 
@@ -125,6 +127,16 @@ export function checkCall(call: unknown): string | null {
     const program = Array.isArray(params) ? params[0] : undefined;
     const config = Array.isArray(params) ? (params[1] as { filters?: unknown[] } | undefined) : undefined;
     const filters = Array.isArray(config?.filters) ? config.filters : [];
+    // Native browser approvals need a fresh, bounded V33 market discovery. Only
+    // the exact finalized schema-2 market scan emitted by scanV33 is relayed.
+    if (program === V33.programId) {
+      const c = config as Record<string, unknown> | undefined;
+      const allowed = c && Object.keys(c).every(k => ['encoding','commitment','withContext','minContextSlot','filters'].includes(k)) && c.encoding === 'base64' && c.commitment === 'finalized' && c.withContext === true && typeof c.minContextSlot === 'number' && Number.isSafeInteger(c.minContextSlot) && c.minContextSlot > 0 && filters.length === 2;
+      const discriminator = base58(Uint8Array.from([219,190,213,55,0,227,198,154]));
+      const sized = filters.some(f => !!f && typeof f === 'object' && Object.keys(f).length === 1 && (f as {dataSize?:unknown}).dataSize === 611);
+      const typed = filters.some(f => { if (!f || typeof f !== 'object' || Object.keys(f).length !== 1) return false; const m = (f as {memcmp?:{offset?:unknown;bytes?:unknown}}).memcmp; return !!m && Object.keys(m).length === 2 && m.offset === 0 && m.bytes === discriminator; });
+      return allowed && sized && typed ? null : 'Only the exact finalized V33 market scan is permitted.';
+    }
     if (program === SPP_PROGRAM_ID) {
       return isRingsRegistryScan(filters) ? null : 'Only the list of token registrations can be read from the Rings program through this relay.';
     }

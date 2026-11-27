@@ -209,6 +209,13 @@ const USER_TAGS: ReadonlySet<number> = new Set([
   InstructionTag.ringAuthorityTransact,
 ]);
 const MERGE_TAGS: ReadonlySet<number> = new Set([InstructionTag.mergeTransact, InstructionTag.ringMergeTransact]);
+/** Instructions that write a custom ring's registration: creating it, pausing it, handing it over, activating it. */
+const RING_ADMIN_TAGS: ReadonlySet<number> = new Set([
+  InstructionTag.createRingConfig,
+  InstructionTag.updateRingConfig,
+  InstructionTag.updateRingConfigOwner,
+  InstructionTag.setRingActivation,
+]);
 
 /** Programs that are part of nearly every transaction and say nothing about what it was for. */
 const PLUMBING: ReadonlySet<string> = new Set([
@@ -260,6 +267,8 @@ export interface DecodedRing {
   readonly partial: boolean;
   /** Mints whose vault balance this transaction changed. */
   readonly touched: readonly string[];
+  /** True when the transaction registered a custom ring or changed a ring's registration. */
+  readonly ringAdmin: boolean;
 }
 
 function unique(values: Iterable<string>): string[] {
@@ -347,7 +356,8 @@ export function decodeRing(raw: RawTransaction, events: readonly RingEvent[] | n
       .filter((instruction) => instruction.top && !PLUMBING.has(instruction.program))
       .map((instruction) => KNOWN_PROGRAMS[instruction.program] ?? instruction.program),
   );
-  const base = { payer: message.payer, via, ring: null as string | null, partial: false, touched: [] as string[] };
+  const ringAdmin = tags.some((tag) => RING_ADMIN_TAGS.has(tag));
+  const base = { payer: message.payer, via, ring: null as string | null, partial: false, touched: [] as string[], ringAdmin };
 
   if (user.length === 0) {
     const kind: RingKind = tags.includes(InstructionTag.createSplInterface) ? 'token' : tags.length > 0 ? 'upkeep' : 'other';

@@ -1663,3 +1663,5 @@ body:has(.market-main) {
     transform: none;
   }
 }
+/* Rings status is a verified asset capability, never a claim that the market is anonymous. */
+.tk-ring-badge{display:inline-flex;align-items:center;gap:3px;border:1px solid #a63d42;background:#32191d;color:#ffb6ba;border-radius:5px;padding:2px 5px;font-size:10px;line-height:1.2;white-space:nowrap;flex-shrink:0}.tk-ring-badge svg{flex:none}.tk-no-history{display:grid;place-items:center;height:100%;color:#888;font-size:10px;text-align:center}.tk-sub{min-width:0}.tile-top .tk-ring-badge{margin-left:auto}.market-meta #market-native-note{font-size:11px;color:#aaa;margin-inline:auto;text-align:center}@media(max-width:600px){.tk-ring-badge{font-size:9px}.tk-ring-badge svg{width:10px;height:10px}.market-meta #market-native-note{margin:0;max-width:45%}}

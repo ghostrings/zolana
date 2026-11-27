@@ -6,6 +6,8 @@ import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 
 import type { StatusResponse, TokenSummary } from '../../../shared/src/api.js';
 import { GAS_RESERVE_LAMPORTS, SOL_DECIMALS, TOKEN_2022_PROGRAM_ID, TOKEN_DECIMALS, TOKEN_PROGRAM_ID } from '../../../shared/src/constants.js';
+import { nativeWalletDirectory } from '../native-wallet.js';
+import { readNativeAsset } from '../../../shared/src/native-asset.js';
 import { outsideMintProblems, readMintFacts } from '../../../shared/src/mint.js';
 import { PAY_SOL, type PayRequest, cleanAmount, cleanNote, payLink, readPayLink } from '../../../shared/src/paylink.js';
 import { type PayRequestRecord, matchRequests, memoOf } from '../../../shared/src/payrecords.js';
@@ -172,8 +174,12 @@ function tokenOf(mint: string): TokenSummary | undefined {
 }
 
 /** Asks the listing which of these mints were launched here, so they can be shown by name and artwork. */
+let nativeListed: Awaited<ReturnType<typeof nativeWalletDirectory>> = new Map();
+let nativeRequested = false;
 async function learnTokens(mints: readonly string[]): Promise<void> {
-  const unknown = [...new Set(mints)].filter((mint) => mint !== SOL && !lookedUp.has(mint) && isAddress(mint));
+  // Public directory only; it never receives a wallet address or private mint list.
+  nativeListed = await nativeWalletDirectory();
+  const unknown = [...new Set(mints)].filter((mint) => mint !== SOL && !nativeListed.has(mint) && !lookedUp.has(mint) && isAddress(mint));
   if (unknown.length === 0) return;
   for (const mint of unknown) lookedUp.add(mint);
   try {
@@ -194,6 +200,8 @@ function labelOf(mint: string): string {
   if (mint === SOL) return 'SOL';
   const token = tokenOf(mint);
   if (token?.symbol) return `$${token.symbol}`;
+  const native = nativeListed.get(mint);
+  if (native) return `$${native.symbol}`;
   const pairToken = pairTokenOf(mint);
   return pairToken ? pairSymbol(pairToken) : short(mint, 4, 4);
 }
@@ -201,7 +209,7 @@ function labelOf(mint: string): string {
 /** What to call an asset in full: a launched token's name, a pair token's, or that it is neither. */
 function nameOf(mint: string): string {
   if (mint === SOL) return 'Solana';
-  return tokenOf(mint)?.name ?? pairTokenOf(mint)?.name ?? 'Unlisted asset';
+  return tokenOf(mint)?.name ?? nativeListed.get(mint)?.name ?? pairTokenOf(mint)?.name ?? 'Unlisted asset';
 }
 
 async function decimalsOf(mint: string): Promise<number> {
@@ -638,6 +646,11 @@ async function refreshPublic(): Promise<void> {
   renderPublicHoldings();
   renderRequestForm();
   renderMove();
+  const requested = new URL(location.href).searchParams.get('nativeMint');
+  if (!nativeRequested && requested && nativeListed.has(requested) && publicTokens.get(requested)?.movable && !busy) {
+    nativeRequested = true;
+    openMove('deposit', requested);
+  }
 }
 
 /**
@@ -745,7 +758,10 @@ function renderHoldings(): void {
       const name = nameOf(holding.mint);
       const mint = escapeHtml(holding.mint);
       // A token launched here is traded on its own page. Any other is bought and sold on the swap page.
-      const trade = token
+      const native = nativeListed.get(holding.mint);
+      const trade = native
+        ? `<a class="btn flat" href="/native-token?market=${encodeURIComponent(native.address)}">Native market</a>`
+        : token
         ? `<a class="btn flat" href="/token?mint=${encodeURIComponent(holding.mint)}">Trade</a>`
         : !isSol && swapOn
           ? `<a class="btn flat" href="/swap?mint=${encodeURIComponent(holding.mint)}">Swap</a>`
@@ -808,7 +824,8 @@ function renderPublicHoldings(): void {
       if (!balance.movable) {
         return `<article class="holding-card">${head}<div class="holding-value">Public, visible on chain</div><p class="tiny dim" style="margin:10px 0 0">A Token-2022 token with features that change how it moves. This page does not move it: use a wallet that handles it.</p></article>`;
       }
-      const swap = !token && swapOn ? `<a class="btn flat" href="/swap?mint=${encodeURIComponent(mint)}">Swap</a>` : '';
+      const native = nativeListed.get(mint);
+      const swap = native ? `<a class="btn flat" href="/native-token?market=${encodeURIComponent(native.address)}">Native market</a>` : !token && swapOn ? `<a class="btn flat" href="/swap?mint=${encodeURIComponent(mint)}">Swap</a>` : '';
       return `<article class="holding-card">${head}<div class="holding-value">Public, visible on chain</div><div class="row-wrap"><button class="btn flat" type="button" data-deposit="${escapeHtml(mint)}">Shield</button><button class="btn flat" type="button" data-send-public="${escapeHtml(mint)}">Send</button>${swap}${token ? `<button class="btn flat" type="button" data-burn-public="${escapeHtml(mint)}">Burn</button>` : ''}</div></article>`;
     })
     .join('');
@@ -1196,6 +1213,10 @@ byId<HTMLFormElement>('move-form').addEventListener('submit', async (event) => {
   const stage = (message: string) => statusBox('move-output', 'working', 'WORKING', escapeHtml(message));
   try {
     const mint = address(asset.mint);
+    if (move === 'deposit' && nativeListed.has(asset.mint)) {
+      stage('Verifying the native mint’s Privacy Rings registration…');
+      if ((await readNativeAsset(connection(), asset.mint)).state !== 'registered') throw new Error('Native asset registration is not verified. Open its native token page first.');
+    }
     // Where a token's accounts are depends on the token program its mint belongs to.
     const program = asset.mint === SOL || move === 'burn' ? TOKEN_PROGRAM_ID : await programFor(asset.mint);
     let signature: string;

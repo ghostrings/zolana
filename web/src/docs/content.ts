@@ -9,6 +9,7 @@ import burning from './pages/burning.md?raw';
 import buyAnyToken from './pages/buy-any-token.md?raw';
 import checkUp from './pages/check-up.md?raw';
 import converting from './pages/converting.md?raw';
+import customRings from './pages/custom-rings.md?raw';
 import depositWithdraw from './pages/deposit-withdraw.md?raw';
 import externalWallets from './pages/external-wallets.md?raw';
 import faq from './pages/faq.md?raw';
@@ -23,6 +24,7 @@ import launching from './pages/launching.md?raw';
 import limits from './pages/limits.md?raw';
 import market from './pages/market.md?raw';
 import pairs from './pages/pairs.md?raw';
+import payMany from './pages/pay-many.md?raw';
 import paymentRequests from './pages/payment-requests.md?raw';
 import privateBalance from './pages/private-balance.md?raw';
 import privateTransfers from './pages/private-transfers.md?raw';
@@ -71,6 +73,7 @@ export const DOC_GROUPS: readonly DocGroup[] = Object.freeze([
       { slug: 'private-balance', title: 'Private balance', summary: 'How it is read, why it fragments, and what "Not read" means.', body: privateBalance },
       { slug: 'deposit-withdraw', title: 'Shield and unshield', summary: 'The two public crossings between your balances: a deposit into Rings and a withdrawal from it.', body: depositWithdraw },
       { slug: 'payment-requests', title: 'Ask for a payment', summary: 'A link that fills in Send for whoever pays you: your address, the token, the amount and a note.', body: paymentRequests },
+      { slug: 'pay-many', title: 'Pay many', summary: 'Pay a list of wallets from your private balance in one run, with a receipt, and never the same wallet twice.', body: payMany },
       { slug: 'statements', title: 'Statements', summary: 'Your private history for a period as a file, put together in your browser.', body: statements },
       { slug: 'alerts', title: 'Alerts', summary: 'Have this browser tell you when something arrives, without telling anyone that you are watching.', body: alerts },
       { slug: 'prvmax', title: 'prvmax: vaults', summary: 'Up to ten vaults behind one wallet: spread, trade, recall, and what stays public.', body: prvmax },
@@ -104,6 +107,7 @@ export const DOC_GROUPS: readonly DocGroup[] = Object.freeze([
       { slug: 'what-is-private', title: 'What is private', summary: 'Every action on this site, and what the chain shows for it.', body: whatIsPrivate },
       { slug: 'ghost-desk', title: 'The Ghost desk', summary: 'Trading without touching the pool: what it hides and what the desk learns.', body: ghostDesk },
       { slug: 'rings-explorer', title: 'The Rings page', summary: 'What anyone can read of Rings: tokens held privately, what went in and out, and who paid whom.', body: ringsExplorer },
+      { slug: 'custom-rings', title: 'Custom rings', summary: 'Rings run by a business, with their own rules and an auditor: what the list on the Rings page shows, and what it does not.', body: customRings },
       { slug: 'check-up', title: 'The check-up', summary: 'What your own public activity lets an onlooker work out, and what takes the guess away.', body: checkUp },
       { slug: 'read-only-access', title: 'Read-only access', summary: 'A viewing pass lets somebody read one wallet and move nothing. What it holds, and why it cannot be taken back.', body: readOnlyAccess },
       { slug: 'keys-and-proofs', title: 'Keys, proofs and the server', summary: 'Where your keys are, what runs in your browser, what the server sees.', body: keysAndProofs },

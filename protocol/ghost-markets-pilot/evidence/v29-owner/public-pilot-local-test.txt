@@ -1,0 +1,33 @@
+
+Found a 'test' script in the Anchor.toml. Running it as a test suite!
+
+Running test suite: "<local-workspace>/Anchor.toml"
+
+▶ V29 restricted public launch and trading pilot
+  ✔ bootstrap locked; unrelated signer and launch before activation refused (2353.863246ms)
+  ✔ enforce creator, canonical quote mint and fixed profile before minting (2046.072304ms)
+  ✔ public buy and sell, pause and cap rollback (2803.759077ms)
+  ✔ permissionless graduation and public AMM settlement (1704.629068ms)
+{
+  "network": "loopback-local-validator",
+  "programId": "HcvkfmLNsXdGrDh3wamMRReqkdJ5nj6iMXwT9KD6KRzu",
+  "market": "3pk8Z4HzmHtycTz8avtwp4juzKrADxWDmNUkJdi36249",
+  "mint": "FmHRb2DtqaTeQgLGEVzPNGPvdZh2kcC6fcJix2e1FPqF",
+  "creator": "AtiQR2ph6baHEvCft8uQUgkLLShwaWKT8xcy578Va5yt",
+  "launchSignature": "3pQK5FaUWfFw6J5Auur1m5cQmNPwpHzDbyLaUr5ATPmZGcj9vxMEAszVJgCmgoY1go23PsNYZkA9jctDHdUZ7w86",
+  "name": "GHOST TEST",
+  "symbol": "GHOST",
+  "protocolInitialized": true,
+  "marketExecution": "tested in active mode; paused at completion",
+  "privateSettlement": false
+}
+  ✔ liquidity cap and permitted paused LP exit (1602.729921ms)
+✔ V29 restricted public launch and trading pilot (12989.267315ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13676.597816

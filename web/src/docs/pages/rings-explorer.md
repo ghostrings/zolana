@@ -41,6 +41,12 @@ The newest activity, newest first. Each row says what the chain shows and, under
 
 The time on a row is when its block was made. The short code beside it opens the transaction in an explorer.
 
+## Custom rings
+
+The third view lists every custom ring registered on Solana mainnet: rings run by a business, each with its own rules. For each one it says whether it is active, waiting to be activated or paused, and how many of its transactions this site has read. It is read from the chain's public accounts and says nothing about who uses a ring. [Custom rings](/docs/custom-rings) explains every line of it.
+
+In Live, a transaction that ran through one of them reads "moved funds inside a custom ring". This site does not read who was paid there.
+
 ## A wallet
 
 Paste a wallet's address into the search box and press Enter. The page shows whether the wallet is registered with Rings, when it shielded and unshielded and how much, its pool trades, and which wallets it paid privately or was paid by, with a count for each.

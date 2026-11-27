@@ -1,9 +1,10 @@
 /**
  * What this browser keeps for the wallet extras, per wallet address: the
  * notes of payments it sent, the payment requests it made, whether alerts
- * are on and what has already been announced, and the slots it sent
- * transactions in. All of it is in localStorage, none of it is ever sent
- * anywhere, and none of it is a key.
+ * are on and what has already been announced, the slots it sent
+ * transactions in, and a payout run that is under way (`pay-records.ts`
+ * reads and writes that one). All of it is in localStorage, none of it is
+ * ever sent anywhere, and none of it is a key.
  *
  * Loads no SDK: the header's watcher and the wallet page both use it.
  */
@@ -28,8 +29,10 @@ export const MEMOS_PREFIX = 'pcf.memos.v1.';
 export const REQUESTS_PREFIX = 'pcf.requests.v1.';
 export const SEEN_PREFIX = 'pcf.seen.v1.';
 export const OWN_SLOTS_PREFIX = 'pcf.ownslots.v1.';
+/** The payout run of a wallet: its list, and how far it got. */
+export const PAYRUN_PREFIX = 'pcf.payrun.v1.';
 /** Every prefix above, for the moment a wallet is taken out of this browser. */
-export const RECORD_PREFIXES: readonly string[] = [MEMOS_PREFIX, REQUESTS_PREFIX, ALERTS_PREFIX, SEEN_PREFIX, OWN_SLOTS_PREFIX];
+export const RECORD_PREFIXES: readonly string[] = [MEMOS_PREFIX, REQUESTS_PREFIX, ALERTS_PREFIX, SEEN_PREFIX, OWN_SLOTS_PREFIX, PAYRUN_PREFIX];
 
 function read(key: string): string | null {
   try {

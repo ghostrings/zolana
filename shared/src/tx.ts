@@ -145,6 +145,18 @@ export function decompileMessage(messageBytes: Uint8Array): DecompiledV1 {
   };
 }
 
+/**
+ * The last block height a compiled transaction can land in, when the
+ * transaction carries it. The compiler keeps it beside the message (the
+ * message itself holds only the blockhash), so it is there on a transaction
+ * that was just built and gone from one that was rebuilt from its bytes.
+ * Null when it is not carried: it is never made up.
+ */
+export function carriedLastValid(transaction: Transaction): bigint | null {
+  const carried = (transaction as { lifetimeConstraint?: { lastValidBlockHeight?: unknown } }).lifetimeConstraint?.lastValidBlockHeight;
+  return typeof carried === 'bigint' && carried > 0n ? carried : null;
+}
+
 /** The compiled message of a transaction as plain bytes. */
 export function messageBytesOf(transaction: Transaction): Uint8Array {
   return new Uint8Array(transaction.messageBytes as unknown as Uint8Array);

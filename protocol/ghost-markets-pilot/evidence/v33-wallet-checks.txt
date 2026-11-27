@@ -1,0 +1,56 @@
+
+> privacycash-fun@0.1.0 markets:wallet:check
+> node --test protocol/ghost-markets-pilot/tests/wallet-wire.test.mjs
+
+TAP version 13
+# Subtest: two distinct wallets sign exactly the same message, preserving the first signature
+ok 1 - two distinct wallets sign exactly the same message, preserving the first signature
+  ---
+  duration_ms: 9.808725
+  type: 'test'
+  ...
+# Subtest: changed blockhash / message is refused before signing
+ok 2 - changed blockhash / message is refused before signing
+  ---
+  duration_ms: 2.653653
+  type: 'test'
+  ...
+# Subtest: wallet cannot populate another signer slot
+ok 3 - wallet cannot populate another signer slot
+  ---
+  duration_ms: 1.574836
+  type: 'test'
+  ...
+# Subtest: wallet cannot remove or replace an already collected approval
+ok 4 - wallet cannot remove or replace an already collected approval
+  ---
+  duration_ms: 1.459482
+  type: 'test'
+  ...
+# Subtest: invalid, missing, unexpected and already-filled signatures refused
+ok 5 - invalid, missing, unexpected and already-filled signatures refused
+  ---
+  duration_ms: 1.730561
+  type: 'test'
+  ...
+# Subtest: malformed, oversized and versioned transactions rejected
+ok 6 - malformed, oversized and versioned transactions rejected
+  ---
+  duration_ms: 1.93624
+  type: 'test'
+  ...
+# Subtest: Wallet Standard bridge requests localnet only and refuses unsupported accounts
+ok 7 - Wallet Standard bridge requests localnet only and refuses unsupported accounts
+  ---
+  duration_ms: 0.446273
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 70.574376

@@ -264,6 +264,8 @@ export class Desk {
       const publicLamports = await ctx.client.getBalance(ctx.owner);
       this.#ready = true;
       this.#log(`desk: ready at ${ctx.owner}, private SOL ${privateBalance(ctx, SOL).toString()} lamports`);
+      const blocked = this.#env.desk.blockedWallets.size;
+      if (blocked > 0) this.#log(`desk: ${blocked} wallet${blocked === 1 ? '' : 's'} on DESK_BLOCKED_WALLETS. The desk does not trade with ${blocked === 1 ? 'it' : 'them'}.`);
       const hint = deskFundingHint(publicLamports, privateBalance(ctx, SOL));
       if (hint) this.#log(`desk: ${hint}`);
       this.#scheduleRebalance();
@@ -444,6 +446,12 @@ export class Desk {
   }
 
   async #prepare(request: GhostPrepareRequest): Promise<GhostPrepareResponse> {
+    // The operator's own list of wallets the desk does not deal with. It comes first: before the desk
+    // does any work, and whatever state the desk is in.
+    if (typeof request.trader === 'string' && this.#env.desk.blockedWallets.has(request.trader)) {
+      this.#sayHourly(`blocked:${request.trader}`, `desk: refused a fill for ${request.trader}, which is on DESK_BLOCKED_WALLETS`);
+      throw new DeskError('NOT_SERVED', 'The desk does not trade with this wallet. The Shielded route is not affected by that.', 403);
+    }
     const { ctx } = this.#require();
     const now = Date.now();
     if (this.#pending && this.#pending.expiresAt > now) {

@@ -8,6 +8,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { alertSettings, setAlertSettings } from '../web/src/alert-settings.js';
 import { RECORD_PREFIXES, dropRequest, forgetSeen, keepMemo, keepRequest, keepSeen, noteOwnSlot, ownSlots, readMemos, readRequests, readSeen } from '../web/src/local-records.js';
+import { keepPayRun, readPayRun } from '../web/src/pay-records.js';
+import { newRun } from '../shared/src/paymany.js';
 
 const WALLET = '9C6hybhQ6Aycep9jaUnP6uL9ZYvDjUp1aSkFWPUFJtpj';
 const OTHER = 'GwCXyJ8AesaucFMTUSZmiFVMhVngpeBxaBC7mQJiZct3';
@@ -46,7 +48,11 @@ describe('what is kept for a wallet', () => {
     setAlertSettings(WALLET, { on: true, system: false });
     noteOwnSlot(WALLET, 77n, 1_000);
     keepSeen(WALLET, { v: 1, keys: ['a:0'], floor: '0' });
+    const run = newRun({ id: 'abc123', wallet: WALLET, mint: 'So11111111111111111111111111111111111111112', symbol: 'SOL', decimals: 9, now: 1_800_000_000_000, entries: [{ line: 1, to: OTHER, units: 5n, note: '' }] });
+    expect(keepPayRun(run)).toBe(true);
     expect([...local.data.keys()].sort()).toEqual(RECORD_PREFIXES.map((prefix) => prefix + WALLET).sort());
+    expect(readPayRun(WALLET)).toEqual(run);
+    expect(readPayRun(OTHER)).toBeNull();
     expect(readMemos(OTHER).items).toEqual([]);
     expect(readRequests(OTHER).items).toEqual([]);
     expect(alertSettings(OTHER)).toEqual({ on: false, system: false });

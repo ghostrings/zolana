@@ -1,0 +1,17 @@
+
+Found a 'test' script in the Anchor.toml. Running it as a test suite!
+
+Running test suite: "<local-workspace>/Anchor.toml"
+
+▶ actual local validator lifecycle, authority, substitution and atomic rollback
+  ✔ protocol cannot be initialized by an unrelated signer; no market before config (2044.468631ms)
+  ✔ locked state refuses issuance; activation requires intended build and authority (2041.491702ms)
+✔ actual local validator lifecycle, authority, substitution and atomic rollback (5199.801365ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5985.112748

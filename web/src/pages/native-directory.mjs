@@ -1,0 +1,7 @@
+import {initShell} from '../ui.ts';import {mountRuntime} from '../shell.ts';import '../native-markets.css';import {el,text,readNativeSnapshot,renderMarketCards} from '../native-v33/browser-ui.mjs';
+import {publicKey} from '../../../shared/src/ghost-markets/observe.ts';
+initShell('market');void mountRuntime();let rows=[],busy=false;
+async function render(){const q=el('nm-search').value.trim().toLowerCase();await renderMarketCards(el('nm-list'),rows.filter(m=>[m.name,m.symbol,m.baseMint,m.address].some(x=>x.toLowerCase().includes(q))));if(q&&rows.length&&!rows.some(m=>[m.name,m.symbol,m.baseMint,m.address].some(x=>x.toLowerCase().includes(q))))el('nm-list').textContent='No matches.';}
+async function refresh(){if(busy)return;busy=true;el('nm-refresh').disabled=true;try{const s=await readNativeSnapshot();rows=s.markets.markets;text('nm-state',`${rows.length} native market(s) · finalized slot ${s.markets.slot} · ${s.observation.config.mode}`);await render();}catch{rows=[];text('nm-state','Market snapshot unavailable or exceeds the 500-market discovery limit. Open a known market directly above. No claim of zero markets.');el('nm-list').replaceChildren();}finally{busy=false;el('nm-refresh').disabled=false;}}
+el('nm-open-form').onsubmit=e=>{e.preventDefault();try{const a=el('nm-open-address').value.trim();publicKey(a);location.assign('/native-token?market='+encodeURIComponent(a));}catch{text('nm-open-error','Enter a valid native market address.');}};
+el('nm-refresh').onclick=()=>void refresh();el('nm-search').oninput=()=>void render();void refresh();

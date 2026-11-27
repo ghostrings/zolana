@@ -1,0 +1,104 @@
+
+> privacycash-fun@0.1.0 markets:production:check
+> node ops/check-native-production.mjs
+
+TAP version 13
+# Subtest: exact supplied executable and candidate identity preserved
+ok 1 - exact supplied executable and candidate identity preserved
+  ---
+  duration_ms: 7.400352
+  type: 'test'
+  ...
+# Subtest: real candidate ELF bytes in a synthetic finalized snapshot are recognized, never automatically approved
+ok 2 - real candidate ELF bytes in a synthetic finalized snapshot are recognized, never automatically approved
+  ---
+  duration_ms: 51.472075
+  type: 'test'
+  ...
+# Subtest: zero padding is permitted but trailing code, changed executable, stale slot and substituted authority are refused
+ok 3 - zero padding is permitted but trailing code, changed executable, stale slot and substituted authority are refused
+  ---
+  duration_ms: 230.214019
+  type: 'test'
+  ...
+# Subtest: wrong genesis, loader and ProgramData pointer refused
+ok 4 - wrong genesis, loader and ProgramData pointer refused
+  ---
+  duration_ms: 1.329084
+  type: 'test'
+  ...
+# Subtest: uninitialized V33 is distinct from an active config; wrong schema/role/nomination refused
+ok 5 - uninitialized V33 is distinct from an active config; wrong schema/role/nomination refused
+  ---
+  duration_ms: 43.157485
+  type: 'test'
+  ...
+# Subtest: synthetic approval decision requires exact reviewed binary, slot and roles; paused actions have narrow scope
+ok 6 - synthetic approval decision requires exact reviewed binary, slot and roles; paused actions have narrow scope
+  ---
+  duration_ms: 52.029315
+  type: 'test'
+  ...
+# Subtest: native market schema preserves genuine integer fees and supply
+ok 7 - native market schema preserves genuine integer fees and supply
+  ---
+  duration_ms: 1.623309
+  type: 'test'
+  ...
+# Subtest: market decoding refuses wrong fee tier, asset, treasury, excessive liabilities and malformed name
+ok 8 - market decoding refuses wrong fee tier, asset, treasury, excessive liabilities and malformed name
+  ---
+  duration_ms: 2.876079
+  type: 'test'
+  ...
+# Subtest: scan uses only fixed filtered finalized RPC and rejects duplicate or unavailable results
+ok 9 - scan uses only fixed filtered finalized RPC and rejects duplicate or unavailable results
+  ---
+  duration_ms: 155.800583
+  type: 'test'
+  ...
+# Subtest: unsigned launch intent pins fee/profile/treasury and rejects invalid names or roles
+ok 10 - unsigned launch intent pins fee/profile/treasury and rejects invalid names or roles
+  ---
+  duration_ms: 1.289545
+  type: 'test'
+  ...
+# Subtest: initialization plan matches exact V33 IDL account order and discriminator, with no signable transaction
+ok 11 - initialization plan matches exact V33 IDL account order and discriminator, with no signable transaction
+  ---
+  duration_ms: 1.228854
+  type: 'test'
+  ...
+# Subtest: browser instruction discriminators are pinned to release IDL; no activation or external LP builders
+ok 12 - browser instruction discriminators are pinned to release IDL; no activation or external LP builders
+  ---
+  duration_ms: 0.631302
+  type: 'test'
+  ...
+# Subtest: native browser starts with disabled live controls, no key custody or automatic review approval
+ok 13 - native browser starts with disabled live controls, no key custody or automatic review approval
+  ---
+  duration_ms: 0.445812
+  type: 'test'
+  ...
+# Subtest: initialization is eligible only for exact reviewed V33 without existing protocol, not an active config
+ok 14 - initialization is eligible only for exact reviewed V33 without existing protocol, not an active config
+  ---
+  duration_ms: 80.359555
+  type: 'test'
+  ...
+# Subtest: portable operator co-sign is disabled before any key read and has no submission route
+ok 15 - portable operator co-sign is disabled before any key read and has no submission route
+  ---
+  duration_ms: 0.456178
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 703.347389

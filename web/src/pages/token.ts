@@ -69,8 +69,6 @@ type Route = 'ghost' | 'shielded' | 'public';
 
 const SOL = SOL_MINT as Address;
 const mintParam = new URL(location.href).searchParams.get('mint') ?? '';
-const intelligenceLink = document.querySelector<HTMLAnchorElement>('#ghost-intelligence-link');
-if (intelligenceLink && isAddress(mintParam)) intelligenceLink.href = `/ghost-intelligence?mint=${encodeURIComponent(mintParam)}`;
 // The link to prvmax opens it with this token already entered.
 const vaultsLink = document.querySelector<HTMLAnchorElement>('#prvmax-link');
 if (vaultsLink && mintParam) vaultsLink.href = `/prvmax?mint=${encodeURIComponent(mintParam)}`;

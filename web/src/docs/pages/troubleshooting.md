@@ -116,6 +116,14 @@ It has to support the Wallet Standard, message signing and version 1 transaction
 
 Either the desk is switched off on this site, or you are using a wallet extension. Ghost fill needs the built-in ghost wallet. The Shielded route makes the same trade against the pool.
 
+## "It is not known yet whether payment … went through"
+
+On [Pay many](/pay): the page lost touch with the network while a payment was being sent, so it cannot say whether that payment landed. It does not guess, and it sends nothing else. Wait a minute and press **Check again**. The answer is read from the chain: the line becomes Paid, or Not paid with nothing moved. Closing the page does not lose this: the run opens where it stopped. See [Pay many](/docs/pay-many).
+
+## "The desk does not trade with this wallet"
+
+The Ghost desk is this site's own wallet, and its operator keeps a list of wallets it does not deal with. Yours is on it. Nothing was prepared or sent. The Shielded route does not involve the desk and works as before. See [The Ghost desk](/docs/ghost-desk).
+
 ## A token's logo does not load
 
 The page shows the token's generated pixel mark instead. The token itself is unaffected: artwork is only a picture.

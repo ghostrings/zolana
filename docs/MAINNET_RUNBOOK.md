@@ -1118,7 +1118,7 @@ to check it.
 
 ### N1. After deploying
 
-- [ ] Open `/api/status`. It starts with `"release":"v23"` (or whichever release you
+- [ ] Open `/api/status`. It starts with `"release":"v24"` (or whichever release you
       deployed). The footer of every page says the same. If either says something else, the
       deploy did not happen: on Render, look at the Events tab for a failed build, and at
       which branch and commit it built.
@@ -1375,6 +1375,176 @@ token account, the result has the button, and the Wallet page can shield it.
   to be the first to hold a token privately.
 - A token that was launched here is traded on its own page, not on this one.
 
+## Part Q — custom rings in the open, Pay many, and the desk's blocklist and fills (v24)
+
+v24 adds three things. One only reads. One **moves funds**: Pay many. One is for you alone.
+
+**None of it has run on mainnet.** What was checked offline, and what could not be, is in the
+README's Status. This part is the first run of each. Do Q2 and Q3 yourself before telling
+anyone the pages are there.
+
+What v24 is **not**: it does not put this site, or anybody's funds, in a custom ring. Custom
+rings are not on mainnet in a form this site could use (Helius's documentation gives a target,
+not a date). Q2 is how you will know the day that changes.
+
+### Q1. Deploy
+
+- [ ] On your own computer: `npm test`. Every test passes (the count is in the README).
+- [ ] Deploy. `/api/status` starts with `"release":"v24"`.
+- [ ] Nothing new has to be set. `DESK_BLOCKED_WALLETS` (Q4) is optional and empty by default.
+- [ ] **Unlocking on a page works now.** Lock the wallet and open `/pay` in a new tab. The
+      box "Unlock your ghost wallet to pay" is in the form. Type the passphrase there and
+      press **Unlock** (or Enter): the wallet opens on that page and the header shows its
+      address. The same box is used on the token, swap and launch pages, where before v24 its
+      button did nothing; unlocking from the header always worked.
+
+### Q2. Custom rings: what mainnet says today
+
+Read-only. Nothing here can move anything.
+
+- [ ] On your own computer: `npm run doctor`. There is a new section, **Custom rings on
+      mainnet (read-only, for your information)**. Its first line is one of:
+      - `a new ring does nothing until Rings governance activates it (activation is not open)`
+      - `a new ring is ACTIVE from the moment it registers (activation is open to anyone)`
+      Then either `no custom ring is registered on mainnet yet`, or one line per ring with
+      its program's address and `active`, `paused by its operator` or `registered, not
+      activated`. **Write down what it says**, and the date: it is the answer to "can a
+      custom ring be used on mainnet yet", read from the chain itself.
+      This section never fails the doctor. If it says the register could not be read, the RPC
+      refused the scan; run it again, and send the line back if it persists.
+- [ ] On the live site open `/rings` and press **Custom rings**. Within a minute of the
+      server starting it shows the same thing as the doctor: the sentence about how a new
+      ring starts out, and either "NO CUSTOM RINGS YET" or one card per ring.
+- [ ] The server log has no line starting `rings: reading the register of custom rings did
+      not finish`. If it has one, the page keeps what it last read and tries again every
+      pass; send the line back.
+- [ ] If a ring is listed: its card links to the program and to its registration on an
+      explorer. Open the registration there. The account is owned by the Solana Privacy
+      Program and is 69 bytes long. That is the account the card was read from.
+
+The register is read every fifteen minutes, and at once when a transaction registers a ring
+or changes one, so a new ring appears on the page by itself. From then on its transactions
+show in **Live** as "moved funds inside a custom ring".
+
+### Q3. Pay many: first run
+
+**This moves funds.** Use two wallets of your own and amounts you would not miss.
+
+You need: wallet A on the site with at least 0.05 SOL in public and 0.02 SOL in private, and
+wallets B and C of your own, both **registered with Rings** (open each on the Wallet page and
+press Register once). Have one more address at hand that is *not* registered: a brand new
+wallet will do.
+
+- [ ] Open `/pay` with wallet A unlocked. (The Wallet page has a link to it under its four
+      buttons.) **Pay with** lists SOL with what A holds privately.
+- [ ] **A list with mistakes is refused, not guessed at.** Paste these four lines, with B's
+      and C's real addresses, and press **Read the list**:
+      ```
+      B_ADDRESS, 0.001, first test
+      C_ADDRESS, 1,000
+      C_ADDRESS, 0.002
+      not-an-address, 1
+      ```
+      "2 LINES COULD NOT BE READ" lists line 2 ("looks like the rest of a number") and line 4
+      ("does not start with a Solana address"). The **Pay** button cannot be pressed.
+      Nothing was sent.
+- [ ] **A wallet that cannot be paid privately is left out, and said to be.** Replace the list
+      with these three lines and press **Read the list**:
+      ```
+      B_ADDRESS, 0.001, first test
+      C_ADDRESS, 0.002
+      UNREGISTERED_ADDRESS, 0.001
+      ```
+      The table says **Yes** for B and C and **No** for the third, with the reason. The
+      button reads `Pay 2 wallets: 0.003 SOL`.
+- [ ] **Pay.** Press it. The page shows the run: each line goes from **To pay** to **Paid**,
+      one after the other, each with a link to its transaction. With the ghost wallet nothing
+      is asked of you; a wallet extension asks once per payment. It ends with "ALL PAID".
+- [ ] **Check each payment on chain.** Open both transactions in an explorer. Each is one
+      instruction of the Solana Privacy Program signed by A. Neither shows an amount.
+- [ ] **Check that they arrived.** Unlock B, then C: 0.001 and 0.002 SOL are in their private
+      balances and in their private history.
+- [ ] **The receipt.** Back on `/pay` with A, press **Download the receipt**. It has three
+      rows: two `Paid` with their transactions, times and the note, and one `Left out` with
+      the reason. Keep the file somewhere that is not the project folder.
+- [ ] **A's statement has the notes.** On A's Wallet page, the statement for today lists the
+      two payments with B's and C's addresses as counterparty and "first test" as the note
+      of the first.
+- [ ] **The run survives a reload.** Start a second run of two small payments and, while the
+      first one is being sent, reload the page. The run is still there. If a line reads
+      "Sent, not confirmed yet" the page looks it up by itself and turns it into **Paid** (or
+      **Not paid**, with nothing moved). Press **Continue**: only the line that was still
+      waiting is paid. Open A on the Rings page (`/rings?address=A`) and count the private
+      transfers: exactly one per line across both runs, never two for the same line.
+- [ ] **Clear the run.** Press **Clear this run**, then confirm. The form is empty again.
+- [ ] **A token you launched cannot be paid out to a list.** If A launched a token here and
+      holds some privately: choose it under Pay with, paste any valid list, press **Read the
+      list**. It answers "NOT THIS TOKEN" and the button cannot be pressed.
+
+If a payment is refused, the run stops and says why, and what is marked paid stays paid. The
+help page (`/docs/pay-many`) has the usual reasons. Send back any message that is not there.
+
+**What a run costs you.** Every payment is one proof, billed to your Helius key like any
+private transfer (about 1,000 credits). A full run of 25 is 25 proofs. `PROOFS_PER_MINUTE_PER_IP`
+(12 unless you changed it) and `PROOFS_DAILY_LIMIT` bound it as they bound everything else; the
+page starts payments six seconds apart so that a run stays under the first. If you lowered
+that limit below 10, a run will stop now and then with "Too many requests" and go on with
+Continue.
+
+### Q4. The desk: a blocklist, and a file of its fills
+
+Both are optional and only matter if the Ghost desk is on (Part E).
+
+**The blocklist.** `DESK_BLOCKED_WALLETS` is a list of wallets the desk will not trade with.
+It decides who the desk deals with and nothing else: a wallet on it can still use Rings and
+trade on the pools, and nothing on this server could stop that.
+
+- [ ] To try it: put the address of a spare wallet of your own in `DESK_BLOCKED_WALLETS` on
+      the hosting platform and restart. The log has `desk: 1 wallet on DESK_BLOCKED_WALLETS.
+      The desk does not trade with it.`
+- [ ] With that wallet, ask for a Ghost fill on any token. The page says "The desk does not
+      trade with this wallet. The Shielded route is not affected by that." and the log has
+      `desk: refused a fill for …` once. Nothing was prepared and nothing was sent. The
+      Shielded route still trades for that wallet.
+- [ ] A value that is not an address stops the server from starting, with
+      `DESK_BLOCKED_WALLETS must be a comma-separated list of Solana addresses.` That is on
+      purpose. A typo that happens to be another valid address cannot be caught: check the
+      list against where you copied it from.
+- [ ] Remove the spare wallet again and restart, unless you mean to keep it there.
+
+**The file of fills.** `npm run desk:fills` writes every fill the desk made to a CSV file: the
+trader's wallet, both tokens, both amounts, the time and the transaction. It reads the desk
+wallet's own private history from chain, so it needs the desk's key in the shell, set the way
+Part E sets it for `desk:status`. It sends nothing.
+
+- [ ] In the shell where `DESK_SECRET_KEY` is set (Part E): `npm run desk:fills`. It prints how
+      many rows the desk's history has, how many fills are in the period, and where the file
+      was written: your home folder, never this one.
+- [ ] Open the file. Each fill is two rows with the same transaction: one **In** and one
+      **Out**, each naming the other token under "Traded for", with the trader's wallet under
+      "Counterparty". Compare one with the same transaction on the Rings page: the two
+      wallets match. The amounts are not on the Rings page; they are in the file because the
+      desk is one side of the trade.
+- [ ] `npm run desk:fills -- --from 2026-11-01 --to 2026-11-30` writes one month.
+      `npm run desk:fills -- --all` writes the desk's whole statement instead: its fills, its
+      own trades on the pools, and its shields. `--out C:\somewhere\file.csv` names the
+      file; a path inside the project folder is refused, and an existing file is never
+      overwritten.
+- [ ] If it says `counterparty not read: N transaction(s)`, the indexer did not answer for
+      those; move the file away and run it again.
+
+**The file names who the desk traded with and for how much.** Keep it out of the project
+folder and out of the repository, and treat it as you would a bank statement.
+
+### Q5. What to tell people
+
+- **Custom rings**: the Rings page now lists every custom ring on mainnet and whether anything
+  can move in it. This site runs none of them and everything here is in the Default Ring,
+  where no auditor has a key.
+- **Pay many**: up to 25 wallets a run, from a private balance, with a receipt. Each payment
+  shows the two wallets and hides the token and the amount. A run of them is visibly one
+  wallet paying a list. Every wallet paid has to be registered with Rings first.
+
 ## Known limits
 
 - The wallet extras: a note on a payment request is not on chain, so the one being paid never
@@ -1383,6 +1553,25 @@ token account, the result has the button, and the Wallet page can shield it.
   Alerts stop when the site is closed and cover the wallet in use only. A viewing pass cannot
   be revoked. The check-up reads at most the wallet's 200 latest public rows, only as far
   back as the Rings page has read, and never another wallet's rows.
+
+- Custom rings: the Rings page lists a ring's registration and nothing of what happens inside
+  it. A ring is found by a scan of the Privacy Program's accounts; if the RPC refuses that
+  scan the page keeps what it last read. A newly registered ring can take up to fifteen
+  minutes to appear when this server did not see the transaction that registered it. This
+  site pays into no custom ring and holds nothing in one.
+
+- Pay many: one transaction per payment, so a wallet extension asks once for each, and each
+  pays its own fee and needs its own proof. Payments start six seconds apart, so 25 take
+  about three minutes. At most 25 wallets a run, one token a run. Every wallet has to be
+  registered with Rings; one that is not is left out, never paid in public instead. A run
+  lives in one browser: it cannot be continued from another device, and clearing the
+  browser's data removes it, though never a payment. A line whose outcome is not known blocks
+  the rest of the run until the network answers. A balance split across many small notes can
+  stop a run until it is consolidated. Notes are not on chain.
+
+- The desk's blocklist is a list of addresses and nothing cleverer: a new wallet is not on it.
+  `desk:fills` shows a token by its address, cut short, not by its name, and leaves a row
+  undated when its block time could not be read.
 
 - The Rings page reads what is public and nothing else. It lists a relayed transfer whose
   owner signed inside the proof as "between" its wallets, without a payer. It does not read

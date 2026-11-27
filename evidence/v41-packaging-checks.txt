@@ -1,0 +1,51 @@
+V41 standalone verification in packaging environment
+=== markets:check
+# tests 23
+# pass 23
+# fail 0
+=== markets:pilot:check
+# tests 45
+# pass 45
+# fail 0
+=== markets:lab:check
+# tests 8
+# pass 8
+# fail 0
+=== markets:wallet:check
+# tests 7
+# pass 7
+# fail 0
+=== markets:production:check
+# tests 23
+# pass 23
+# fail 0
+=== markets:browser:check
+# tests 7
+# pass 7
+# fail 0
+=== markets:live:check
+# tests 9
+# pass 9
+# fail 0
+=== markets:unified:check
+# tests 5
+# pass 5
+# fail 0
+=== markets:owner-trading:check
+# tests 5
+# pass 5
+# fail 0
+=== markets:token-ui:check
+# tests 9
+# pass 9
+# fail 0
+=== markets:v41:check
+# tests 44
+# pass 44
+# fail 0
+
+141 original tests plus 44 V41 suite checks (34 reused reference/metadata checks and 10 new profile checks).
+All changed/new .mjs and new shell scripts syntax checked.
+Dependency-backed tests/full app build unavailable: npm offline cache missing yocto-queue.
+Rust/SBF, local validator upgrade tests, Docker candidate, and upstream proof tests NOT run: required toolchain unavailable.
+No mainnet transactions or external submission. Historical binaries, release evidence and lockfiles checked byte-for-byte.

@@ -645,3 +645,47 @@ a.rg-token:hover {
     min-width: 70px;
   }
 }
+
+/* ---------------- custom rings ---------------- */
+
+.rg-rings {
+  display: grid;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.rg-ring .rg-eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* A ring's state is written in words; the frame only sets the active one apart. */
+.rg-state {
+  padding: 2px 7px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--silver);
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  font-stretch: 100%;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.rg-state[data-state='active'] {
+  border-color: #fff;
+  background: #fff;
+  color: #000;
+}
+
+.rg-ring[data-state='waiting'] .rg-full,
+.rg-ring[data-state='paused'] .rg-full {
+  color: var(--silver);
+}
+
+.rg-ring .rg-facts dd {
+  font-size: 1.05rem;
+  overflow-wrap: anywhere;
+}

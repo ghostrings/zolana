@@ -1,0 +1,19 @@
+{
+  "source": "owner-provided finalized RPC and solana program show output; not independently fetched",
+  "observedAt": "2026-11-26T23:40:16.174Z",
+  "slot": 474335628,
+  "marketScanSlot": 474335630,
+  "programId": "5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n",
+  "programData": "J4iCsaLM24bBqjWGXvtB6N3LzUiJNJWwKAqLtXUzTXxt",
+  "upgradeAuthority": "J4JRQza7JXnkct6kQC3roPYstoH2xFBoyQ5Wczpt5jPt",
+  "binarySha256": "2fba22c284791879f003aec3118c74fbd271f808f91b39e394e2654f9cc80d7d",
+  "deploymentSlot": "474265505",
+  "allocatedBytes": 533632,
+  "programDataLamports": "2711729400",
+  "protocol": null,
+  "markets": [],
+  "marketExecution": false,
+  "privateSettlement": false,
+  "candidateBytes": 547816,
+  "minimumAdditionalBytes": 14184
+}

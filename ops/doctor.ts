@@ -5,6 +5,7 @@
  * (a few Helius credits for the reads).
  */
 
+import bs58 from 'bs58';
 import { address } from '@solana/kit';
 import { PublicKey } from '@solana/web3.js';
 import { DynamicBondingCurveClient } from '@meteora-ag/dynamic-bonding-curve-sdk';
@@ -18,6 +19,7 @@ import {
   USER_REGISTRY_PROGRAM_ID,
 } from '../shared/src/constants.js';
 import { type OnChainConfigLike, assertFeeGuarantee, buildTierConfig, configMismatches, feeTermsFromAccount } from '../shared/src/curve.js';
+import { RING_CONFIG_SCAN, readRingRegistration, ringStateOf } from '../shared/src/custom-rings.js';
 import { createRingsClient, isRegistered, readProtocolFacts } from '../shared/src/privacy.js';
 import { PAIR_TOKENS, configEnvKey, curveEnvKeys, keeperRule, pairSymbol, tradingPair } from '../shared/src/quotes.js';
 import { FEE_TIERS } from '../shared/src/tiers.js';
@@ -76,8 +78,11 @@ async function main(): Promise<void> {
   const tree = await connection.getAccountInfo(new PublicKey(client.tree));
   if (tree) ok('the state tree account exists');
   else bad('the state tree account was not found');
+  /** How a new custom ring starts out on mainnet. Null when the protocol's settings could not be read. */
+  let ringActivationOpen: boolean | null = null;
   try {
     const facts = await readProtocolFacts(client);
+    ringActivationOpen = facts.ringActivationIsPermissionless;
     if (facts.splInterfaceCreationIsPermissionless) {
       ok('anyone may create a Rings interface for a new mint, so launched tokens can be held privately');
     } else {
@@ -106,6 +111,35 @@ async function main(): Promise<void> {
     }
   } catch (error) {
     bad(`prover attestation failed: ${error instanceof Error ? error.message : String(error)}`);
+  }
+
+  // Custom rings: what the chain says today. Nothing here is a requirement of this site, so nothing
+  // here can fail the doctor: it only tells you when rings other than the Default Ring exist on mainnet.
+  heading('Custom rings on mainnet (read-only, for your information)');
+  console.log(
+    ringActivationOpen === null
+      ? '    how new rings are activated: could not be read'
+      : ringActivationOpen
+        ? '    a new ring is ACTIVE from the moment it registers (activation is open to anyone)'
+        : '    a new ring does nothing until Rings governance activates it (activation is not open)',
+  );
+  try {
+    const found = await connection.getProgramAccounts(new PublicKey(SPP_PROGRAM_ID), {
+      commitment: 'confirmed',
+      filters: [{ dataSize: RING_CONFIG_SCAN.dataSize }, { memcmp: { offset: 0, bytes: bs58.encode(Uint8Array.of(RING_CONFIG_SCAN.type)) } }],
+    });
+    let listed = 0;
+    for (const { pubkey, account } of found) {
+      const ring = await readRingRegistration(pubkey.toBase58(), new Uint8Array(account.data));
+      if (!ring) continue;
+      listed += 1;
+      const state = ringStateOf(ring);
+      console.log(`    ring ${ring.program}: ${state === 'active' ? 'active' : state === 'paused' ? 'paused by its operator' : 'registered, not activated'}`);
+    }
+    if (listed === 0) console.log('    no custom ring is registered on mainnet yet');
+    if (found.length > listed) console.log(`    ${found.length - listed} account(s) look like a registration and do not check out as one; they are not counted`);
+  } catch (error) {
+    console.log(`    the register of custom rings could not be read: ${error instanceof Error ? error.message : String(error)}`);
   }
 
   heading('Fee tiers (SOL pair)');
@@ -334,6 +368,11 @@ async function main(): Promise<void> {
     else warn(`the desk has only ${lamports / 1e9} public SOL for fees`);
     warn('the desk is enabled: it trades real funds from a hot wallet');
     if (env.desk.stockMints.length === 0) console.log('    DESK_STOCK_MINTS is empty: the desk can fill a buy only out of what sellers have just delivered.');
+    console.log(
+      env.desk.blockedWallets.size === 0
+        ? '    DESK_BLOCKED_WALLETS is empty: the desk trades with any registered wallet.'
+        : `    DESK_BLOCKED_WALLETS in this environment: ${env.desk.blockedWallets.size} wallet(s) the desk does not trade with. The server uses the list in ITS environment, not this one.`,
+    );
   }
 
   heading('Deployment');

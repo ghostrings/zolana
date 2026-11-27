@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "privacycash.fun — a Solana launchpad where balances, transfers and fills run through Solana Privacy Rings, with launches on Meteora DBC.",
+  "description": "privacycash.fun \u2014 a Solana launchpad where balances, transfers and fills run through Solana Privacy Rings, with launches on Meteora DBC.",
   "engines": {
     "node": ">=22.13"
   },
@@ -32,12 +32,38 @@
     "desk:register": "tsx --env-file-if-exists=.env ops/desk.ts register",
     "desk:status": "tsx --env-file-if-exists=.env ops/desk.ts status",
     "desk:check": "tsx --env-file-if-exists=.env ops/desk.ts check",
-    "ghost:check": "node ops/check-ghost.mjs",
-    "ghost:demo": "node ops/check-ghost.mjs --demo",
-    "ghost:baseline": "node ops/check-baseline.mjs",
-    "verify": "npm run ghost:baseline && npm run ghost:check && npm run markets:check && npm run test && npm run build",
-    "markets:check": "node ops/check-markets-sdk.mjs",
-    "markets:observe": "tsx ops/markets-observe.ts"
+    "desk:fills": "tsx --env-file-if-exists=.env ops/desk.ts fills",
+    "markets:check": "node ops/check-native-markets.mjs",
+    "markets:observe": "tsx ops/markets-observe.ts",
+    "markets:pilot:check": "node --test protocol/ghost-markets-pilot/tests/quote.test.mjs protocol/ghost-markets-pilot/tests/lifecycle.test.mjs protocol/ghost-markets-pilot/tests/pilot-profile.test.mjs protocol/ghost-markets-pilot/tests/security-txt.test.mjs",
+    "markets:pilot:local": "bash protocol/ghost-markets-pilot/scripts/test-pilot.sh",
+    "markets:lab:check": "node --test protocol/ghost-markets-pilot/tests/lab-core.test.mjs",
+    "markets:pilot:lab": "bash protocol/ghost-markets-pilot/scripts/native-lab.sh",
+    "markets:prepare:v33": "bash protocol/ghost-markets-pilot/scripts/prepare-v33-review.sh",
+    "markets:wallet:check": "node --test protocol/ghost-markets-pilot/tests/wallet-wire.test.mjs",
+    "markets:wallet:local": "bash protocol/ghost-markets-pilot/scripts/test-wallet-client.sh",
+    "markets:production:check": "node ops/check-native-production.mjs",
+    "markets:production:preflight": "tsx ops/native-production.ts preflight",
+    "markets:production:init-plan": "tsx ops/native-production.ts initialization-plan",
+    "markets:production:client-check": "tsx --test tests/native-production-client.node.mjs",
+    "markets:production:approval": "tsx ops/native-approval.mjs",
+    "markets:owner-launch": "tsx ops/v33-first-launch.mjs",
+    "markets:native-asset": "tsx ops/v33-native-asset.mjs",
+    "markets:owner-launch:check": "tsx --test tests/v33-first-launch.node.mjs",
+    "markets:browser:check": "node --test tests/native-browser-policy.node.mjs",
+    "markets:browser:client-check": "tsx --test tests/native-browser-envelope.node.mjs",
+    "markets:admin:browser": "tsx ops/native-browser-admin.mjs",
+    "markets:live:check": "node --test tests/native-market-live.node.mjs",
+    "markets:live:client-check": "tsx --test tests/native-market-session.node.mjs",
+    "markets:unified:check": "node --test tests/native-unified-market.node.mjs",
+    "markets:owner-trading:check": "node --test tests/native-owner-trading.node.mjs",
+    "markets:token-ui:check": "node --test tests/native-token-ui.node.mjs",
+    "markets:v41:check": "node --test tests/v41-profile.node.mjs protocol/ghost-markets-v41/tests/quote.test.mjs protocol/ghost-markets-v41/tests/lifecycle.test.mjs protocol/ghost-markets-v41/tests/security-txt.test.mjs",
+    "markets:v41:local": "bash protocol/ghost-markets-v41/scripts/test-pilot.sh",
+    "markets:prepare:v41": "bash protocol/ghost-markets-v41/scripts/prepare-v41-review.sh",
+    "markets:confidential:local": "bash protocol/ghost-confidential-settlement/scripts/test-local.sh",
+    "markets:v41:compat": "bash protocol/ghost-markets-v41/scripts/test-compat.sh",
+    "markets:v41:client-check": "tsx --test tests/v41-client.node.mjs"
   },
   "dependencies": {
     "@coral-xyz/anchor": "0.31.1",
@@ -66,13 +92,5 @@
     "vite": "^7.0.0",
     "vite-plugin-node-polyfills": "^0.24.0",
     "vitest": "^5.1.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ghostrings/zolana.git"
-  },
-  "homepage": "https://privacycash.fun",
-  "bugs": {
-    "url": "https://github.com/ghostrings/zolana/issues"
   }
 }

@@ -15,6 +15,7 @@ import {
   type RingAddressView,
   type RingAssetPage,
   type RingAssetSort,
+  type CustomRingsView,
   type RingAssetView,
   type RingFeed,
   type RingKind,
@@ -45,6 +46,8 @@ export const RINGS_OFF_OVERVIEW: RingOverview = Object.freeze({
   solShielded: '0',
   solFlow24h: '0',
 });
+
+export const RINGS_OFF_CUSTOM: CustomRingsView = Object.freeze({ enabled: false, readAt: null, activation: null, rings: [] });
 
 export interface RingsRoutesInput {
   /** Undefined when this server does not follow Rings. */
@@ -88,6 +91,12 @@ export function ringsRouter(input: RingsRoutesInput): Router {
   router.get('/overview', (_request, response) => {
     response.setHeader('cache-control', 'public, max-age=10');
     response.json(input.rings ? input.rings.indexer.overview() : RINGS_OFF_OVERVIEW);
+  });
+
+  // The public register of custom rings. Served from what the follower last read: no call to the chain from here.
+  router.get('/custom', (_request, response) => {
+    response.setHeader('cache-control', 'public, max-age=30');
+    response.json(input.rings ? input.rings.indexer.customRings() : RINGS_OFF_CUSTOM);
   });
 
   router.get('/tokens', (request, response) => {

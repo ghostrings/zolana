@@ -1,0 +1,47 @@
+/* Local additions; the existing launch, wallet, swap and market styles are untouched. */
+.native-rail { margin-bottom: 22px; }
+.native-rail-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 15px; }
+.native-rail-heading h2 { margin: 6px 0 0; }
+.native-rail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.native-rail-card { border: 1px solid #303030; padding: 16px; min-width: 0; }
+.native-rail-card.is-supported { border-color: #777; }
+.native-rail-card h3 { margin: 8px 0; }
+.native-rail-card p { color: var(--muted, #aaa); line-height: 1.6; margin: 8px 0; }
+.native-rail-label { font-size: 10px; letter-spacing: .13em; color: #a4a4a4; }
+.native-status-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 18px 0; }
+.native-status-grid .panel { min-width: 0; padding: 16px; }
+.native-status-grid b { display: block; margin-top: 8px; overflow-wrap: anywhere; }
+.native-details dd { overflow-wrap: anywhere; word-break: break-word; }
+.native-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 15px; }
+.native-hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 22px; }
+.native-hero img { width: clamp(64px, 11vw, 118px); height: auto; image-rendering: pixelated; }
+.native-hero h1 { margin: 8px 0; }
+@media (max-width: 760px) { .native-status-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .native-rail-grid { grid-template-columns: 1fr; } .native-hero { grid-template-columns: 1fr; } .native-hero img { display: none; } }
+.native-code { white-space: pre-wrap; overflow-wrap: anywhere; padding: 14px; background: #0b0b0b; border: 1px solid #333; font: 12px/1.65 'IBM Plex Mono', monospace; max-height: 440px; overflow: auto; }
+.native-market-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px; margin:18px 0; }
+.native-market-list article { min-width:0; overflow-wrap:anywhere; }
+.native-form { margin-top:18px; }
+
+#native-create-rail[hidden], .create-layout[hidden], .native-art-preview[hidden], a[hidden], #nt-wallet-link[hidden] {display:none!important}
+.native-art-preview{width:110px;height:110px;object-fit:cover;border:1px solid #555;margin:10px 0}
+.native-token-head{display:flex;align-items:center;gap:16px;min-width:0;overflow-wrap:anywhere}.native-large-art{width:88px;height:88px;flex:none}.native-token-card .token-avatar{width:48px;height:48px;flex:none}.native-token-card progress,#nt-progress{width:100%;accent-color:#ccc;height:8px;margin:10px 0}.native-token-card .kv{font-size:12px}.native-form .kv{margin:16px 0}#nt-identity dd{overflow-wrap:anywhere}#nc-message,#nt-message{overflow-wrap:anywhere}#nc-review{max-height:420px}
+
+[data-meteora-only][hidden]{display:none!important}
+
+/* V37 native market controls; no changes to the original trading UI. */
+.native-history-list{display:grid;gap:8px;margin-top:14px}.native-history-row{display:grid;grid-template-columns:minmax(95px,.8fr) minmax(0,1fr) minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #333;overflow-wrap:anywhere}.native-history-row small{display:block;color:var(--muted,#999);margin-top:4px}.native-history-row a{justify-self:end}.native-history-row b{font-size:13px}.native-history-row .history-kind{letter-spacing:.06em}#nt-asset-details dd,#nt-balances dd,#nt-quote-summary dd{overflow-wrap:anywhere}#nt-asset-next{margin-top:14px}@media(max-width:650px){.native-history-row{grid-template-columns:1fr 1fr}.native-history-row a{justify-self:start}}
+.native-ring-badge{display:inline-flex;border:1px solid #a63d42;background:#32191d;color:#ffb6ba;padding:3px 7px;border-radius:5px;font-size:11px;margin-left:10px}.native-ring-badge[hidden]{display:none!important}.native-price-chart{display:grid;place-items:center;min-height:180px;height:clamp(180px,28vw,310px);background:repeating-linear-gradient(to top,transparent 0%,transparent 24%,#333 25%,transparent 25.5%);color:#e8e8e8;border:1px solid #343434;border-radius:8px;padding:12px;text-align:center}.native-price-chart svg{width:100%;height:100%;overflow:visible}#nt-chart-stats{margin-top:14px}
+
+/* V40: native token pages share the ordinary market header, chart, stats and
+   sticky checkout. Keep the public-vs-encrypted distinction visible. */
+.native-market-page .native-market-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.native-market-page .native-market-banner span{flex:1 1 300px}
+.native-market-page .native-token-chart{display:grid;place-items:center;height:auto;min-height:300px;padding:0;border:0;border-radius:0;background:none}
+.native-market-page .native-token-chart svg{width:100%;height:auto;min-height:0}
+.native-market-page .native-chart-empty{min-height:300px;display:grid;place-items:center;padding:20px;width:100%;box-sizing:border-box;color:var(--smoke,#999);text-align:center;background:repeating-linear-gradient(to bottom,transparent 0%,transparent 24%,rgba(255,255,255,.05) 24.5%,transparent 25%)}
+.native-chart-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;border-top:1px solid var(--line);flex-wrap:wrap}.native-chart-foot p{flex:1 1 180px;margin:0}
+.native-sr-only{position:absolute;width:1px!important;height:1px!important;overflow:hidden;clip-path:inset(50%);margin:-1px!important}
+.native-trade-box{min-width:0}.native-trade-box .balance-strip{margin-bottom:8px}.native-trade-box .balance-strip b{font-size:clamp(1rem,1.7vw,1.45rem);white-space:normal;overflow-wrap:anywhere}.native-trade-box .balance-strip small{white-space:normal}.native-trade-box .balance-strip div{padding:12px}
+.native-detail{margin:12px 0;border-top:1px solid var(--line);padding-top:10px}.native-detail summary{font-size:.8rem;color:var(--silver,#ccc);cursor:pointer}.native-detail[open] summary{margin-bottom:12px}.native-trade-box .native-detail .field{margin-bottom:10px}.native-trade-box .native-balance-refresh{margin:0 0 14px}.native-public-route{border:1px solid var(--line-2);border-radius:var(--r3);padding:12px;background:var(--well);display:grid;gap:4px}.native-public-route span{font-size:.75rem;color:var(--smoke)}
+.native-trade-box .quick-amounts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.native-trade-box .quick-amounts button{padding:5px 2px;min-height:34px}.native-trade-box .quick-amounts button:disabled{opacity:.4;cursor:not-allowed}.native-trade-box .quick-amounts[hidden],#nt-side[hidden],#nt-registration-details[hidden]{display:none!important}.native-trade-box .quote-box:empty{display:none}.native-trade-box #nt-message:not(:empty){margin-top:12px;overflow-wrap:anywhere}.native-trade-box #nt-signature{display:block;margin-top:10px;overflow-wrap:anywhere}.native-trade-box #nt-balance-note{overflow-wrap:anywhere;margin:0 0 10px}.native-market-page #nt-identity dd,.native-market-page #nt-metrics dd,.native-market-page #nt-asset-details dd,.native-trade-box #nt-balances dd{overflow-wrap:anywhere}
+@media(max-width:900px){.native-market-page .native-token-chart,.native-market-page .native-chart-empty{min-height:210px}.native-market-page .trade-panel{margin-top:20px}.native-market-page .trade-main>.trade-stats{margin-top:12px}}

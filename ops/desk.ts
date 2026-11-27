@@ -6,19 +6,28 @@
  *   npm run desk:register   one-time: register it with Rings
  *   npm run desk:status     public and private balances
  *   npm run desk:check      everything a Ghost fill needs, tried on mainnet with nothing sent
+ *   npm run desk:fills      the desk's fills as a CSV file, read from chain with the desk's key
  */
 
-import { type Address, type Instruction, address, getTransactionSize } from '@solana/kit';
+import { existsSync, writeFileSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { resolve, sep } from 'node:path';
+
+import { type Address, type Instruction, type Signature, address, getTransactionSize } from '@solana/kit';
 import { PublicKey } from '@solana/web3.js';
 import { transactInstruction } from '@heliuslabs/spr/interface';
 
 import { COMPUTE_UNITS, TX_V1_MAX_BYTES } from '../shared/src/constants.js';
+import { fillCount, fillRows, isInside } from '../shared/src/desk-fills.js';
 import { DESK_MAX_NOTES, DESK_SIGN_WINDOW_MS, mostFragmented } from '../shared/src/desk-rules.js';
+import { otherWallets, taggedEvents } from '../shared/src/ring-tags.js';
+import { buildStatement, periodOf, statementCsv } from '../shared/src/statement.js';
 import { formatUnits } from '../shared/src/units.js';
 import {
   SOL_MINT,
   buildGhostLeg,
   fetchAssetId,
+  historyRowsOf,
   isRegistered,
   latestLifetime,
   privateHoldings,
@@ -32,8 +41,13 @@ import { requireRpc } from '../server/src/env.js';
 import { clampPriority, estimatePriority, fixedPriority } from '../server/src/priority.js';
 import { assertNetwork, connect, explorerTx, fail, heading, line, loadEnv, newWalletKey, parseArgs } from './lib.js';
 
+/** Runs `work` over `items`, a few at a time, in order of arrival. */
+async function inBatches<T>(items: readonly T[], size: number, work: (item: T) => Promise<void>): Promise<void> {
+  for (let start = 0; start < items.length; start += size) await Promise.all(items.slice(start, start + size).map(work));
+}
+
 async function main(): Promise<void> {
-  const { command, rest } = parseArgs(process.argv.slice(2));
+  const { command, rest, options } = parseArgs(process.argv.slice(2));
 
   if (command === 'new') {
     // Needs no settings and touches no network. Nothing is written anywhere: a key in a file in
@@ -202,7 +216,75 @@ async function main(): Promise<void> {
     process.exit(problems === 0 ? 0 : 1);
   }
 
-  console.log('Usage: tsx ops/desk.ts <new|address|register|status|check [address]>');
+  if (command === 'fills') {
+    // Reads the desk wallet's own private history with the key in this shell, and writes its fills
+    // to a file. Sends nothing. The file names who the desk traded with and for how much, so it is
+    // written outside this folder: a file in here is a file the next `git add -A` puts in the repository.
+    const period = periodOf(options.from || options.to ? 'custom' : 'all', new Date(), options.from === 'true' ? '' : (options.from ?? ''), options.to === 'true' ? '' : (options.to ?? ''));
+    if (!period) fail(new Error('--from and --to are days in UTC, as YYYY-MM-DD, with --from not after --to.'));
+    const everything = options.all === 'true';
+    const { ctx, client } = await Desk.context(env);
+    const day = new Date().toISOString().slice(0, 10);
+    const target = resolve(options.out && options.out !== 'true' ? options.out : resolve(homedir(), `privacycash-desk-${everything ? 'statement' : 'fills'}-${ctx.owner.slice(0, 4)}-${day}.csv`));
+    if (isInside(target, resolve(process.cwd()), sep)) fail(new Error(`${target} is inside the project folder. Choose a place outside it with --out, so the file cannot end up in the repository.`));
+    if (existsSync(target)) fail(new Error(`${target} already exists. Move it away or name another file with --out: nothing is overwritten.`));
+
+    heading(`Desk ${ctx.owner}: ${everything ? 'statement' : 'fills'}, ${period.label} (Solana mainnet). Nothing is sent.`);
+    await syncRings(ctx);
+    const history = historyRowsOf(ctx.wallet);
+    line('rows in the private history', history.length);
+
+    // Three public facts the private history does not carry: when each block was made, how each token is written, and who else a transfer named.
+    const times = new Map<string, number>();
+    await inBatches([...new Set(history.map((row) => row.slot.toString()))], 8, async (slot) => {
+      try {
+        const seconds = await connection.getBlockTime(Number(slot));
+        if (typeof seconds === 'number' && seconds > 0) times.set(slot, seconds);
+      } catch {
+        // Left undated: the statement says so rather than guess.
+      }
+    });
+    const labels = new Map<string, { symbol: string; decimals: number; native?: boolean }>([[SOL_MINT, { symbol: 'SOL', decimals: 9, native: true }]]);
+    for (const mint of new Set(history.map((row) => String(row.asset)))) {
+      if (labels.has(mint)) continue;
+      const { decimals } = (await connection.getTokenSupply(new PublicKey(mint))).value;
+      labels.set(mint, { symbol: `${mint.slice(0, 4)}…${mint.slice(-4)}`, decimals });
+    }
+    const others = new Map<string, string[]>();
+    const transfers = [...new Set(history.filter((row) => row.kind === 'privateTransfer').map((row) => String(row.signature)))];
+    let unread = 0;
+    await inBatches(transfers, 4, async (signature) => {
+      try {
+        others.set(signature, otherWallets(taggedEvents(await client.getShieldedTransactionsBySignature(signature as Signature)), ctx.owner));
+      } catch {
+        unread += 1;
+      }
+    });
+
+    const statement = buildStatement(
+      history,
+      {
+        time: (slot) => times.get(slot.toString()) ?? null,
+        label: (mint) => labels.get(mint) ?? { symbol: mint, decimals: 0 },
+        others: (signature) => others.get(signature) ?? [],
+        memo: () => undefined,
+      },
+      period,
+    );
+    const rows = everything ? statement.rows : fillRows(statement.rows);
+    writeFileSync(target, statementCsv(rows), { flag: 'wx' });
+
+    line('fills in the period', fillCount(statement.rows));
+    line('rows written', rows.length);
+    if (statement.undated > 0) line('rows without a date', `${statement.undated} (their block time could not be read; they are in the file, at the top)`);
+    if (unread > 0) line('counterparty not read', `${unread} transaction(s): the indexer did not answer for them. Run this again to fill them in.`);
+    line('written to', target);
+    console.log('\n  A fill is two rows with the same transaction: what the desk received and what it paid.');
+    console.log('  This file names who the desk traded with and for how much. Keep it out of this folder and out of the repository.\n');
+    return;
+  }
+
+  console.log('Usage: tsx ops/desk.ts <new|address|register|status|check [address]|fills [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--all] [--out FILE]>');
   process.exit(command ? 1 : 0);
 }
 

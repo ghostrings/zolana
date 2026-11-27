@@ -43,14 +43,18 @@ export async function ensureWallet(container: HTMLElement, options: GateOptions)
   // The wallet that was in use last is the one the passphrase opens.
   const wallet = lastUsedWallet();
   const which = wallet ? `${walletCount() > 1 ? `${wallet.name} · ` : ''}${short(wallet.address, 6, 6)}` : '';
-  container.innerHTML = `<form class="gate" data-gate-form novalidate><h3>Unlock your ghost wallet ${escapeHtml(options.purpose)}.</h3><p>${escapeHtml(which)}</p><div class="inline-form"><label class="field" style="margin:0"><span>Passphrase</span><input type="password" name="passphrase" placeholder=" " autocomplete="current-password" required minlength="8"></label><button class="btn" type="submit">Unlock</button></div><div data-gate-error aria-live="polite"></div></form>`;
-  const form = container.querySelector<HTMLFormElement>('[data-gate-form]');
+  // Not a form of its own. On most pages the gate sits inside the page's own form, and a form written inside
+  // another one is dropped by the browser: its fields stay, the form does not, and the button then submits the
+  // page's form instead. So the gate is a plain box, and Unlock and Enter are handled here and go no further.
+  container.innerHTML = `<div class="gate" data-gate-form><h3>Unlock your ghost wallet ${escapeHtml(options.purpose)}.</h3><p>${escapeHtml(which)}</p><div class="inline-form"><label class="field" style="margin:0"><span>Passphrase</span><input type="password" name="passphrase" placeholder=" " autocomplete="current-password" minlength="8"></label><button class="btn" type="button" data-gate-unlock>Unlock</button></div><div data-gate-error aria-live="polite"></div></div>`;
+  const button = container.querySelector<HTMLButtonElement>('[data-gate-unlock]');
+  const input = container.querySelector<HTMLInputElement>('input[name=passphrase]');
   const errorBox = container.querySelector<HTMLElement>('[data-gate-error]');
-  form?.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const button = form.querySelector<HTMLButtonElement>('button[type=submit]');
-    const input = form.querySelector<HTMLInputElement>('input[name=passphrase]');
-    if (!button || !input) return;
+  if (!button || !input) return null;
+  let working = false;
+  const unlock = async (): Promise<void> => {
+    if (working) return;
+    working = true;
     button.disabled = true;
     button.textContent = 'Unlocking…';
     try {
@@ -64,7 +68,20 @@ export async function ensureWallet(container: HTMLElement, options: GateOptions)
       if (errorBox) errorBox.innerHTML = `<div class="status error">${escapeHtml(describeError(error))}</div>`;
       button.disabled = false;
       button.textContent = 'Unlock';
+      working = false;
     }
+  };
+  button.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    void unlock();
+  });
+  input.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter') return;
+    // Enter in a field submits the form the field is in. Here it unlocks, and the page's own form is left alone.
+    event.preventDefault();
+    event.stopPropagation();
+    void unlock();
   });
   return null;
 }

@@ -2,6 +2,8 @@ import '../market.css';
 import '../rings.css';
 
 import {
+  type CustomRing,
+  type CustomRingsView,
   RING_ASSET_SORTS,
   type RingAddressView,
   type RingAsset,
@@ -19,14 +21,14 @@ import { api } from '../api.js';
 import { compactSol, explorerAddress, explorerTx } from '../format.js';
 import { type IconName, icon, triangle } from '../icons.js';
 import { pageRange, pageWindow } from '../paging.js';
-import { amountText, looksLikeAddress, rowWords, shareText, shortAddress, signedAmount, utcTime } from '../rings-render.js';
+import { activationWords, amountText, looksLikeAddress, ringCountWords, ringStateWords, rowWords, shareText, shortAddress, signedAmount, utcTime } from '../rings-render.js';
 import { mountRuntime } from '../shell.js';
 import { sparkSvg } from '../spark.js';
 import { byId, escapeHtml, ghostState, initShell, relativeTime, setText, tokenArt, wireCopyButtons } from '../ui.js';
 
 initShell('rings');
 
-type View = 'tokens' | 'live' | 'address' | 'token';
+type View = 'tokens' | 'live' | 'rings' | 'address' | 'token';
 
 interface State {
   view: View;
@@ -70,7 +72,7 @@ function readState(text: string): State {
   const sortText = one('sort');
   const pageNumber = Number(one('page') || '1');
   const kind = one('kind');
-  const view: View = looksLikeAddress(address) ? 'address' : looksLikeAddress(mint) ? 'token' : one('view') === 'live' ? 'live' : 'tokens';
+  const view: View = looksLikeAddress(address) ? 'address' : looksLikeAddress(mint) ? 'token' : one('view') === 'live' ? 'live' : one('view') === 'rings' ? 'rings' : 'tokens';
   return {
     view,
     sort: (RING_ASSET_SORTS as readonly string[]).includes(sortText) ? (sortText as RingAssetSort) : 'share',
@@ -89,6 +91,8 @@ function stateSearch(next: State): string {
   else if (next.view === 'live') {
     params.set('view', 'live');
     if (next.kind) params.set('kind', next.kind);
+  } else if (next.view === 'rings') {
+    params.set('view', 'rings');
   } else {
     if (next.sort !== 'share') params.set('sort', next.sort);
     if (next.query) params.set('q', next.query);
@@ -235,6 +239,29 @@ function renderToken(view: RingAssetView): void {
   wireCopyButtons(body);
 }
 
+/** One custom ring, exactly as its registration on chain reads. */
+function ringCard(ring: CustomRing): string {
+  const words = ringStateWords(ring);
+  const authority = ring.authority
+    ? `<a class="rg-addr" href="${escapeHtml(explorerAddress(ring.authority))}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(ring.authority)}">${escapeHtml(shortAddress(ring.authority, 6, 6))}</a>`
+    : 'Given up';
+  return `<section class="rg-head rg-ring" data-state="${words.state}"><div class="rg-head-id"><span class="rg-eyebrow">Custom ring <b class="rg-state" data-state="${words.state}">${escapeHtml(words.label)}</b></span><code class="rg-full">${escapeHtml(ring.program)}</code><div class="rg-head-links"><button class="icon-btn" type="button" data-copy="${escapeHtml(ring.program)}">COPY</button><a class="tx-link" href="${escapeHtml(explorerAddress(ring.program))}" target="_blank" rel="noopener noreferrer">Its program</a><a class="tx-link" href="${escapeHtml(explorerAddress(ring.config))}" target="_blank" rel="noopener noreferrer">Its registration</a></div><p class="rg-small">${escapeHtml(words.note)}</p></div><dl class="rg-facts">${fact('Activated', ring.activated ? 'Yes' : 'No', 'Set by Rings governance. Nothing moves in a ring that is not activated.')}${fact('Paused', ring.paused ? 'Yes' : 'No', 'Set by the ring’s own operator. Nothing moves in the ring while it is paused.')}${fact('Moves notes without their owners', ring.authorityRail ? 'Allowed' : 'Not allowed', 'Whether the ring’s program may move a balance inside the ring without its owner signing, for example to freeze or recover it. Set by Rings governance.')}${fact('Who can change this entry', authority, 'The address that may pause the ring or hand the registration on.')}${fact('First seen here', dateText(ring.firstSeen))}${fact('Transactions read here', ring.moves.toLocaleString('en-US'), 'Transactions of this ring in the history this site has read. What they moved, and between whom, this site does not read.')}</dl></section>`;
+}
+
+function renderRings(view: CustomRingsView): void {
+  const about = `<p class="rg-explain">A custom ring is a program of its own that sets rules for the private balances held inside it, and can name an auditor who is able to read them. This is every ring registered with the Solana Privacy Program on mainnet, read from its public accounts. privacycash.fun runs none of them, and reads neither who uses a ring nor what anyone holds in one. ${escapeHtml(activationWords(view.activation))}</p>`;
+  if (view.readAt === null) {
+    body.innerHTML = `${about}${ghostState('NOT READ YET', 'The register is read within a minute of this server starting.')}`;
+    return;
+  }
+  if (view.rings.length === 0) {
+    body.innerHTML = `${about}${ghostState('NO CUSTOM RINGS YET', 'No custom ring is registered on Solana mainnet. The first one appears here within fifteen minutes of registering.')}`;
+    return;
+  }
+  body.innerHTML = `${about}<div class="rg-rings">${view.rings.map(ringCard).join('')}</div>`;
+  wireCopyButtons(body);
+}
+
 /* ---------------- loading ---------------- */
 
 function renderOverview(): void {
@@ -287,6 +314,11 @@ async function load(options: { quiet?: boolean } = {}): Promise<void> {
       if (older.length === 0) feedNext = feed.next;
       renderFeed();
       count.textContent = `${overview.shields24h} shield${overview.shields24h === 1 ? '' : 's'}, ${overview.unshields24h} unshield${overview.unshields24h === 1 ? '' : 's'} and ${overview.transfers24h} private transfer${overview.transfers24h === 1 ? '' : 's'} in the last 24 hours`;
+    } else if (state.view === 'rings') {
+      const view = await api.ringCustom();
+      if (mine !== sequence) return;
+      renderRings(view);
+      count.textContent = view.readAt === null ? 'Reading the register…' : `${ringCountWords(view.rings)} · read ${relativeTime(view.readAt)}`;
     } else if (state.view === 'address') {
       const view = await api.ringAddress(state.address);
       if (mine !== sequence) return;
@@ -332,7 +364,7 @@ function markStrips(): void {
 views.addEventListener('click', (event) => {
   const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-view]');
   if (!button) return;
-  const view = button.dataset.view === 'live' ? 'live' : 'tokens';
+  const view: View = button.dataset.view === 'live' ? 'live' : button.dataset.view === 'rings' ? 'rings' : 'tokens';
   if (view === state.view) return;
   feedRows = [];
   feedNext = null;

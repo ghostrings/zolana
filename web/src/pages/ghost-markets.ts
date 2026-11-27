@@ -1,19 +1,44 @@
-import '../custom-rings/ghost.css';
-import '../custom-rings/markets.css';
-import { initShell, byId, setText } from '../ui.js';
-import { DEPLOYMENT as D, createReadRpc, observeDeployment, lookupMarket, recentActivity, publicKey } from '../../../shared/src/ghost-markets/observe.js';
-initShell('ghost');
-const identity=document.querySelector('[data-identity]');identity?.removeAttribute('aria-haspopup');identity?.removeAttribute('aria-expanded');
-const pill=document.querySelector<HTMLElement>('[data-runtime]');if(pill)pill.textContent='Read only';
-for(const [id,value] of Object.entries({'gm-program':D.programId,'gm-data':D.programData,'gm-slot':D.deploymentSlot,'gm-size':D.binaryBytes.toLocaleString('en-US'),'gm-hash':D.binarySha256,'gm-authority':D.upgradeAuthority,'gm-pda':D.protocol}))setText(id,value);
-byId<HTMLAnchorElement>('gm-program-link').href=`https://explorer.solana.com/address/${D.programId}`;
-byId<HTMLAnchorElement>('gm-tx-link').href=`https://explorer.solana.com/tx/${D.signature}`;
-const rpc=createReadRpc(`${location.origin}/api/helius`);
-let generation=0;let lookupGeneration=0;let historyGeneration=0;let matched=false;
-const lookupButton=byId<HTMLButtonElement>('gm-lookup-btn'),historyButton=byId<HTMLButtonElement>('gm-history-btn');
-function availability(value:boolean){matched=value;lookupButton.disabled=!value;historyButton.disabled=!value;}
-function clearReads(){lookupGeneration++;historyGeneration++;byId('gm-market-result').hidden=true;byId('gm-history').hidden=true;byId('gm-history').replaceChildren();setText('gm-lookup-status','Verify the deployment first.');setText('gm-history-status','Verify the deployment first.');}
-async function refresh(){const sequence=++generation;availability(false);clearReads();setText('gm-status','Reading finalized mainnet account data…');setText('gm-verified','Checking');setText('gm-config','Unknown');setText('gm-execution','Unavailable');setText('gm-observed','');try{const state=await observeDeployment(rpc);if(sequence!==generation)return;setText('gm-verified','Matched');setText('gm-config',state.protocol?.mode==='locked'?'Locked':'Not initialized');setText('gm-execution','Locked');setText('gm-status','Recorded executable, loader, authority and deployment slot match the finalized RPC response.');setText('gm-observed',`Observed at ${state.observedAt} · RPC context slot ${state.slot.toLocaleString('en-US')}. This is a point-in-time observation, not an audit.`);availability(true);setText('gm-lookup-status','Enter a public market account.');setText('gm-history-status','Ready to inspect public program history.');}catch{if(sequence!==generation)return;setText('gm-verified','Not verified');setText('gm-status','Current verification unavailable or release changed. No market state is asserted. The release record below is historical.');}}
-async function readMarket(){if(!matched)return;const id=++lookupGeneration,releaseGeneration=generation;const address=byId<HTMLInputElement>('gm-address').value.trim();const output=byId('gm-market-result');output.hidden=true;try{publicKey(address);}catch{setText('gm-lookup-status','Enter a valid 32-byte Solana public address.');return;}setText('gm-lookup-status','Reading a finalized public account…');try{const current=await observeDeployment(rpc);const data=await lookupMarket(rpc,address);if(id!==lookupGeneration||releaseGeneration!==generation)return;if(data.slot<current.slot)throw Error('Stale account observation');if(!data.market){setText('gm-lookup-status',`No account at this address at RPC slot ${data.slot}.`);return;}output.textContent=JSON.stringify(data.market,null,2);output.hidden=false;setText('gm-lookup-status',`Public decoded market fields at slot ${data.slot}. No authority to trade is implied.`);}catch{if(id===lookupGeneration&&releaseGeneration===generation){setText('gm-lookup-status','Lookup unavailable, account is not a supported market, or the recorded release changed.');}}}
-async function history(){if(!matched)return;const id=++historyGeneration,releaseGeneration=generation;const list=byId('gm-history');list.replaceChildren();list.hidden=true;setText('gm-history-status','Reading finalized public signatures…');try{await observeDeployment(rpc);const items=await recentActivity(rpc);if(id!==historyGeneration||releaseGeneration!==generation)return;for(const item of items){const row=document.createElement('div');row.className='gm-history-row';const link=document.createElement('a');link.className='tx-link';link.href=`https://explorer.solana.com/tx/${item.signature}`;link.target='_blank';link.rel='noopener noreferrer';link.textContent=`${item.signature.slice(0,12)}…${item.signature.slice(-8)}`;const span=document.createElement('span');span.textContent=`Slot ${item.slot.toLocaleString('en-US')} · ${item.failed?'Failed':'Successful'}`;row.append(link,span);list.append(row);}list.hidden=items.length===0;setText('gm-history-status',items.length?`${items.length} recent finalized signature(s) · not a full market index.`:'No recent signatures returned by RPC.');}catch{if(id===historyGeneration&&releaseGeneration===generation)setText('gm-history-status','Public activity unavailable or release changed.');}}
-byId('gm-refresh').addEventListener('click',()=>{void refresh();});byId<HTMLFormElement>('gm-lookup').addEventListener('submit',e=>{e.preventDefault();void readMarket();});byId('gm-address').addEventListener('input',()=>{lookupGeneration++;byId('gm-market-result').hidden=true;setText('gm-lookup-status',matched?'Ready to read this address.':'Verify the deployment first.');});historyButton.addEventListener('click',()=>{void history();});void refresh();
+import { DEPLOYMENT } from '../../../shared/src/ghost-markets/observe.js';
+import { V33, signingAllowed, v41ReleaseRecord } from '../../../shared/src/ghost-markets/v33-release.js';
+import { api } from '../api.js';
+import { readNativeStatus, nativeSummary } from '../native-markets.js';
+import { mountRuntime } from '../shell.js';
+import { byId, initShell, setText } from '../ui.js';
+
+initShell('protocol');
+void mountRuntime();
+for (const [id, value] of Object.entries({program:DEPLOYMENT.programId, data:DEPLOYMENT.programData, slot:'—', size:'—', hash:'—', authority:'—'})) setText(`native-${id}`, value);
+byId<HTMLAnchorElement>('native-explorer').href = `https://explorer.solana.com/address/${DEPLOYMENT.programId}`;
+byId<HTMLAnchorElement>('native-signature').href = `https://explorer.solana.com/tx/${DEPLOYMENT.signature}`;
+const refresh = byId<HTMLButtonElement>('native-refresh');
+async function read() {
+  refresh.disabled = true;
+  setText('native-status', 'Reading finalized public accounts…');
+  setText('native-verified', 'Checking'); setText('native-config','Unknown'); setText('native-signing','Checking');
+  const state = await readNativeStatus();
+  setText('native-status', nativeSummary(state));
+  if (state) {
+    const o=state.observation, v33=o.release==='v33', v41=o.release==='v41';
+    setText('native-verified', v41?'V41 matches release':v33?'V33 matches release':'V27 matches release');
+    setText('native-config', o.config?.mode??(o.protocolInitialized?'Locked':'Not initialized'));
+    setText('native-signing', signingAllowed(o,'buy')?'Owner-authorized · unaudited':signingAllowed(o,'sell')?'Exits / claims only':'Disabled');
+    setText('native-slot', o.deploymentSlot);
+    setText('native-size', `${(v41?(v41ReleaseRecord()?.binaryBytes??0):v33?V33.binaryBytes:DEPLOYMENT.binaryBytes).toLocaleString('en-US')} bytes`);
+    setText('native-hash', o.binarySha256);
+    setText('native-authority', DEPLOYMENT.upgradeAuthority);
+  } else {
+    setText('native-verified', 'Not verified'); setText('native-signing','Disabled');
+    for (const id of ['slot','size','hash','authority']) setText(`native-${id}`, '—');
+  }
+  refresh.disabled = false;
+}
+async function registry() {
+  try {
+    const result = await api.ringCustom();
+    if (!result.enabled || result.readAt === null || !Number.isFinite(result.readAt) || !Array.isArray(result.rings)) throw new Error('Registry unavailable');
+    const activation = result.activation === 'open' ? 'Registration activation was permissionless' : result.activation === 'governance' ? 'Registration required governance activation' : 'Activation policy was unknown';
+    setText('native-registry', `Last registry read: ${new Date(result.readAt).toISOString()}. ${result.rings.length} registered ring(s). ${activation} at the last recorded read. This is not a current GHOST authorization check.`);
+  } catch { setText('native-registry', 'Public registry snapshot unavailable. No activation policy or ring status is inferred.'); }
+}
+refresh.addEventListener('click', () => { void read(); void registry(); });
+void read(); void registry();

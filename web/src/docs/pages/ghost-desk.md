@@ -55,6 +55,7 @@ The pool's own trading fee is inside the pool price the desk quotes from.
 - It fills orders up to its limit per trade.
 - It only fills orders small enough that the same trade would barely move the pool.
 - It keeps stock in a short list of tokens the operator chooses. For any other token it can only sell what other traders have just sold to it.
+- It can decline a wallet. The desk is this site's own wallet trading with yours, and its operator keeps a list of wallets it does not deal with. A wallet on that list is told so before anything is prepared. The Shielded route does not involve the desk and is not affected.
 
 When the desk passes on an order, the page moves that order to the Shielded route by itself and says why under Ghost fill. It moves back when you type a size the desk can take. If you pick Ghost fill yourself, the page stays on it and shows the desk's reason instead. Nothing is lost by asking for a quote.
 

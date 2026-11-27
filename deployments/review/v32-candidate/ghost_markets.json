@@ -1,0 +1,1308 @@
+{
+  "address": "5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n",
+  "metadata": {
+    "name": "ghost_markets",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "accept_admin",
+      "discriminator": [
+        112,
+        42,
+        45,
+        90,
+        116,
+        181,
+        13,
+        170
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "protocol",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "add_liquidity",
+      "discriminator": [
+        181,
+        157,
+        89,
+        67,
+        143,
+        182,
+        52,
+        72
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "signer": true
+        },
+        {
+          "name": "market",
+          "writable": true
+        },
+        {
+          "name": "base_mint"
+        },
+        {
+          "name": "quote_mint"
+        },
+        {
+          "name": "lp_mint",
+          "writable": true
+        },
+        {
+          "name": "base_vault",
+          "writable": true
+        },
+        {
+          "name": "quote_vault",
+          "writable": true
+        },
+        {
+          "name": "lp_lock"
+        },
+        {
+          "name": "user_base",
+          "writable": true
+        },
+        {
+          "name": "user_quote",
+          "writable": true
+        },
+        {
+          "name": "user_lp",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "protocol"
+        }
+      ],
+      "args": [
+        {
+          "name": "max_base",
+          "type": "u64"
+        },
+        {
+          "name": "max_quote",
+          "type": "u64"
+        },
+        {
+          "name": "min_shares",
+          "type": "u64"
+        },
+        {
+          "name": "expected_version",
+          "type": "u64"
+        },
+        {
+          "name": "deadline_slot",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "claim_fees",
+      "docs": [
+        "Claim only the caller's accrued quote fees. Never spend curve/pool reserves or locked LP."
+      ],
+      "discriminator": [
+        82,
+        251,
+        233,
+        156,
+        12,
+        52,
+        184,
+        202
+      ],
+      "accounts": [
+        {
+          "name": "recipient",
+          "signer": true
+        },
+        {
+          "name": "market",
+          "writable": true
+        },
+        {
+          "name": "quote_mint"
+        },
+        {
+          "name": "quote_vault",
+          "writable": true
+        },
+        {
+          "name": "destination",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "protocol"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_market",
+      "discriminator": [
+        103,
+        226,
+        97,
+        235,
+        200,
+        188,
+        251,
+        254
+      ],
+      "accounts": [
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "market",
+          "writable": true
+        },
+        {
+          "name": "base_mint",
+          "writable": true
+        },
+        {
+          "name": "quote_mint"
+        },
+        {
+          "name": "lp_mint",
+          "writable": true
+        },
+        {
+          "name": "base_vault",
+          "writable": true
+        },
+        {
+          "name": "quote_vault",
+          "writable": true
+        },
+        {
+          "name": "lp_lock",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "rent"
+        },
+        {
+          "name": "protocol"
+        }
+      ],
+      "args": [
+        {
+          "name": "nonce",
+          "type": "u64"
+        },
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "CreateArgs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "graduate",
+      "discriminator": [
+        45,
+        235,
+        225,
+        181,
+        17,
+        218,
+        64,
+        130
+      ],
+      "accounts": [
+        {
+          "name": "market",
+          "writable": true
+        },
+        {
+          "name": "base_mint",
+          "writable": true
+        },
+        {
+          "name": "quote_mint"
+        },
+        {
+          "name": "lp_mint",
+          "writable": true
+        },
+        {
+          "name": "base_vault",
+          "writable": true
+        },
+        {
+          "name": "quote_vault"
+        },
+        {
+          "name": "lp_lock",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "protocol"
+        }
+      ],
+      "args": [
+        {
+          "name": "expected_version",
+          "type": "u64"
+        },
+        {
+          "name": "deadline_slot",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize_protocol",
+      "docs": [
+        "The actual upgrade authority must bootstrap the unique config PDA.",
+        "Initialization never admits assets, including in the local test build."
+      ],
+      "discriminator": [
+        188,
+        233,
+        252,
+        106,
+        134,
+        146,
+        202,
+        91
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "program"
+        },
+        {
+          "name": "program_data"
+        },
+        {
+          "name": "protocol",
+          "writable": true
+        },
+        {
+          "name": "system_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "pauser",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "nominate_admin",
+      "discriminator": [
+        134,
+        11,
+        31,
+        244,
+        20,
+        77,
+        138,
+        121
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "protocol",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "nominee",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "remove_liquidity",
+      "discriminator": [
+        80,
+        85,
+        209,
+        72,
+        24,
+        206,
+        177,
+        108
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "signer": true
+        },
+        {
+          "name": "market",
+          "writable": true
+        },
+        {
+          "name": "base_mint"
+        },
+        {
+          "name": "quote_mint"
+        },
+        {
+          "name": "lp_mint",
+          "writable": true
+        },
+        {
+          "name": "base_vault",
+          "writable": true
+        },
+        {
+          "name": "quote_vault",
+          "writable": true
+        },
+        {
+          "name": "lp_lock"
+        },
+        {
+          "name": "user_base",
+          "writable": true
+        },
+        {
+          "name": "user_quote",
+          "writable": true
+        },
+        {
+          "name": "user_lp",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "protocol"
+        }
+      ],
+      "args": [
+        {
+          "name": "shares",
+          "type": "u64"
+        },
+        {
+          "name": "min_base",
+          "type": "u64"
+        },
+        {
+          "name": "min_quote",
+          "type": "u64"
+        },
+        {
+          "name": "expected_version",
+          "type": "u64"
+        },
+        {
+          "name": "deadline_slot",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "set_pauser",
+      "discriminator": [
+        22,
+        198,
+        152,
+        61,
+        2,
+        13,
+        145,
+        238
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "protocol",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "pauser",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "set_protocol_mode",
+      "discriminator": [
+        219,
+        16,
+        240,
+        9,
+        243,
+        254,
+        102,
+        198
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "protocol",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "next",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "swap",
+      "discriminator": [
+        248,
+        198,
+        158,
+        145,
+        225,
+        117,
+        135,
+        200
+      ],
+      "accounts": [
+        {
+          "name": "trader",
+          "signer": true
+        },
+        {
+          "name": "market",
+          "writable": true
+        },
+        {
+          "name": "base_mint"
+        },
+        {
+          "name": "quote_mint"
+        },
+        {
+          "name": "base_vault",
+          "writable": true
+        },
+        {
+          "name": "quote_vault",
+          "writable": true
+        },
+        {
+          "name": "user_base",
+          "writable": true
+        },
+        {
+          "name": "user_quote",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "protocol"
+        }
+      ],
+      "args": [
+        {
+          "name": "buy",
+          "type": "bool"
+        },
+        {
+          "name": "amount_in",
+          "type": "u64"
+        },
+        {
+          "name": "minimum_out",
+          "type": "u64"
+        },
+        {
+          "name": "expected_version",
+          "type": "u64"
+        },
+        {
+          "name": "deadline_slot",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Market",
+      "discriminator": [
+        219,
+        190,
+        213,
+        55,
+        0,
+        227,
+        198,
+        154
+      ]
+    },
+    {
+      "name": "ProtocolConfig",
+      "discriminator": [
+        207,
+        91,
+        250,
+        28,
+        152,
+        179,
+        215,
+        209
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "Graduated",
+      "discriminator": [
+        51,
+        241,
+        66,
+        50,
+        140,
+        245,
+        156,
+        192
+      ]
+    },
+    {
+      "name": "LiquidityChanged",
+      "discriminator": [
+        132,
+        132,
+        193,
+        214,
+        12,
+        99,
+        40,
+        28
+      ]
+    },
+    {
+      "name": "MarketCreated",
+      "discriminator": [
+        88,
+        184,
+        130,
+        231,
+        226,
+        84,
+        6,
+        58
+      ]
+    },
+    {
+      "name": "NativeFeeAccrued",
+      "discriminator": [
+        158,
+        23,
+        57,
+        128,
+        37,
+        38,
+        79,
+        15
+      ]
+    },
+    {
+      "name": "NativeFeeClaimed",
+      "discriminator": [
+        224,
+        90,
+        200,
+        157,
+        11,
+        116,
+        234,
+        163
+      ]
+    },
+    {
+      "name": "ProtocolAdminChanged",
+      "discriminator": [
+        232,
+        0,
+        61,
+        224,
+        186,
+        2,
+        222,
+        0
+      ]
+    },
+    {
+      "name": "ProtocolAdminNominated",
+      "discriminator": [
+        56,
+        102,
+        54,
+        188,
+        26,
+        198,
+        63,
+        152
+      ]
+    },
+    {
+      "name": "ProtocolModeChanged",
+      "discriminator": [
+        28,
+        123,
+        113,
+        136,
+        14,
+        70,
+        63,
+        12
+      ]
+    },
+    {
+      "name": "ProtocolPauserChanged",
+      "discriminator": [
+        117,
+        232,
+        111,
+        62,
+        208,
+        118,
+        29,
+        250
+      ]
+    },
+    {
+      "name": "SwapExecuted",
+      "discriminator": [
+        150,
+        166,
+        26,
+        225,
+        28,
+        89,
+        38,
+        79
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidConfig",
+      "msg": "Invalid immutable market configuration"
+    },
+    {
+      "code": 6001,
+      "name": "Metadata",
+      "msg": "Invalid public metadata"
+    },
+    {
+      "code": 6002,
+      "name": "UnsupportedQuote",
+      "msg": "Quote mint must have no freeze authority"
+    },
+    {
+      "code": 6003,
+      "name": "WrongPhase",
+      "msg": "Operation is not available in this market phase"
+    },
+    {
+      "code": 6004,
+      "name": "StaleVersion",
+      "msg": "State version changed; obtain a new quote"
+    },
+    {
+      "code": 6005,
+      "name": "Expired",
+      "msg": "Transaction deadline slot expired"
+    },
+    {
+      "code": 6006,
+      "name": "Overflow",
+      "msg": "Integer overflow"
+    },
+    {
+      "code": 6007,
+      "name": "InvalidAmount",
+      "msg": "Invalid input amount or pricing result"
+    },
+    {
+      "code": 6008,
+      "name": "Slippage",
+      "msg": "Minimum output or shares not met"
+    },
+    {
+      "code": 6009,
+      "name": "ReserveFloor",
+      "msg": "Insufficient real reserves or curve floor"
+    },
+    {
+      "code": 6010,
+      "name": "VaultAccounting",
+      "msg": "Vault balance is below recorded reserve"
+    },
+    {
+      "code": 6011,
+      "name": "LpAccounting",
+      "msg": "Invalid liquidity or LP accounting"
+    },
+    {
+      "code": 6012,
+      "name": "Schema",
+      "msg": "Unsupported account schema"
+    },
+    {
+      "code": 6013,
+      "name": "ExecutionDisabled",
+      "msg": "This release binary cannot execute markets"
+    },
+    {
+      "code": 6014,
+      "name": "ProtocolLocked",
+      "msg": "Market execution has not been activated"
+    },
+    {
+      "code": 6015,
+      "name": "ProtocolPaused",
+      "msg": "Operation is disabled during emergency pause"
+    },
+    {
+      "code": 6016,
+      "name": "ProtocolAuthority",
+      "msg": "Signer is not the required protocol authority"
+    },
+    {
+      "code": 6017,
+      "name": "ProtocolTransition",
+      "msg": "Invalid protocol mode transition"
+    },
+    {
+      "code": 6018,
+      "name": "PilotProfile",
+      "msg": "Public pilot requires the fixed disclosed market profile"
+    },
+    {
+      "code": 6019,
+      "name": "PilotCap",
+      "msg": "Public pilot accounted quote reserve and fee cap exceeded"
+    },
+    {
+      "code": 6020,
+      "name": "LockedLiquidityOnly",
+      "msg": "Native launch pool liquidity is entirely locked; external LP issuance/redemption disabled"
+    }
+  ],
+  "types": [
+    {
+      "name": "CreateArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "metadata_uri",
+            "type": "string"
+          },
+          {
+            "name": "supply",
+            "type": "u64"
+          },
+          {
+            "name": "virtual_quote",
+            "type": "u64"
+          },
+          {
+            "name": "graduation_quote",
+            "type": "u64"
+          },
+          {
+            "name": "fee_bps",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Graduated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "market",
+            "type": "pubkey"
+          },
+          {
+            "name": "burned_unsold_base",
+            "type": "u64"
+          },
+          {
+            "name": "genesis_locked_lp",
+            "type": "u64"
+          },
+          {
+            "name": "base_reserve",
+            "type": "u64"
+          },
+          {
+            "name": "quote_reserve",
+            "type": "u64"
+          },
+          {
+            "name": "version",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LiquidityChanged",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "market",
+            "type": "pubkey"
+          },
+          {
+            "name": "provider",
+            "type": "pubkey"
+          },
+          {
+            "name": "add",
+            "type": "bool"
+          },
+          {
+            "name": "base_amount",
+            "type": "u64"
+          },
+          {
+            "name": "quote_amount",
+            "type": "u64"
+          },
+          {
+            "name": "shares",
+            "type": "u64"
+          },
+          {
+            "name": "version",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Market",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "schema",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "phase",
+            "type": "u8"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          },
+          {
+            "name": "base_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "quote_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "lp_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "base_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "quote_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "lp_lock",
+            "type": "pubkey"
+          },
+          {
+            "name": "version",
+            "type": "u64"
+          },
+          {
+            "name": "base_reserve",
+            "type": "u64"
+          },
+          {
+            "name": "quote_reserve",
+            "type": "u64"
+          },
+          {
+            "name": "virtual_quote",
+            "type": "u64"
+          },
+          {
+            "name": "graduation_quote",
+            "type": "u64"
+          },
+          {
+            "name": "fee_bps",
+            "type": "u16"
+          },
+          {
+            "name": "initial_supply",
+            "type": "u64"
+          },
+          {
+            "name": "burned_at_graduation",
+            "type": "u64"
+          },
+          {
+            "name": "locked_lp",
+            "type": "u64"
+          },
+          {
+            "name": "platform",
+            "type": "pubkey"
+          },
+          {
+            "name": "platform_fee_quote",
+            "type": "u64"
+          },
+          {
+            "name": "creator_fee_quote",
+            "type": "u64"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "metadata_uri",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "market",
+            "type": "pubkey"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "base_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "quote_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "initial_supply",
+            "type": "u64"
+          },
+          {
+            "name": "creator_premint",
+            "type": "u64"
+          },
+          {
+            "name": "virtual_quote",
+            "type": "u64"
+          },
+          {
+            "name": "graduation_quote",
+            "type": "u64"
+          },
+          {
+            "name": "fee_bps",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NativeFeeAccrued",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "market",
+            "type": "pubkey"
+          },
+          {
+            "name": "quote_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "phase",
+            "type": "u8"
+          },
+          {
+            "name": "platform_fee",
+            "type": "u64"
+          },
+          {
+            "name": "creator_fee",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NativeFeeClaimed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "market",
+            "type": "pubkey"
+          },
+          {
+            "name": "recipient",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "is_platform",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProtocolAdminChanged",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "previous",
+            "type": "pubkey"
+          },
+          {
+            "name": "next",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProtocolAdminNominated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "current",
+            "type": "pubkey"
+          },
+          {
+            "name": "nominee",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProtocolConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "schema",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "mode",
+            "type": "u8"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "pauser",
+            "type": "pubkey"
+          },
+          {
+            "name": "pending_admin",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProtocolModeChanged",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "previous",
+            "type": "u8"
+          },
+          {
+            "name": "next",
+            "type": "u8"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProtocolPauserChanged",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "previous",
+            "type": "pubkey"
+          },
+          {
+            "name": "next",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapExecuted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "market",
+            "type": "pubkey"
+          },
+          {
+            "name": "trader",
+            "type": "pubkey"
+          },
+          {
+            "name": "buy",
+            "type": "bool"
+          },
+          {
+            "name": "amount_in",
+            "type": "u64"
+          },
+          {
+            "name": "amount_out",
+            "type": "u64"
+          },
+          {
+            "name": "fee",
+            "type": "u64"
+          },
+          {
+            "name": "base_reserve",
+            "type": "u64"
+          },
+          {
+            "name": "quote_reserve",
+            "type": "u64"
+          },
+          {
+            "name": "phase",
+            "type": "u8"
+          },
+          {
+            "name": "version",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}

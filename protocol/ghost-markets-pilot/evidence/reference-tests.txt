@@ -1,0 +1,224 @@
+
+> privacycash-fun@0.1.0 markets:pilot:check
+> node --test protocol/ghost-markets-pilot/tests/quote.test.mjs protocol/ghost-markets-pilot/tests/lifecycle.test.mjs protocol/ghost-markets-pilot/tests/pilot-profile.test.mjs
+
+TAP version 13
+# Subtest: creation: zero quote, immutable parameters and full initial inventory
+ok 1 - creation: zero quote, immutable parameters and full initial inventory
+  ---
+  duration_ms: 1.49834
+  type: 'test'
+  ...
+# Subtest: reject invalid configuration
+ok 2 - reject invalid configuration
+  ---
+  duration_ms: 0.319061
+  type: 'test'
+  ...
+# Subtest: reject wrong phase and sale before actual quote liquidity
+ok 3 - reject wrong phase and sale before actual quote liquidity
+  ---
+  duration_ms: 0.37122
+  type: 'test'
+  ...
+# Subtest: curve buy deterministic exact quote
+ok 4 - curve buy deterministic exact quote
+  ---
+  duration_ms: 0.224959
+  type: 'test'
+  ...
+# Subtest: curve sell respects real reserve and round trip has no profit
+ok 5 - curve sell respects real reserve and round trip has no profit
+  ---
+  duration_ms: 0.216937
+  type: 'test'
+  ...
+# Subtest: minimum output and stale or expired quotes reject
+ok 6 - minimum output and stale or expired quotes reject
+  ---
+  duration_ms: 0.313432
+  type: 'test'
+  ...
+# Subtest: overflow, fee dust and real reserve floor reject
+ok 7 - overflow, fee dust and real reserve floor reject
+  ---
+  duration_ms: 0.217377
+  type: 'test'
+  ...
+# Subtest: threshold latches READY, blocks both directions
+ok 8 - threshold latches READY, blocks both directions
+  ---
+  duration_ms: 0.138429
+  type: 'test'
+  ...
+# Subtest: graduation burns only unsold base, preserves all quote, locks initial LP
+ok 9 - graduation burns only unsold base, preserves all quote, locks initial LP
+  ---
+  duration_ms: 0.404741
+  type: 'test'
+  ...
+# Subtest: graduation price is conserved up to floor rounding
+ok 10 - graduation price is conserved up to floor rounding
+  ---
+  duration_ms: 0.886827
+  type: 'test'
+  ...
+# Subtest: pool uses no virtual reserves, fee retained
+ok 11 - pool uses no virtual reserves, fee retained
+  ---
+  duration_ms: 0.216937
+  type: 'test'
+  ...
+# Subtest: proportional add rounds input up, respects user maximums
+ok 12 - proportional add rounds input up, respects user maximums
+  ---
+  duration_ms: 0.171699
+  type: 'test'
+  ...
+# Subtest: remove rounds output down, prevents free liquidity round trip
+ok 13 - remove rounds output down, prevents free liquidity round trip
+  ---
+  duration_ms: 0.266231
+  type: 'test'
+  ...
+# Subtest: lock cannot be redeemed, live supply used after external burns
+ok 14 - lock cannot be redeemed, live supply used after external burns
+  ---
+  duration_ms: 0.242586
+  type: 'test'
+  ...
+# Subtest: LP zero, overflow, output dust and minimums reject
+ok 15 - LP zero, overflow, output dust and minimums reject
+  ---
+  duration_ms: 0.146842
+  type: 'test'
+  ...
+# Subtest: integer sqrt boundaries
+ok 16 - integer sqrt boundaries
+  ---
+  duration_ms: 0.115174
+  type: 'test'
+  ...
+# Subtest: 128 committed lifecycle vectors reproduce exactly
+ok 17 - 128 committed lifecycle vectors reproduce exactly
+  ---
+  duration_ms: 36.128566
+  type: 'test'
+  ...
+# Subtest: 5,000 deterministic curve and pool transitions preserve reserve/LP invariants
+ok 18 - 5,000 deterministic curve and pool transitions preserve reserve/LP invariants
+  ---
+  duration_ms: 56.032628
+  type: 'test'
+  ...
+# Subtest: published profile agrees with Rust constants and public-only guards
+ok 19 - published profile agrees with Rust constants and public-only guards
+  ---
+  duration_ms: 1.004375
+  type: 'test'
+  ...
+# Subtest: public launch parameters and genuine lifecycle arithmetic
+ok 20 - public launch parameters and genuine lifecycle arithmetic
+  ---
+  duration_ms: 0.636069
+  type: 'test'
+  ...
+# Subtest: cap rejects overshoot but not cap equality
+ok 21 - cap rejects overshoot but not cap equality
+  ---
+  duration_ms: 0.471461
+  type: 'test'
+  ...
+# Subtest: metadata limits include UTF-8 bytes and reject controls
+ok 22 - metadata limits include UTF-8 bytes and reject controls
+  ---
+  duration_ms: 0.353443
+  type: 'test'
+  ...
+# Subtest: constant-product exact input rounds output down
+ok 23 - constant-product exact input rounds output down
+  ---
+  duration_ms: 2.242052
+  type: 'test'
+  ...
+# Subtest: fee rounds up and is retained in input reserve
+ok 24 - fee rounds up and is retained in input reserve
+  ---
+  duration_ms: 0.176656
+  type: 'test'
+  ...
+# Subtest: slippage bound enforced
+ok 25 - slippage bound enforced
+  ---
+  duration_ms: 0.487265
+  type: 'test'
+  ...
+# Subtest: zero input and wrong units rejected
+ok 26 - zero input and wrong units rejected
+  ---
+  duration_ms: 0.17902
+  type: 'test'
+  ...
+# Subtest: fee bound enforced
+ok 27 - fee bound enforced
+  ---
+  duration_ms: 0.114713
+  type: 'test'
+  ...
+# Subtest: dust fee cannot consume input
+ok 28 - dust fee cannot consume input
+  ---
+  duration_ms: 0.231078
+  type: 'test'
+  ...
+# Subtest: dust quote cannot output zero
+ok 29 - dust quote cannot output zero
+  ---
+  duration_ms: 0.193141
+  type: 'test'
+  ...
+# Subtest: effective reserve overflow rejected
+ok 30 - effective reserve overflow rejected
+  ---
+  duration_ms: 0.117097
+  type: 'test'
+  ...
+# Subtest: post-fee input reserve overflow rejected
+ok 31 - post-fee input reserve overflow rejected
+  ---
+  duration_ms: 0.317048
+  type: 'test'
+  ...
+# Subtest: virtual inventory is never spendable
+ok 32 - virtual inventory is never spendable
+  ---
+  duration_ms: 0.433074
+  type: 'test'
+  ...
+# Subtest: virtual launch reserve can start at zero real quote reserve
+ok 33 - virtual launch reserve can start at zero real quote reserve
+  ---
+  duration_ms: 0.190347
+  type: 'test'
+  ...
+# Subtest: no effective input liquidity rejected
+ok 34 - no effective input liquidity rejected
+  ---
+  duration_ms: 0.105028
+  type: 'test'
+  ...
+# Subtest: 10,000 deterministic public quote property checks
+ok 35 - 10,000 deterministic public quote property checks
+  ---
+  duration_ms: 12.433855
+  type: 'test'
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 177.038462

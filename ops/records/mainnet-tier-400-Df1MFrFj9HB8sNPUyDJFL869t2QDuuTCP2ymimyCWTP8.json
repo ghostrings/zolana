@@ -1,0 +1,57 @@
+{
+  "network": "mainnet",
+  "config": "Df1MFrFj9HB8sNPUyDJFL869t2QDuuTCP2ymimyCWTP8",
+  "signature": "3mtMqAXLRzfonmq8f2o5qnTdYkqhw4XYyUBQb2zJr6oaGhuVpwpynpFGJsZ6gAXgjveLrEqwnNfynLANsm6qV7fQ",
+  "partner": "GHByn2iCdiHGxZmosDMQU2CgTNYYN94KG6j2McxPZkV",
+  "createdAt": "2026-11-23T09:02:33.377Z",
+  "plan": {
+    "tierId": "tier-400",
+    "feeBps": 400,
+    "feeLabel": "4%",
+    "envKey": "DBC_CONFIG_400",
+    "economics": {
+      "initialMarketCapSol": 30,
+      "migrationMarketCapSol": 420,
+      "creatorFeeSharePct": 30,
+      "migrationFeePct": 0,
+      "creatorMigrationFeeSharePct": 0
+    },
+    "feeTerms": {
+      "curveFeeNumerator": "40000000",
+      "curveFeeFirstFactor": 0,
+      "curveFeeSecondFactor": "0",
+      "curveFeeThirdFactor": "0",
+      "curveBaseFeeMode": 0,
+      "curveDynamicFeeInitialized": false,
+      "collectFeeMode": 0,
+      "migrationOption": 1,
+      "migrationFeeOption": 6,
+      "migratedPoolFeeBps": 400,
+      "migratedDynamicFee": 0,
+      "migratedCollectFeeMode": 0,
+      "migratedPoolBaseFeeMode": 0,
+      "migratedSchedulerConfigured": false
+    },
+    "summary": {
+      "totalSupply": "1000000000",
+      "tokenDecimals": 6,
+      "initialMarketCapSol": "30",
+      "migrationMarketCapSol": "420",
+      "encodedMigrationMarketCapSol": "420.000000",
+      "solRaisedAtGraduation": "88.576623265",
+      "keeperGraduates": true,
+      "solDepositedAsLiquidity": "88.399470019",
+      "migrationFeeSol": "0",
+      "meteoraGraduationFeeBps": 20,
+      "meteoraGraduationFeeSol": "0.177153246",
+      "creatorCurveFeeSharePct": 30,
+      "platformCurveFeeSharePct": 70,
+      "creatorLockedLpPct": 0,
+      "platformLockedLpPct": 100,
+      "lockedLpBpsAtDayOne": 10000,
+      "sqrtStartPrice": "101036978723608847",
+      "migrationSqrtPrice": "378045756631117546",
+      "curvePoints": 1
+    }
+  }
+}

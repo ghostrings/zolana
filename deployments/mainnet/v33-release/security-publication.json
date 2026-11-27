@@ -1,0 +1,14 @@
+{
+  "name": "GHOST Markets",
+  "project_url": "https://privacycash.fun",
+  "description": "Independent Solana market program. V33 administrator-approved public SPL pilot; no native private settlement. Public website signing pending review.",
+  "source_code": "https://github.com/ghostrings/zolana",
+  "policy": "https://github.com/ghostrings/zolana/blob/main/SECURITY.md",
+  "contacts": [
+    "link:https://github.com/ghostrings/zolana/security"
+  ],
+  "preferred_languages": [
+    "en"
+  ],
+  "version": "0.33.0"
+}

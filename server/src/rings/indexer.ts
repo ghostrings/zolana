@@ -11,13 +11,16 @@
  *   Every pass asks the RPC for the program's new signatures (one request),
  *   then for each new transaction itself (one request) and, for a private
  *   transfer only, the indexer's view of it (one more). Vault balances are
- *   read in batches of a hundred. RINGS_POLL_SECONDS sets how often a pass
+ *   read in batches of a hundred. The register of custom rings is one scan
+ *   of the program's accounts every fifteen minutes, and at once when a
+ *   transaction changes it. RINGS_POLL_SECONDS sets how often a pass
  *   runs, RINGS_BACKFILL_DAYS how far back history is read once, and
  *   RINGS_EXPLORER=NO switches all of it off.
  */
 
-import type { RingAsset, RingAssetSort, RingKind, RingOverview } from '../../../shared/src/rings-api.js';
+import type { CustomRingsView, RingAsset, RingAssetSort, RingKind, RingOverview } from '../../../shared/src/rings-api.js';
 import { WSOL_MINT } from '../../../shared/src/constants.js';
+import { type RingRegistration, mergeRegister, parseRegister, readRingRegistration } from '../../../shared/src/custom-rings.js';
 import { type DecodedRing, type RawTransaction, type RingEvent, UnreadableTransaction, decodeRing } from './decode.js';
 import { type RingAssetRow, type RingStore } from './store.js';
 
@@ -45,6 +48,10 @@ export interface RingChain {
   /** Every token registered with Rings. */
   registry(): Promise<Array<{ mint: string; assetId: string }>>;
   accounts(addresses: readonly string[]): Promise<Array<RingAccount | null>>;
+  /** Every account of the Privacy Program with the size and the type of a custom ring's registration. */
+  ringConfigs(): Promise<Array<{ address: string; data: Uint8Array }>>;
+  /** Whether a new ring is active from the moment it registers, as the program's own settings say. */
+  ringActivationOpen(): Promise<boolean>;
   /** How many wallets have registered to receive privately. Null when it could not be counted. */
   walletCount(): Promise<number | null>;
   /** Names for tokens, where the RPC knows any. Missing mints are simply absent. */
@@ -74,6 +81,9 @@ const PARTIAL_MAX_TRIES = 6;
 const REGISTRY_EVERY_MS = 10 * 60_000;
 const SWEEP_EVERY_MS = 15 * 60_000;
 const WALLETS_EVERY_MS = 30 * 60_000;
+const CUSTOM_RINGS_EVERY_MS = 15 * 60_000;
+/** Where the register of custom rings is kept between restarts. */
+const CUSTOM_RINGS_KEY = 'customRings';
 const NAMES_PER_PASS = 200;
 const TRAIL_BUCKETS = 28;
 const TRAIL_BUCKET_MS = (7 * DAY) / TRAIL_BUCKETS;
@@ -161,6 +171,7 @@ export class RingIndexer {
   #registryAt = 0;
   #sweepAt = 0;
   #walletsAt = 0;
+  #customRingsAt = 0;
   #namesOff = false;
   #rent = new Map<number, bigint>();
   /** Signatures listed after the last one read, oldest first, waiting their turn. */
@@ -225,6 +236,7 @@ export class RingIndexer {
       await this.#step('reading the receiving side of transfers', () => this.#partials());
       await this.#step('reading vault balances', () => this.#balances(touched));
       await this.#step('counting registered wallets', () => this.#wallets());
+      await this.#step('reading the register of custom rings', () => this.#customRings());
       await this.#step('naming tokens', () => this.#names());
       this.#rebuild();
     } finally {
@@ -309,6 +321,43 @@ export class RingIndexer {
     if (count !== null) this.#store.setMeta('wallets', String(count));
   }
 
+  /**
+   * Reads every custom ring registered with the program. An account is kept
+   * only when it checks out as a registration (see `readRingRegistration`).
+   * The scan either answers whole or fails, so a failed read leaves the last
+   * register in place and is tried again on the next pass.
+   */
+  async #customRings(): Promise<void> {
+    const now = this.#now();
+    if (now - this.#customRingsAt < CUSTOM_RINGS_EVERY_MS && this.#customRingsAt !== 0) return;
+    const accounts = await this.#chain.ringConfigs();
+    const read: RingRegistration[] = [];
+    let refused = 0;
+    for (const account of accounts) {
+      const ring = await readRingRegistration(account.address, account.data);
+      if (ring) read.push(ring);
+      else refused += 1;
+    }
+    if (refused > 0) {
+      this.#sayHourly('rings:refused', `rings: ${refused} account(s) have the size and type of a custom ring's registration and do not check out as one. They are not listed.`);
+    }
+    let activation: 'open' | 'governance' | null = null;
+    try {
+      activation = (await this.#chain.ringActivationOpen()) ? 'open' : 'governance';
+    } catch (error) {
+      // The list itself was read; the network's setting keeps its last known value.
+      this.#sayHourly('rings:activation', `rings: how custom rings are activated could not be read (${error instanceof Error ? error.message : String(error)})`);
+    }
+    const previous = parseRegister(this.#store.meta(CUSTOM_RINGS_KEY));
+    const known = new Set((previous?.rings ?? []).map((ring) => ring.config));
+    const register = mergeRegister(previous, read, activation, now);
+    this.#store.setMeta(CUSTOM_RINGS_KEY, JSON.stringify(register));
+    this.#customRingsAt = now;
+    for (const ring of register.rings) {
+      if (!known.has(ring.config) && previous !== null) this.#options.log(`rings: a custom ring was registered: program ${ring.program}`);
+    }
+  }
+
   async #names(): Promise<void> {
     const waiting = this.#store.unnamed(NAMES_PER_PASS);
     if (waiting.length === 0) return;
@@ -384,6 +433,7 @@ export class RingIndexer {
     });
     for (const mint of decoded.touched) touched.add(mint);
     if (decoded.kind === 'token') this.#registryAt = 0; // A token was registered: the list is read again on the next pass.
+    if (decoded.ringAdmin) this.#customRingsAt = 0; // A ring's registration changed: the register is read again on this pass.
     return true;
   }
 
@@ -550,6 +600,20 @@ export class RingIndexer {
 
   overview(): RingOverview {
     return this.#overview;
+  }
+
+  /** The register of custom rings as last read, with how many transactions of each have been seen. */
+  customRings(): CustomRingsView {
+    const register = parseRegister(this.#store.meta(CUSTOM_RINGS_KEY));
+    if (!register) return { enabled: true, readAt: null, activation: null, rings: [] };
+    const counts = this.#store.ringCounts();
+    return {
+      enabled: true,
+      readAt: register.at,
+      activation: register.activation,
+      // The indexer names a ring by its program, or by its registration when it has no program on record for the event.
+      rings: register.rings.map((ring) => ({ ...ring, moves: (counts.get(ring.program) ?? 0) + (counts.get(ring.config) ?? 0) })),
+    };
   }
 
   asset(mint: string): RingAsset | undefined {

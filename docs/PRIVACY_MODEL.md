@@ -216,6 +216,20 @@ wallet page links to the visitor's own address there; following the link tells t
 which address the visitor asked about, which the relay already learns when that wallet reads
 its balances.
 
+**Custom rings.** The page's third view lists the custom rings registered on mainnet. A custom
+ring is run by a business, with rules its own program enforces and, by Helius's description,
+an auditor key that reads what happens inside it. The list is the registrations themselves:
+public accounts, read without a key. It says that a ring exists and what state its switches
+are in. It does not say who uses a ring, what anyone holds in one, who its auditor is or what
+its rules are, and this site reads none of that. A transaction that ran through a custom ring
+is shown with its signer and nothing more: the tags on its outputs are not wallet addresses
+and are never read as such.
+
+This site operates no custom ring and sends no transaction into one. That is a statement about
+privacy as much as about scope: in the Default Ring nobody holds a key that reads a user's
+balance and nobody can pause it or move it. A ring this site ran would put such keys
+somewhere.
+
 ### The wallet extras
 
 None of these changes what is public on chain. What each one tells, and to whom:
@@ -228,6 +242,7 @@ None of these changes what is public on chain. What each one tells, and to whom:
 | Alerts | The same reads as opening the wallet, repeated while a tab is open. The relay can tell that the wallet is being read, and when. | Whether alerts are on, and what was announced. |
 | Check-up | The wallet's address, to this site's explorer routes, as when its public page is opened. | What was found. |
 | Viewing pass | Nothing, until the owner hands it to somebody. | Nothing: this site keeps no copy. |
+| Pay many | One ordinary private transfer per line, a few seconds to a minute apart. Through the relay: two public reads per wallet on the list (is it a wallet, is it registered with Rings) before anything is sent. The list itself goes nowhere. | The list, the progress of the run and each payment's signature, until the run is cleared. The receipt, wherever the visitor saves it. |
 
 **A viewing pass is the strongest of them, and the only one that cannot be undone.** It holds
 the wallet's Rings derivation signature, from which the viewing key and the nullifier key are
@@ -247,6 +262,29 @@ is a different thing from telling somebody what their own activity shows.
 
 **Alerts are a read, not a subscription.** Nothing about a wallet is stored on the server to
 make them work, which is also why they stop when the site is closed.
+
+**Pay many hides what a private transfer hides, and shows a pattern.** Each payment shows the
+two wallets and hides the token and the amount. Ten of them from one wallet within a few
+minutes are, to anyone who opens that wallet on the Rings page, one wallet paying a list of
+ten. The page says so before the first payment and the help page says it again. The relay
+learns which addresses were checked just before a run, as it learns the recipient of any
+private send. A wallet cannot run a list in a token it launched here: buyers watch where a
+creator's tokens go, and a run of hidden amounts to many wallets is the tool that would take
+that away. One transfer at a time is unchanged.
+
+### The desk's blocklist and its record of fills
+
+The desk is a counterparty. Like any counterparty it knows who it traded with, in what and
+for how much: section 3 says so. Two things follow from that and are now explicit.
+
+`DESK_BLOCKED_WALLETS` lets the operator name wallets the desk will not deal with. It is the
+desk declining a trade, not this site screening its users: a wallet on the list keeps every
+other route, because no part of this server stands between a wallet and Rings or the pools.
+
+`npm run desk:fills` writes those trades to a file on the operator's own machine: the trader's
+wallet, both tokens and both amounts of every fill. It is read from chain with the desk's key.
+It reveals nothing the desk did not already hold, but it is that knowledge in one portable
+file, so the command refuses to write it into the project folder.
 
 ### Buying a token that was not launched here
 

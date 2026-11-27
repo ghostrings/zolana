@@ -198,3 +198,14 @@ describe('the relay, end to end', () => {
     expect((await post({ jsonrpc: '2.0', id: 1, method: 'getBalance', params: ['x'] })).status).toBe(200);
   });
 });
+
+describe('native V33 browser discovery', () => {
+  it('permits only the exact finalized schema-2 market scan', () => {
+    const program='5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n';
+    // Base58 of the Market discriminator (dbbed53700e3c69a).
+    const disc = 'dkokXHR3DTw';
+    const cfg={encoding:'base64',commitment:'finalized',withContext:true,minContextSlot:474350900,filters:[{dataSize:611},{memcmp:{offset:0,bytes:disc}}]};
+    expect(checkCall(scan(program,cfg))).toBeNull();
+    for(const invalid of [{...cfg,filters:[]},{...cfg,filters:[{dataSize:611}]},{...cfg,filters:[{dataSize:139},cfg.filters[1]]},{...cfg,commitment:'confirmed'},{...cfg,withContext:false},{...cfg,minContextSlot:0},{...cfg,dataSlice:{offset:0,length:1}}])expect(checkCall(scan(program,invalid))).not.toBeNull();
+  });
+});

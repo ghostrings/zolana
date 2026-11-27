@@ -15,7 +15,10 @@ import { byId, deterministicAvatar, escapeHtml, initShell, setText, short, toast
 import { activeAddress, lastUsedWallet } from '../vault.js';
 import { type Session, getSession } from '../wallet.js';
 
+import { mountNativeSummary } from '../native-markets.js';
+
 initShell('create');
+void mountNativeSummary();
 
 const form = byId<HTMLFormElement>('launch-form');
 const nameInput = byId<HTMLInputElement>('name');

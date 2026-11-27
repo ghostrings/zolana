@@ -61,7 +61,10 @@ describe('what a row of the explorer says', () => {
 
   it('says what it has not read yet instead of guessing', () => {
     expect(rowWords(row('private'), labels).note).toContain('Who was paid has not been read yet.');
-    expect(text(rowWords(row('private', { ring: 'RingProgram1111111111111111111111111111111' }), labels).html)).toBe('8rip…vRAr moved funds inside another ring');
+    const inRing = rowWords(row('private', { ring: 'RingProgram1111111111111111111111111111111' }), labels);
+    expect(text(inRing.html)).toBe('8rip…vRAr moved funds inside a custom ring');
+    expect(inRing.html).toContain('href="/rings?view=rings"'); // the register says what state that ring is in
+    expect(text(rowWords(row('private', { ring: 'not an address' }), labels).html)).toBe('8rip…vRAr moved funds inside another ring');
     expect(text(rowWords(row('token'), labels).html)).toBe('8rip…vRAr registered a token with Rings');
     expect(rowWords(row('other'), labels).html).toBe('A transaction this site does not read');
   });

@@ -1,0 +1,152 @@
+
+> privacycash-fun@0.1.0 markets:check
+> node ops/check-native-markets.mjs
+
+TAP version 13
+# Subtest: public address roundtrip and exact 32-byte validation
+ok 1 - public address roundtrip and exact 32-byte validation
+  ---
+  duration_ms: 2.454532
+  type: 'test'
+  ...
+# Subtest: pinned deployment record matches reported JSON
+ok 2 - pinned deployment record matches reported JSON
+  ---
+  duration_ms: 0.300674
+  type: 'test'
+  ...
+# Subtest: synthetic release verification accepts exact finalized account bytes
+ok 3 - synthetic release verification accepts exact finalized account bytes
+  ---
+  duration_ms: 5.474738
+  type: 'test'
+  ...
+# Subtest: actual pinned observer rejects synthetic executable and wrong network
+ok 4 - actual pinned observer rejects synthetic executable and wrong network
+  ---
+  duration_ms: 0.708319
+  type: 'test'
+  ...
+# Subtest: tampered binary refused
+ok 5 - tampered binary refused
+  ---
+  duration_ms: 1.976401
+  type: 'test'
+  ...
+# Subtest: slot or upgrade authority change refused
+ok 6 - slot or upgrade authority change refused
+  ---
+  duration_ms: 0.976473
+  type: 'test'
+  ...
+# Subtest: wrong loader and ProgramData pointer refused
+ok 7 - wrong loader and ProgramData pointer refused
+  ---
+  duration_ms: 0.739585
+  type: 'test'
+  ...
+# Subtest: unknown or active protocol state is not accepted as locked
+ok 8 - unknown or active protocol state is not accepted as locked
+  ---
+  duration_ms: 2.229342
+  type: 'test'
+  ...
+# Subtest: stale finalized context refused
+ok 9 - stale finalized context refused
+  ---
+  duration_ms: 0.580116
+  type: 'test'
+  ...
+# Subtest: strict protocol layout and discriminator checks
+ok 10 - strict protocol layout and discriminator checks
+  ---
+  duration_ms: 0.739226
+  type: 'test'
+  ...
+# Subtest: public market parsing preserves u64 beyond safe JS numbers
+ok 11 - public market parsing preserves u64 beyond safe JS numbers
+  ---
+  duration_ms: 0.966809
+  type: 'test'
+  ...
+# Subtest: market decoding rejects substituted owner, bad schema and oversized metadata
+ok 12 - market decoding rejects substituted owner, bad schema and oversized metadata
+  ---
+  duration_ms: 1.174532
+  type: 'test'
+  ...
+# Subtest: market discovery uses exact owner program, size, discriminator and finalized context
+ok 13 - market discovery uses exact owner program, size, discriminator and finalized context
+  ---
+  duration_ms: 0.973358
+  type: 'test'
+  ...
+# Subtest: empty scan distinct from RPC rejection and duplicate accounts
+ok 14 - empty scan distinct from RPC rejection and duplicate accounts
+  ---
+  duration_ms: 1.489317
+  type: 'test'
+  ...
+# Subtest: single market lookup reports absent and refuses wrong chain
+ok 15 - single market lookup reports absent and refuses wrong chain
+  ---
+  duration_ms: 0.442888
+  type: 'test'
+  ...
+# Subtest: RPC transport refuses mutating method, and never performs fetch
+ok 16 - RPC transport refuses mutating method, and never performs fetch
+  ---
+  duration_ms: 0.3247
+  type: 'test'
+  ...
+# Subtest: RPC transport validates response id and reports RPC error
+ok 17 - RPC transport validates response id and reports RPC error
+  ---
+  duration_ms: 15.210594
+  type: 'test'
+  ...
+# Subtest: public activity is bounded to ten finalized signatures and failure flags
+ok 18 - public activity is bounded to ten finalized signatures and failure flags
+  ---
+  duration_ms: 0.433654
+  type: 'test'
+  ...
+# Subtest: missing RPC leaves native execution and privacy disabled
+ok 19 - missing RPC leaves native execution and privacy disabled
+  ---
+  duration_ms: 0.467866
+  type: 'test'
+  ...
+# Subtest: coalesces concurrent checks and caches for one minute
+ok 20 - coalesces concurrent checks and caches for one minute
+  ---
+  duration_ms: 0.249827
+  type: 'test'
+  ...
+# Subtest: failed refresh discards verified observation and suppresses upstream secret errors
+ok 21 - failed refresh discards verified observation and suppresses upstream secret errors
+  ---
+  duration_ms: 0.249406
+  type: 'test'
+  ...
+# Subtest: changed release or active mode never enables native execution
+ok 22 - changed release or active mode never enables native execution
+  ---
+  duration_ms: 0.396729
+  type: 'test'
+  ...
+# Subtest: live integration is read-only and the native launch control is disabled in the delivered HTML
+ok 23 - live integration is read-only and the native launch control is disabled in the delivered HTML
+  ---
+  duration_ms: 0.535678
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 101.390162

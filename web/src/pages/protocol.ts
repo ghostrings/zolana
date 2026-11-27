@@ -10,7 +10,11 @@ import { explorerAddress, sol } from '../format.js';
 import { mountRuntime } from '../shell.js';
 import { byId, escapeHtml, initShell, setText, wireCopyButtons } from '../ui.js';
 
+import { mountNativeSummary } from '../native-markets.js';
+import { DEPLOYMENT } from '../../../shared/src/ghost-markets/observe.js';
+
 initShell('protocol');
+void mountNativeSummary();
 
 void (async () => {
   const status = await mountRuntime();
@@ -28,6 +32,7 @@ void (async () => {
     link('Rings default tree', SPP_DEFAULT_TREE),
     link('Meteora bonding curve program', DBC_PROGRAM_ID),
     link('Meteora DAMM v2 program', DAMM_V2_PROGRAM_ID),
+    link('GHOST Markets (locked release)', DEPLOYMENT.programId),
     ...tiers.map((tier) => link(`${tier.label} fee config`, tier.config)),
     status?.desk.address ? link('Ghost desk wallet', status.desk.address) : '',
   ].join('');

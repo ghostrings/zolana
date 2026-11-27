@@ -1,0 +1,38 @@
+V34 mainnet status refresh; no live RPC, transaction, wallet or independent audit performed here.
+Standalone tests: 17 production/display (including source-level key-lifetime regression), 23 historical observer, 45 pilot, 8 lab, 7 wallet-wire = 100 passed.
+Sealed V33 release 14/14 checksums and eight source checksums matched. Original binary, IDL and dependency lockfiles preserved.
+Full dependency-backed tests, browser/extension E2E and production build not run in this environment.
+Changed paths:
+.gitignore
+README.md
+docs/V33_PRODUCTION_INTEGRATION.md
+docs/V34_RELEASE_HANDOFF.md
+ops/native-approval.mjs
+tests/native-production.node.mjs
+web/create.html
+web/ghost-markets.html
+web/protocol.html
+web/src/native-markets.ts
+web/src/pages/ghost-markets.ts
+web/src/pages/native-launch.mjs
+Added paths:
+deployments/mainnet/v33-release/README.md
+deployments/mainnet/v33-release/SHA256SUMS
+deployments/mainnet/v33-release/activation-observation.json
+deployments/mainnet/v33-release/candidate.json
+deployments/mainnet/v33-release/ghost_markets.json
+deployments/mainnet/v33-release/ghost_markets.so
+deployments/mainnet/v33-release/security-publication.json
+deployments/mainnet/v33-release/security-txt.json
+deployments/mainnet/v33-release/solana-verify-hash.txt
+deployments/mainnet/v33-release/source-sha256.txt
+deployments/mainnet/v33-release/source/Anchor.toml
+deployments/mainnet/v33-release/source/Cargo.lock
+deployments/mainnet/v33-release/source/Cargo.toml
+deployments/mainnet/v33-release/source/crates/market-math/Cargo.toml
+deployments/mainnet/v33-release/source/crates/market-math/src/lib.rs
+deployments/mainnet/v33-release/source/programs/ghost-markets/Cargo.toml
+deployments/mainnet/v33-release/source/programs/ghost-markets/src/lib.rs
+deployments/mainnet/v33-release/source/reference/lifecycle-vectors.csv
+docs/V33_MAINNET_PUBLICATION.md
+shared/src/ghost-markets/native-display.ts

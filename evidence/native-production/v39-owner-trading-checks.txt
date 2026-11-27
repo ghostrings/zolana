@@ -1,0 +1,13 @@
+V39 owner-authorized unaudited market release — offline checks; no signing or live RPC execution.
+markets-check: 23 passed; 0 failed
+markets-pilot-check: 45 passed; 0 failed
+markets-lab-check: 8 passed; 0 failed
+markets-wallet-check: 7 passed; 0 failed
+markets-production-check: 23 passed; 0 failed
+markets-browser-check: 7 passed; 0 failed
+markets-live-check: 9 passed; 0 failed
+markets-unified-check: 5 passed; 0 failed
+markets-owner-trading-check: 5 passed; 0 failed
+Total 132 passed.
+All V33 mainnet/review and historical V32 release checksum manifests pass. All previous program source, binaries and lockfiles are byte-identical.
+Dependency-backed tests and full production build not run: npm ci --offline failed on uncached yocto-queue. No independent security review asserted.

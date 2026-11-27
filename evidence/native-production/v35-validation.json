@@ -1,0 +1,47 @@
+{
+  "originalFiles": 424,
+  "unchangedOriginalFiles": 413,
+  "changed": [
+    ".gitignore",
+    "README.md",
+    "docs/V33_MAINNET_PUBLICATION.md",
+    "package.json",
+    "shared/src/constants.ts",
+    "tests/native-production.node.mjs",
+    "web/create.html",
+    "web/ghost-markets.html",
+    "web/native-launch.html",
+    "web/partials/footer.html",
+    "web/src/pages/native-launch.mjs"
+  ],
+  "added": [
+    "docs/V35_NATIVE_LAUNCH_AND_ASSETS.md",
+    "ops/v33-first-launch.mjs",
+    "ops/v33-native-asset.mjs",
+    "shared/src/ghost-markets/asset-state.ts",
+    "shared/src/native-asset.ts",
+    "tests/v33-first-launch.node.mjs",
+    "web/src/native-v33/launch-nonce-envelope.mjs",
+    "web/src/pages/v33-owner-launch.mjs",
+    "web/v33-owner-launch.html"
+  ],
+  "deleted": [],
+  "standaloneChecks": {
+    "production": 20,
+    "observer": 23,
+    "market": 45,
+    "lab": 8,
+    "walletWire": 7
+  },
+  "candidateReleaseChecksums": 14,
+  "candidateSourceChecksums": 8,
+  "publicationReleaseChecksums": 14,
+  "publicationSourceChecksums": 8,
+  "prohibitedPathsDetected": [],
+  "credentialPatternMatches": [],
+  "limitations": [
+    "Dependency-backed new launch-envelope tests, full npm tests/build, browser signing and registry registration not executed here.",
+    "No live transactions or deployments performed. V33 remote verification completion is operator-reported; no new receipt supplied.",
+    "No independent security review asserted. Native settlement remains public; the website signing gate remains disabled."
+  ]
+}

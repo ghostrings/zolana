@@ -1,0 +1,37 @@
+{
+  "source": "owner-provided finalized RPC preflight, not independently fetched",
+  "application": "v34",
+  "reportedApplicationChecks": "owner reported all works after footer correction; final full log not supplied",
+  "observation": {
+    "release": "v27-locked",
+    "slot": 474341702,
+    "deploymentSlot": "474265505",
+    "binarySha256": "2fba22c284791879f003aec3118c74fbd271f808f91b39e394e2654f9cc80d7d",
+    "config": null,
+    "protocolInitialized": false,
+    "privateSettlement": false
+  },
+  "scan": {
+    "slot": 474341702,
+    "markets": []
+  },
+  "candidate": {
+    "bytes": 547816,
+    "binarySha256": "bb7545ae08ab37a83f6785f21a019103953c0d43a3e8a47d0162969193e5e411",
+    "verifyHash": "33a41e48d76fe0bbf936aa41e926a6ebb9005034cfcbf3651318a1ff0e8e9ec5"
+  },
+  "allocation": {
+    "currentBytes": 533632,
+    "requiredBytes": 547816,
+    "extensionBytes": 14184,
+    "minimumProgramDataRentLamports": 2783784120,
+    "additionalRentLamports": 72054720,
+    "temporaryBufferRentEstimateLamports": 2783743480,
+    "feePayerBalanceLamports": 3324702588,
+    "headroomBeforeFeesLamports": 468904388
+  },
+  "reviewRecorded": false,
+  "compatibleEmptyV27": true,
+  "upgradeAuthorized": false,
+  "privateSettlement": false
+}

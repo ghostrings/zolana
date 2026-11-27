@@ -1,0 +1,49 @@
+<!doctype html><html lang="en"><head>
+<!--#head-->
+<title>Pay many wallets privately — privacycash.fun</title>
+<meta name="description" content="Pay a list of wallets from your private balance on Solana: one confidential transfer each, with a receipt. The wallets are public; the token and the amounts are encrypted.">
+<link rel="canonical" href="https://privacycash.fun/pay">
+<meta property="og:title" content="Pay many wallets privately — privacycash.fun"><meta property="og:description" content="A list of wallets, paid from your private balance, one confidential transfer each. With a receipt."><meta property="og:url" content="https://privacycash.fun/pay">
+</head>
+<body data-page="pay">
+<!--#header-->
+<div class="site-shell"><main id="pay-page">
+<header class="page-head"><h1>Pay a list of wallets from your private balance.</h1><p>One confidential transfer per wallet, sent one after another. Anyone can see that your wallet paid each of them, and when. The token and every amount are encrypted.</p></header>
+<div id="pay-banner" class="banner-line" hidden></div>
+<section class="trade-layout">
+<div class="trade-main">
+
+<section class="section-tight" id="pay-run-section" hidden><div class="section-head"><div><span class="eyebrow" id="pay-run-eyebrow">This run</span><h2 id="pay-run-title">Payments</h2></div><p id="pay-run-lede"></p></div>
+<dl class="pay-totals" id="pay-run-totals"></dl>
+<div class="pay-table-wrap"><table class="pay-table" id="pay-run-table"><thead><tr><th scope="col">#</th><th scope="col">Wallet</th><th scope="col" class="num">Amount</th><th scope="col">Status</th></tr></thead><tbody></tbody></table></div>
+<div class="pay-actions" id="pay-run-actions"></div>
+<div id="pay-run-output" aria-live="polite"></div>
+</section>
+
+<section class="section-tight" id="pay-review-section" hidden><div class="section-head"><div><span class="eyebrow">Read back</span><h2>Check the list before anything is sent</h2></div><p>Each wallet is looked up on chain: it has to be a wallet, and registered with Rings, to be paid privately. Nothing has been sent.</p></div>
+<dl class="pay-totals" id="pay-review-totals"></dl>
+<div id="pay-review-problems"></div>
+<div class="pay-table-wrap"><table class="pay-table" id="pay-review-table"><thead><tr><th scope="col">Line</th><th scope="col">Wallet</th><th scope="col" class="num">Amount</th><th scope="col">Can it be paid?</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section class="section-tight"><div class="section-head"><div><span class="eyebrow">How it works</span><h2>What a run does</h2></div><p>The same private transfer the wallet page sends, once per line. Nobody holds your funds in between: your wallet signs every payment.</p></div>
+<ol class="pay-steps"><li><b>You paste the list and the page reads it back.</b><span>One line per wallet: the address, the amount, and a note if you want one. A line it cannot read is shown to you, never guessed at and never dropped in silence.</span></li><li><b>Each payment is sent and followed until the chain has decided.</b><span>Its signature is written down in this browser before it is sent. If the tab closes or the connection drops, the run picks up where it stopped and no wallet is paid twice.</span></li><li><b>You get a receipt.</b><span>A file with every line: paid or not, the transaction, the time and your note. It is made in this browser and goes nowhere else.</span></li></ol>
+<p class="tiny dim" style="margin:14px 0 0">A run stops by itself when a payment cannot be made, and says why. What was paid stays paid. <a class="tx-link" href="/docs/pay-many">How this works, and what an observer sees</a>.</p></section>
+</div>
+
+<aside class="trade-panel"><form id="pay-form" class="form-panel" novalidate autocomplete="off">
+<div class="form-head"><h2 class="form-title">Pay many</h2></div>
+<div class="balance-strip" id="pay-balances"><div class="is-private"><span id="pay-private-label">Private balance</span><b id="pay-private">—</b><small id="pay-private-note">of the token you choose</small></div><div><span>Public SOL</span><b id="pay-public-sol">—</b><small>fees, every payment</small></div></div>
+<label class="field"><span>Pay with</span><select id="pay-asset" disabled><option value="">Unlock a wallet first</option></select><div class="hint" id="pay-asset-hint">A token you hold privately. Every line of the list is paid in it.</div></label>
+<label class="field"><span>The list</span><textarea id="pay-list" rows="9" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="One payment per line:&#10;address, amount&#10;address, amount, note"></textarea><div class="hint" id="pay-list-hint">Up to 25 lines. Amounts with a point for decimals and no thousands separators: 1250.5</div></label>
+<dl class="visibility" id="pay-visibility"><div class="visibility-title">What an observer sees</div><dt>Your wallet</dt><dd class="is-public">PUBLIC</dd><dt>Every wallet you pay</dt><dd class="is-public">PUBLIC</dd><dt>When each payment was made</dt><dd class="is-public">PUBLIC</dd><dt>The token</dt><dd class="is-hidden">ENCRYPTED</dd><dt>Each amount</dt><dd class="is-hidden">ENCRYPTED</dd><dt>Your notes</dt><dd class="is-hidden">NOT ON CHAIN</dd></dl>
+<div id="pay-gate" style="margin-top:18px"></div>
+<button class="btn wide" id="pay-check" type="submit" style="margin-top:18px">Read the list</button>
+<button class="btn wide" id="pay-start" type="button" style="margin-top:12px" hidden>Pay</button>
+<div id="pay-output" aria-live="polite"></div>
+<p class="tiny dim" style="margin:14px 0 0">The list and the progress of a run are kept in this browser until you clear the run. They are never sent to this site.</p>
+</form></aside>
+</section>
+</main><!--#footer--></div>
+<script type="module" src="/src/pages/pay.ts"></script>
+</body></html>

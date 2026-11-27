@@ -10,7 +10,6 @@
 <div class="site-shell"><main class="wallet-main">
 <div id="setup-banner" class="banner-line" hidden></div>
 <div id="pay-banner" class="banner-line" hidden></div>
-<section class="panel section-tight" aria-label="GHOST Ring balance"><span class="eyebrow">GHOST WALLET / CUSTOM RING</span><h2>Custom Ring balance: unavailable</h2><p class="small muted">Your existing Default Ring and public balances are unchanged. The anonymous GHOST Ring has not been deployed. No enrollment, additional keys or real deposits are supported. <a class="tx-link" href="/ghost#lab">Explore the separate fictional policy lab</a>.</p></section>
 
 <!-- No wallet yet -->
 <section class="section" id="view-new" hidden>
@@ -46,6 +45,7 @@
 <div class="wallet-address"><span id="w-address">—</span><button class="btn flat" type="button" data-copy data-copy-target="#w-address">Copy</button></div><p class="wallet-seen"><a class="tx-link" id="w-seen" href="/rings" title="Your shields, unshields, and the wallets you paid or were paid by: public for every wallet on Rings">See what others can read about this wallet</a></p>
 <div class="wallet-balance"><span>Private balance</span><b id="w-private-sol">—</b><small>Public <span id="w-public-sol">—</span><i>/</i><span id="w-notes">—</span> private notes<i>/</i><span data-network>MAINNET</span></small></div>
 <div class="wallet-actions" role="group" aria-label="Move funds"><button class="wact" type="button" data-wact="deposit"><i></i>Shield</button><button class="wact" type="button" data-wact="withdraw"><i></i>Unshield</button><button class="wact" type="button" data-wact="send"><i></i>Send</button><button class="wact" type="button" id="w-receive"><i></i>Receive</button></div>
+<p class="tiny dim" style="margin:12px 0 0"><a class="tx-link" href="/pay">Pay a list of wallets at once</a>, from your private balance, with a receipt.</p>
 <div id="receive-panel" hidden><div class="receive-grid"><div class="qr-box" id="receive-qr" role="img" aria-label="This wallet's address as a QR code"></div><div class="small muted"><p style="margin-top:0"><b>To receive in public</b>, give this address to anyone: SOL or tokens sent to it arrive in your public balance, for everyone to see.</p><p><b>To receive privately</b>, the sender uses Send on this site, and this wallet has to be registered with Rings first. The line below says whether it is.</p><button class="btn flat" type="button" id="receive-hide">Hide</button></div></div>
 <form class="request-form" id="request-form" novalidate><h3>Ask for a payment</h3><p class="small muted">Makes a link that opens Send on the payer's side with this address, the token and the amount filled in, for them to check and confirm. The details sit after the # of the link, which a browser sends to no server. The note is for the payer to read: it does not travel on chain.</p><div class="grid-2" style="gap:14px"><label class="field"><span>Token</span><select id="request-token"></select></label><label class="field"><span>Amount, optional</span><input id="request-amount" inputmode="decimal" placeholder="Any amount" autocomplete="off"></label></div><label class="field"><span>Note, optional</span><input id="request-note" maxlength="140" autocomplete="off" placeholder="What it is for"></label><button class="btn wide" type="submit">Make the link</button><div id="request-output" aria-live="polite"></div></form><div id="request-list"></div></div>
 <div class="wallet-note"><p id="w-registration">Checking registration…</p><button class="btn flat" type="button" id="w-register" hidden>Register</button></div>
@@ -112,6 +112,6 @@
 </div>
 </div>
 </div>
-</main><!--#footer--></div>
+<div class="native-actions"><a class="btn secondary" href="/native-fees">Native creator &amp; platform fees</a></div></main><!--#footer--></div>
 <script type="module" src="/src/pages/wallet.ts"></script>
 </body></html>

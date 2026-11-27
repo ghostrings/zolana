@@ -22,7 +22,7 @@ export const BRAND = Object.freeze({
  * of guessed. Raised with every release; `tests/release.test.ts` holds the
  * footer to it.
  */
-export const RELEASE = 'v24';
+export const RELEASE = 'v41';
 
 /**
  * This platform runs on Solana mainnet-beta and nothing else. There is no

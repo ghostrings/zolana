@@ -1,0 +1,3 @@
+# Historical V32 candidate — not deployed
+
+This directory contains the exact public files from the owner-provided V32 review archive. The executable is **not** the deployed V27 binary, not a V33 executable, and not approved for real funds. Verify the original manifests with `sha256sum -c SHA256SUMS` and `(cd source && sha256sum -c ../source-sha256.txt)`. V32's local validation and its reproducible Docker build were reported by the owner; this copy independently passed the manifest checks and embedded Security.txt inspection. The historical V27 OtterSec verification applies only to commit b723d275bda85bac40ed9c9f4f7d3c479c5758d7. Keep that exact source path in the GitHub repository.

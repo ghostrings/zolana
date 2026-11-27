@@ -1,0 +1,25 @@
+{
+  "repository": "https://github.com/helius-labs/privacy-ring-examples",
+  "commit": "9e5d69ade7e0c107a2929306d3b758a8969e1089",
+  "archive": "https://codeload.github.com/helius-labs/privacy-ring-examples/tar.gz/9e5d69ade7e0c107a2929306d3b758a8969e1089",
+  "sdk": "0.10.0",
+  "toolchain": "1.98.1",
+  "platformTools": "v1.54",
+  "blobs": {
+    "swap/README.md": "d1d9fbf57f365013baae6af565c7894cf0d53191",
+    "swap/xark/Cargo.toml": "44167a35be2b17950bf34636dec916ade84f572f",
+    "swap/xark/Cargo.lock": "e0e1175b95be8c79f78fb039e320159d7a0cb6d9",
+    "swap/xark/rust-toolchain.toml": "cf1e5ea926c0ec5d1ab2e4b42b63f87892fbd75d",
+    "swap/xark/program/Cargo.toml": "759847565505f4fbcb8a554da4649717726d8b81",
+    "swap/xark/test/Cargo.toml": "4903556505038aa53c5ce0272cc74e1f7edfe1da",
+    "swap/xark/scripts/setup-zk-tools.sh": "6e470896098842de59cb43a8be051d0a77d15870",
+    "swap/xark/scripts/build-localnet.sh": "ce38d7d999a884695192604abea60e11783b2884",
+    "swap/xark/scripts/check-keys.sh": "1860c1dec42640c0516ca19e70572a6b2e13b3fe",
+    "swap/xark/swap-keys.CHECKSUM": "f5e8d43c70af21ac175064581d43a2133ce6e46b",
+    "test-utils/zolana-release.sh": "222017365a4f7b959f9adbb2f359426bdd484b12",
+    "test-utils/wallet.rs": "d1741e9e5753d40e364610419f1e10702794801b",
+    "swap/xark/test/tests/swap.rs": "d75df3b78233ed238b568556444a57c2415bdfd7",
+    "swap/xark/test/tests/cancel.rs": "565ab23509871da24e3ef5c0c7f03a2a1486ba7f",
+    "swap/xark/test/tests/shared.rs": "cfd7e2b4f136be9ddf5e687d346a0686808f436f"
+  }
+}

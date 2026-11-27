@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {"rootDir": "shared/src/ghost-markets", "lib": ["ES2023", "DOM", "DOM.Iterable"], "types": [], "noEmit": false},
+  "include": ["shared/src/ghost-markets/**/*.ts"]
+}

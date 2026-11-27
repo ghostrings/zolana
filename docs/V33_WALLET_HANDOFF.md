@@ -1,0 +1,9 @@
+# V33 integration handoff
+
+The owner reported a finalized mainnet scan at slot 474335628 and an empty market scan at 474335630. The existing locked V27 hash and upgrade authority were unchanged, protocol absent. ProgramData allocation 533,632 bytes, V33 candidate 547,816 bytes; at least 14,184 additional bytes are needed for that binary, subject to actual loader allocation and funding. The reported ProgramData balance is rent funding, not the fee payer's liquid balance. Do not extend or upgrade until independent release review and a new live preflight. These historical observations are recorded in `deployments/mainnet/v33-preflight-observation.json`.
+
+The exact V33 review archive is in `deployments/review/v33-candidate/`. V27 remains the live verified deployment, with its historical verification commit preserved. No Rust source, Cargo.lock, production signing logic, server, or web page changed in this handoff. The new wallet client is loopback-only and drafts canonical instructions; the integration test performs real local SPL transactions with separate temporary signers. It is not a production signing interface. Review the local test source and the [wallet module](../protocol/ghost-markets-pilot/wallet/README.md) for scope.
+
+## Production decisions to provide
+
+Use only public addresses, never keypairs or seed phrases. Confirm whether the present upgrade authority will initially bootstrap the administrator, which public address will be the independent treasury (must co-sign initialization), and which public address will be the separate pauser. Review treasury recovery and upgrade authority custody. Also confirm launch approval workflow and reserve/exposure limits. The program does not allow permissionless market creation. A successful review is not an audit attestation; the approval must cover the exact V33 source/build and the eventual wallet integration. The live site remains locked until these gates are met.

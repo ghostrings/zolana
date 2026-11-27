@@ -8,63 +8,66 @@ data-*/
 !.env.example
 *.log
 .DS_Store
-
-# Local keys, wallet exports, local tooling and audit outputs
-*.pem
-*.key
-*.p12
-*.pfx
-*.keypair.json
-*-keypair.json
-wallet-export*.json
-wallet-backup*.json
-secrets/
-keys/
-coverage/
-playwright-report/
-test-results/
-.github-local/
-
-# Additional local/private artifacts. Browser uploads do NOT honor these rules.
-**/target/
-**/.anchor/
-**/.config/
-**/.solana/
-**/node_modules/
-**/build/
-**/dist/
-**/data/
-**/secrets/
-**/keys/
-**/keypairs/
-**/wallets/
+# Local signing material and native build products must never enter a publication.
+target/
+.git/
+**/*-keypair.json
 **/keypair.json
-**/id.json
-**/program.json
 **/deployer.json
-**/authority.json
-**/upgrade-authority.json
-**/auditor.json
-**/relayer.json
-**/*-wallet.json
-**/*_keypair.json
-**/*-secret.json
-**/*-private-key.json
-**/*-credentials.json
-**/credentials.json
-**/wallet.json
-**/private-key.json
-**/Cargo.lock.before-*
+**/program-keypair.json
+**/id.json
+**/wallet-keypair.json
+**/localnet-wallet.json
+**/operator-manifest.json
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
 **/Cargo.lock.backup
+**/Cargo.lock.before-*
 **/Anchor.toml.backup
-*.sqlite
-*.sqlite3
-*.db
-*.db-wal
-*.db-shm
-*.sqlite-wal
-*.sqlite-shm
-*.bak
-*.backup
-*.tar.gz
-*.zip
+
+# Pilot validator evidence and generated local keys are never publication material.
+**/test-ledger/
+**/.anchor/
+**/ghost-pilot-local.*/
+**/*-wallet.json
+**/program.json
+
+# V30 local-only browser harness workspaces
+**/ghost-native-lab.*/
+**/validator-ledger/
+
+# V32 candidate build workspaces and private review material
+**/ghost-v32-review.*/
+**/release-keys/
+**/*.tar.gz
+
+# Disposable wallet integration test workspace
+**/ghost-wallet-local.*/
+
+# Local production authority keys and short-lived signed/unsigned approval exports.
+**/pauser.json
+**/treasury.json
+**/administrator.json
+**/admin.json
+**/ghost-v33-pending-approval*.json
+**/ghost-v33-approval*.json
+**/ghost-unsigned-launch-intent*.json
+
+# Private operator handoffs / temporary signing data
+**/ghost-v33-init-*.json
+**/ghost-v33-nonce-*.json
+**/treasury-expired-*.bak
+**/ghost-v33-review.*/
+**/ghost-native-lab.*/
+**/ghost-pilot-local.*/
+
+# Pending owner-native launch envelopes contain executable partial signatures.
+**/ghost-v33-launch-*.json
+**/ghost-v33-first-*.json
+
+# Durable browser approvals must never be published.
+**/ghost-v36-launch-*.json
+**/ghost-v36-approved-*.json
+**/ghost-v33-nonce-*.json

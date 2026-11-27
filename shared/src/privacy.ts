@@ -269,10 +269,20 @@ async function firstSend(ctx: Pick<RingsContext, 'wallet'>, send: () => Promise<
   try {
     await send();
   } catch (error) {
-    if (!isSolanaError(error, SOLANA_ERROR__JSON_RPC__SERVER_ERROR_SEND_TRANSACTION_PREFLIGHT_FAILURE)) noteHandedOver(ctx);
+    if (!refusedInSimulation(error)) noteHandedOver(ctx);
     throw error;
   }
   noteHandedOver(ctx);
+}
+
+/**
+ * True when a first send was refused by the RPC's own simulation: the
+ * transaction never reached the network, so nothing can ever come of it.
+ * False for every other failure of a send, after which the transaction may
+ * or may not be on its way.
+ */
+export function refusedInSimulation(error: unknown): boolean {
+  return isSolanaError(error, SOLANA_ERROR__JSON_RPC__SERVER_ERROR_SEND_TRANSACTION_PREFLIGHT_FAILURE);
 }
 
 /** The ids of what the SDK currently has set aside for this wallet. The list is the SDK's own, so reading it is guarded. */
@@ -459,6 +469,61 @@ export async function sendAndSettle(
       }
     }
   }
+}
+
+/**
+ * One look at the chain for a transaction that was handed to the network
+ * earlier: landed, rejected, too old to ever land, or not decided yet. It
+ * sends nothing. It throws when the RPC does not answer for the signature,
+ * because no answer decides nothing either way.
+ */
+export async function lookUpSent(client: SprClient, signature: Signature, lastValidBlockHeight: bigint): Promise<Outcome> {
+  const rpc = client.solanaRpc;
+  // Height first, status second, as in `sendAndSettle`: a transaction that made its last block is visible by the time it is asked for.
+  let height: bigint | null;
+  try {
+    height = BigInt(await rpc.getBlockHeight({ commitment: 'confirmed' }).send());
+  } catch {
+    height = null;
+  }
+  const { value } = await rpc.getSignatureStatuses([signature], { searchTransactionHistory: true }).send();
+  const seen = value[0];
+  const status: StatusSeen | null = seen
+    ? { slot: BigInt(seen.slot), failed: seen.err !== null, confirmed: seen.confirmationStatus === 'confirmed' || seen.confirmationStatus === 'finalized' }
+    : null;
+  // A failure is final only once its block is confirmed. Before that it may sit on a fork that is dropped,
+  // and the same transaction can still land on the fork that is kept.
+  if (status !== null && status.failed && !status.confirmed) return { kind: 'pending' };
+  return outcomeOf(status, height, lastValidBlockHeight);
+}
+
+/**
+ * `sendAndSettle`, for a caller that will build the same payment again when
+ * it is told the first one was rejected. For that caller a rejection has to
+ * be final, so one that was seen before its block was confirmed is looked at
+ * again until it is confirmed, or turns out to have landed after all. If
+ * neither happens within the wait, the answer is `pending`: not known.
+ */
+export async function sendAndSettleFinal(
+  ctx: RingsContext,
+  signed: Transaction,
+  lastValidBlockHeight: bigint,
+  options: SettleOptions = {},
+): Promise<Outcome> {
+  const outcome = await sendAndSettle(ctx, signed, lastValidBlockHeight, options);
+  if (outcome.kind !== 'rejected') return outcome;
+  const sleep = options.sleep ?? ((ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms)));
+  const signature = getSignatureFromTransaction(signed);
+  for (let look = 0; look < 30; look += 1) {
+    try {
+      const again = await lookUpSent(ctx.client, signature, lastValidBlockHeight);
+      if (again.kind !== 'pending') return again;
+    } catch {
+      // An RPC that did not answer decides nothing either way.
+    }
+    await sleep(options.pollMs ?? 1_000);
+  }
+  return { kind: 'pending' };
 }
 
 export interface Simulation {

@@ -1,0 +1,62 @@
+
+> privacycash-fun@0.1.0 markets:lab:check
+> node --test protocol/ghost-markets-pilot/tests/lab-core.test.mjs
+
+TAP version 13
+# Subtest: exact decimal parsing, rejects invalid and overflow
+ok 1 - exact decimal parsing, rejects invalid and overflow
+  ---
+  duration_ms: 1.079498
+  type: 'test'
+  ...
+# Subtest: quote requires current version, reports WSOL allocation and cap
+ok 2 - quote requires current version, reports WSOL allocation and cap
+  ---
+  duration_ms: 0.865666
+  type: 'test'
+  ...
+# Subtest: pause and locked-only LP controls
+ok 3 - pause and locked-only LP controls
+  ---
+  duration_ms: 0.456328
+  type: 'test'
+  ...
+# Subtest: account decoder checks exact schema, fees, profile and discriminators
+ok 4 - account decoder checks exact schema, fees, profile and discriminators
+  ---
+  duration_ms: 0.870603
+  type: 'test'
+  ...
+# Subtest: local HTTP rejects other origins, hosts, missing token and unexpected methods
+ok 5 - local HTTP rejects other origins, hosts, missing token and unexpected methods
+  ---
+  duration_ms: 0.215676
+  type: 'test'
+  ...
+# Subtest: metadata validation and fee tier selection
+ok 6 - metadata validation and fee tier selection
+  ---
+  duration_ms: 0.46454
+  type: 'test'
+  ...
+# Subtest: pre-submit refusal does not halt; possible submission fails closed
+ok 7 - pre-submit refusal does not halt; possible submission fails closed
+  ---
+  duration_ms: 0.195014
+  type: 'test'
+  ...
+# Subtest: ready market may graduate while paused but cannot swap
+ok 8 - ready market may graduate while paused but cannot swap
+  ---
+  duration_ms: 0.208745
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 63.510152
