@@ -1,0 +1,31 @@
+{
+  "provenance": "Operator-supplied finalized-RPC CLI output; not independently fetched during packaging. Historical observation, not a live assertion.",
+  "network": "mainnet-beta",
+  "programId": "5o9DeQkYHXM3DQkzo16mAt6doaYrfhq3Q5aabWMfMy2n",
+  "programData": "J4iCsaLM24bBqjWGXvtB6N3LzUiJNJWwKAqLtXUzTXxt",
+  "protocolAddress": "423vt8vZMJs5ToVjUtbHQFtXDVQ7AccAVHk7vh6P6vWK",
+  "release": "v33",
+  "source": "finalized-rpc",
+  "slot": 474351235,
+  "deploymentSlot": "474345522",
+  "binaryBytes": 547816,
+  "binarySha256": "bb7545ae08ab37a83f6785f21a019103953c0d43a3e8a47d0162969193e5e411",
+  "expectedSolanaVerifyHash": "33a41e48d76fe0bbf936aa41e926a6ebb9005034cfcbf3651318a1ff0e8e9ec5",
+  "initializationSignature": "4qToY4Ga19pY7QjbxaZg2UvXkBEp3BZ9exUjYhEuWZYF8coqjaRT1V7dvZ7amLUtBDeAtBXDTsYeV4ASQ3mUy7Z6",
+  "initializationObservedSlot": 474350872,
+  "activationTransactionSignature": null,
+  "config": {
+    "mode": "active",
+    "admin": "J4JRQza7JXnkct6kQC3roPYstoH2xFBoyQ5Wczpt5jPt",
+    "pauser": "4xbhc9hzcGZpWpyHsguQbB5JdBZzGTcnBouyk1fbTbwF",
+    "treasury": "78XzeLvhyvsgQTirz9LmerGB6PNMDgFhdtHXSWoo83oi",
+    "pendingAdmin": "11111111111111111111111111111111"
+  },
+  "protocolInitialized": true,
+  "privateSettlement": false,
+  "marketExecution": true,
+  "publicWebsiteSigning": false,
+  "independentSecurityReview": "not asserted",
+  "remoteV33Verification": "pending; previous V27 verification is historical",
+  "firstNativeMainnetLaunch": "not evidenced"
+}
